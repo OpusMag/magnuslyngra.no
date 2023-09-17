@@ -1,32 +1,36 @@
 #.gitignore
-from flask import Flask, Flask-login, Flask-sqlalchemy
+import flask
+from flask import Flask
+#from flask import app
 import os
 
 HOST = 'localhost'
 PORT = 8080
 
+app = flask.Flask(__name__)
+
 def make_site():
-    app = flask.Flask(__name__)
+    
     app.config['SECRET_KEY'] = ' '
         
 
-@app.route('/')
+@app.route('/', endpoint='index')
 def index():
     return flask.render_template('index.html')
 
-@app.route('/about')
+@app.route('/about', endpoint='about')
 def about():
     return flask.render_template('about.html')
 
-@app.route('/contact')
+@app.route('/contact', endpoint='contact')
 def about():
     return flask.render_template('contact.html')
 
-@app.route('/projects')
+@app.route('/projects', endpoint='projects')
 def about():
     return flask.render_template('projects.html')
 
-@app.route('/blog')
+@app.route('/blog', endpoint='blog')
 def about():
     return flask.render_template('blog.html')
 
