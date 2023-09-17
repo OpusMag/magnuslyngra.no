@@ -1,11 +1,13 @@
-import flask
+from flask import Flask, Flask-login, Flask-sqlalchemy
 import os
-import socketserver
 
 HOST = 'localhost'
 PORT = 8080
 
-app = flask.Flask(__name__)
+def make_site():
+    app = flask.Flask(__name__)
+    app.config['SECRET_KEY'] = 'acALnaueifbvryhtkas'
+        
 
 @app.route('/')
 def index():
@@ -26,8 +28,7 @@ def api():
         'version': flask.__version__,
         'env': os.environ.get('FLASK_ENV', 'development'),
         'debug': app.debug,
-        'hostname': socketserver.gethostname(),
     })
     
 if __name__ == '__main__':
-    app.run(HOST, PORT)
+    app.run(HOST, PORT, debug=True)
