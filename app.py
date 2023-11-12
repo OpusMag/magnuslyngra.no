@@ -1,17 +1,36 @@
 #.gitignore
 import flask
-from flask import Flask
-#from flask import app
+import ssl
 import os
+from flask_wtf.csrf import CSRFProtect
+from flask import Flask, Response, escape, request, jsonify, make_response, redirect, url_for, session, render_template, flash
+
+
 
 HOST = 'localhost'
 PORT = 8080
 
 app = flask.Flask(__name__)
+csrf = CSRFProtect(app)
 
 def make_site():
     
     app.config['SECRET_KEY'] = ' '
+    
+app.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+)
+
+#We can set secure cookies in response
+#Response.set_cookie('key', 'value', secure=True, httponly=True, samesite='Lax')
+
+@app.after_request
+def apply_caching(response):
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["HTTP-HEADER"] = "VALUE"
+    return response
         
 
 @app.route('/', endpoint='index')
@@ -44,4 +63,4 @@ def api():
     })
     
 if __name__ == '__main__':
-    app.run(HOST, PORT, debug=True)
+    app.run(host=HOST, port=PORT, debug=True, ssl_context=('cert.pem', 'key.pem'))
