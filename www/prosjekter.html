@@ -1,53 +1,83 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="icon" href="../../../../favicon.ico" />
 
-    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <title>Velkommen til Magnus nettside</title>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Bootstrap core CSS -->
+    <link href="../../../../dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!-- Custom styles for this template -->
+    <link href="cover.css" rel="stylesheet" />
+  </head>
 
-    <title>Prosjekter</title>
-
-</head>
-<body>
-    <div class="jumbotron" style="background-color:black;">
-        <div class="container">
-            <h1>Navigasjon</h1>
-            <p>
-                <input class="btn btn-default" type="home" value="Home" />
-                <input class="btn btn-default" type="about" value="About" />
-                <input class="btn btn-default" type="contact" value="Contact" />
-                <input class="btn btn-default" type="projects" value="Projects" />
-                <input class="btn btn-default" type="blog" value="Blog" />
-            </p>
+  <body class="text-center">
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">Magnus Lyngra</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="#">Hjem</a>
+            <a class="nav-link" href="ommeg.html">Om meg</a>
+            <a class="nav-link" href="kontakt.html">Kontakt</a>
+            <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+            <a class="nav-link" href="blogg.html">Blogg</a>
+          </nav>
         </div>
+      </header>
+
+      <body class="text-center">
+        <div class="sidebar">
+          <img src="/magnus.jpg" alt="Magnus" style="width: 50%" />
+        </div>
+        <div class="content"></div>
+      </body>
+
+      <main role="main" class="inner cover">
+        <h1 class="cover-heading"></h1>
+        <p class="lead"></p>
+        <img src="/magnus.jpg" alt="Magnus" style="width: 50%" />
+        <textarea
+          id="myTextBox"
+          rows="10"
+          cols="100"
+          style="width: 50%"
+        ></textarea>
+      </main>
+
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <p>
+            Site powered by
+            <a href="https://getbootstrap.com/">Bootstrap</a>
+          </p>
+        </div>
+      </footer>
     </div>
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $("input[type=home]").click(function() {
-                $("p").html("This is the Home Page");
-            });
-            $("input[type=about]").click(function() {
-                $("p").html("This is the About Page");
-            });
-            $("input[type=contact]").click(function() {
-                $("p").html("This is the Contact Page");
-            });
-            $("input[type=projects]").click(function() {
-                $("p").html("This is the Projects Page");
-            });
-            $("input[type=blog]").click(function() {
-                $("p").html("This is the Blog Page");
-            });
-        });
+    <!-- Bootstrap core JavaScript
+      ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.jQuery ||
+        document.write(
+          '<script src="../../../../assets/js/vendor/jquery-slim.min.js"><\/script>',
+        );
+    </script>
+    <script src="../../../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../../../dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
