@@ -1,6 +1,7 @@
 /*
  * Globals
  */
+ @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
 
 /* Links */
 a,
@@ -28,6 +29,7 @@ html,
 body {
   height: 100%;
   background-color: #333;
+  font-family: 'EB Garamond', italic;
 }
 
 body {
@@ -40,6 +42,7 @@ body {
   color: #fff;
   text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
   box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+  font-family: 'CG OMEGA', sans-serif;
 }
 
 .cover-container {
@@ -48,25 +51,44 @@ body {
 
 body {
   background-color: #333; /* Example background color */
-  font-family: Arial, sans-serif;
+  font-family: 'CG OMEGA', sans-serif;
 }
 .container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: 20px;
+  align-items: center;
+  padding: 5px;
 }
 .sidebar {
   flex: 1;
   text-align: center;
+  margin-right: 0px; /* Add margin to push content to the right */
 }
-.content {
-  flex: 2;
-  padding: 20px;
+/* Parent container */
+.parent-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center horizontally */
+  justify-content: center; /* Center vertically */
+  min-height: 100vh; /* Ensure it takes the full height of the viewport */
+  padding-top: 20px; /* Padding from the top of the page */
+  box-sizing: border-box; /* Include padding in the height calculation */
+}
+
+/* Content classes */
+.content2, .content3, .content4, .content5 {
+  padding: 10px;
   background-color: #333; /* Match the background color */
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: white; /* Change text color to white */
+  margin: 10px 0; /* Add some margin between the content blocks */
+  width: 100%; /* Adjust width as needed */
+  max-width: 800px; /* Adjust max-width as needed */
+  box-sizing: border-box; /* Include padding in the width calculation */
+  /* Remove transform: scale(1.3); */
 }
+
 .content form {
   display: flex;
   flex-direction: column;
@@ -75,20 +97,10 @@ body {
 .content form textarea {
   margin-bottom: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   border-radius: 4px;
   background-color: #333; /* Match the background color */
-}
-.content form button {
-  padding: 10px;
-  border: none;
-  border-radius: 4px;
-  background-color: #333;
-  color: white;
-  cursor: pointer;
-}
-.content form button:hover {
-  background-color: #333;
+  color: white; /* Change text color to white */
 }
 
 .grid-container {
@@ -99,7 +111,7 @@ body {
 }
 
 .grid-item {
-  background-color: #f9f9f9;
+  background-color: #333;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -133,7 +145,19 @@ body {
 }
 
 .masthead-brand {
-  margin-bottom: 0;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  margin: 0;
+  padding: 0;
+  color: white; /* Adjust color as needed */
+}
+
+.nav-masthead {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically if needed */
+  width: 100%; /* Ensure it takes full width of the page */
 }
 
 .nav-masthead .nav-link {
@@ -183,6 +207,13 @@ body {
 /*
  * Footer
  */
-.mastfoot {
+ .mastfoot {
   color: rgba(255, 255, 255, .5);
+  position: fixed; /* Fix the footer to the bottom */
+  bottom: 0; /* Align to the bottom of the viewport */
+  width: 100%; /* Ensure it spans the full width of the page */
+  text-align: center; /* Center the text */
+  background-color: #333; /* Optional: Add a background color */
+  padding: 2px 0; /* Reduce padding */
+  font-size: 0.8rem; /* Reduce font size */
 }
