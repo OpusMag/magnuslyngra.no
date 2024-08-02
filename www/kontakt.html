@@ -10,7 +10,7 @@
     <meta name="author" content="" />
     <link rel="icon" href="../../../../favicon.ico" />
 
-    <title>Velkommen til Magnus nettside</title>
+    <title>Kontakt meg</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../../../../dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -34,24 +34,35 @@
         </div>
       </header>
 
-      <body class="text-center">
-        <div class="sidebar">
-          <img src="/magnus.jpg" alt="Magnus" style="width: 50%" />
-        </div>
-        <div class="content"></div>
-      </body>
-
-      <main role="main" class="inner cover">
-        <h1 class="cover-heading"></h1>
-        <p class="lead"></p>
+      <title>Kontakt meg</title>
+    <link rel="stylesheet" href="cover.css">
+</head>
+<body class="text-center">
+    <div class="sidebar">
         <img src="/magnus.jpg" alt="Magnus" style="width: 50%" />
-        <textarea
-          id="myTextBox"
-          rows="10"
-          cols="100"
-          style="width: 50%"
-        ></textarea>
-      </main>
+    </div>
+    <div class="content">
+        <main role="main" class="inner cover">
+            <h1 class="cover-heading">Kontakt meg</h1>
+            <form action="/submit_contact" method="post">
+                <div class="form-group">
+                    <label for="name">Navn:</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Epost:</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="message">Melding:</label>
+                    <textarea id="message" name="message" rows="5" class="form-control" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
