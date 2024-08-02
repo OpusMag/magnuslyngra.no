@@ -46,6 +46,13 @@ body {
   max-width: 42em;
 }
 
+.sidebar {
+  background-image: /url('/magnus.jpg')
+  background-size: cover;
+  background-position: left;
+  width: 100%;
+  height: 100%;
+}
 
 /*
  * Header
