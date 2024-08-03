@@ -237,13 +237,11 @@ body {
  */
  .mastfoot {
   color: rgba(255, 255, 255, .5);
-  position: fixed; /* Fix the footer to the bottom */
-  bottom: 0; /* Align to the bottom of the viewport */
-  width: 100%; /* Ensure it spans the full width of the page */
-  text-align: center; /* Center the text */
+  display: flex;
+  justify-content: flex-end; /* Space out the items */
+  align-items: right; /* Center items vertically */
   background-color: transparent; /* Optional: Add a background color */
-  padding: 2px 0; /* Reduce padding */
-  font-size: 0.8rem; /* Reduce font size */
+  font-size: 0.8rem; /* Adjust font size */
 }
 
 .footer-button-container {
@@ -262,7 +260,7 @@ body {
   border: none; /* Remove border */
   color: rgba(255, 255, 255, .5); /* Match the footer text color */
   font-family: 'Cormorant Garamond', sans-serif; /* Match the footer font */
-  font-size: 0.8rem; /* Match the footer font size */
+  font-size: 1.2rem; /* Adjust font size */
   cursor: pointer; /* Change cursor to pointer */
   display: flex; /* Use flexbox for alignment */
   align-items: center; /* Center items vertically */
