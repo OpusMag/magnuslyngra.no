@@ -1,8 +1,7 @@
 /*
  * Globals
  */
- @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
-
+ @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
 /* Links */
 a,
 a:focus,
@@ -24,69 +23,56 @@ a:hover {
 /*
  * Base structure
  */
-
-html,
-body {
+ html, body {
   height: 100%;
-  background-color: #333;
+  margin: 0;
+  padding: 0;
   font-family: 'EB Garamond', italic;
 }
 
 body {
-  display: -ms-flexbox;
-  display: -webkit-box;
-  display: flex;
-  -ms-flex-pack: center;
-  -webkit-box-pack: center;
-  justify-content: center;
+  background-image: url('/background.jpg'); /* Add your background image here */
+  background-size: cover; /* Ensure the image covers the entire background */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  background-position: center center; /* Center the image */
+  background-attachment: fixed; /* Make the background image fixed */
   color: #fff;
   text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
   box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-  font-family: 'CG OMEGA', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.picture {
+  text-align: center; /* Center the image horizontally */
+  margin: 20px 0; /* Add some margin for spacing */
+}
+
+.scaled-image {
+  max-width: 100%; /* Ensure the image scales within its container */
+  height: auto; /* Maintain aspect ratio */
 }
 
 .cover-container {
   max-width: 42em;
+  margin-top: 2rem;
 }
 
-body {
-  background-color: #333; /* Example background color */
-  font-family: 'CG OMEGA', sans-serif;
-}
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-}
-.sidebar {
-  flex: 1;
-  text-align: center;
-  margin-right: 0px; /* Add margin to push content to the right */
-}
-/* Parent container */
-.parent-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center horizontally */
-  justify-content: center; /* Center vertically */
-  min-height: 100vh; /* Ensure it takes the full height of the viewport */
-  padding-top: 20px; /* Padding from the top of the page */
-  box-sizing: border-box; /* Include padding in the height calculation */
-}
-
-/* Content classes */
-.content2, .content3, .content4, .content5 {
+.content, .content2, .content3, .content4, .content5 {
+  font-family: 'Cormorant Garamond', sans-serif;
   padding: 10px;
-  background-color: #333; /* Match the background color */
+  background: linear-gradient(135deg, #333, #555); /* Add a gradient background */
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   color: white; /* Change text color to white */
   margin: 10px 0; /* Add some margin between the content blocks */
+  margin-top: 30px; /* Add top margin to move elements down */
   width: 100%; /* Adjust width as needed */
   max-width: 800px; /* Adjust max-width as needed */
+  position: relative;
   box-sizing: border-box; /* Include padding in the width calculation */
-  /* Remove transform: scale(1.3); */
 }
 
 .content form {
@@ -101,6 +87,41 @@ body {
   border-radius: 4px;
   background-color: #333; /* Match the background color */
   color: white; /* Change text color to white */
+}
+
+.success-message {
+  color: green;
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(135deg, #333, #555); /* Add a gradient background */
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(135deg, #333, #555); /* Add a gradient background */
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+}
+
+.form-control {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 .grid-container {
@@ -140,8 +161,17 @@ body {
 /*
  * Header
  */
-.masthead {
-  margin-bottom: 2rem;
+ .masthead {
+  font-family: 'Cormorant Garamond', sans-serif;
+  margin-bottom: 1rem;
+  background-color: #000000; /* Change background color */
+  height: 2.7rem; /* Adjust height as needed */
+  position: fixed; /* Fix to the top of the page */
+  top: 0;
+  left: 50%; /* Move to the center horizontally */
+  transform: translateX(-50%); /* Adjust position to center */
+  width: 100vw; /* Ensure it takes full width of the page */
+  z-index: 1000; /* Ensure it stays on top of other elements */
 }
 
 .masthead-brand {
@@ -191,7 +221,6 @@ body {
   }
 }
 
-
 /*
  * Cover
  */
@@ -203,7 +232,6 @@ body {
   font-weight: 700;
 }
 
-
 /*
  * Footer
  */
@@ -213,7 +241,34 @@ body {
   bottom: 0; /* Align to the bottom of the viewport */
   width: 100%; /* Ensure it spans the full width of the page */
   text-align: center; /* Center the text */
-  background-color: #333; /* Optional: Add a background color */
+  background-color: transparent; /* Optional: Add a background color */
   padding: 2px 0; /* Reduce padding */
   font-size: 0.8rem; /* Reduce font size */
+}
+
+.footer-button-container {
+  display: flex; /* Use flexbox for alignment */
+  justify-content: flex-start; /* Align items to the left */
+  margin-top: 0; /* Remove top margin to align with mastfoot */
+}
+
+.footer-button {
+  text-decoration: none; /* Remove underline from the link */
+  margin-right: 10px; /* Add some space between buttons */
+}
+
+.footer-button button {
+  background-color: transparent; /* Make button background transparent */
+  border: none; /* Remove border */
+  color: rgba(255, 255, 255, .5); /* Match the footer text color */
+  font-family: 'Cormorant Garamond', sans-serif; /* Match the footer font */
+  font-size: 0.8rem; /* Match the footer font size */
+  cursor: pointer; /* Change cursor to pointer */
+  display: flex; /* Use flexbox for alignment */
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+}
+
+.footer-button button i {
+  margin-right: 5px; /* Add some space between the icon and text */
 }
