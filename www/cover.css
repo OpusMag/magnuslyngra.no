@@ -45,6 +45,20 @@ body {
   position: relative;
 }
 
+.blog-post {
+  padding: 20px;
+  margin-bottom: 30px;
+  background-color: #333; /* Optional: Add a background color */
+  border-radius: 5px; /* Optional: Add rounded corners */
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: #333;
+  margin: 60px 0; /* Adjust the spacing as needed */
+}
+
 .picture {
   text-align: center; /* Center the image horizontally */
   margin: 20px 0; /* Add some margin for spacing */
