@@ -1,7 +1,6 @@
-/*
- * Globals
- */
- @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
+
 /* Links */
 a,
 a:focus,
@@ -19,15 +18,12 @@ a:hover {
   border: .05rem solid #fff;
 }
 
-
-/*
- * Base structure
- */
- html, body {
+/* Base structure */
+html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'EB Garamond', italic;
+  font-family: 'EB Garamond', serif; /* Corrected font-family */
 }
 
 body {
@@ -59,13 +55,73 @@ hr {
   margin: 60px 0; /* Adjust the spacing as needed */
 }
 
+.header-container {
+  display: flex;
+  align-items: center; /* Align items vertically centered */
+}
+
+.index-picture {
+  margin-right: 20px;
+}
+
+.content-wrapper {
+  display: flex;
+  align-items: flex-start; /* Align items to the top */
+  margin-bottom: 20px; /* Space between each content-wrapper */
+}
+
+.media-container {
+  margin-right: 20px; /* Space between media and text */
+}
+
+.index-scaled-image {
+  max-width: 300px; /* Ensure the image scales within its container */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 50%; /* Make the image round */
+}
+
+.image-container {
+  position: relative;
+  display: inline-block; /* Ensure the container only takes up as much space as the image */
+}
+
+.image-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)); /* Adjust the gradient colors as needed */
+  pointer-events: none; /* Ensure the overlay does not interfere with interactions */
+}
+
+.carousel-container {
+  flex: 1; /* Adjust the flex value as needed */
+  margin-right: 20px; /* Space between carousel and text */
+}
+
+.text-container {
+  flex: 2; /* Adjust the flex value as needed */
+}
+
+p {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 24px; /* Set font size to 16px */
+  color: #ffffff; /* White text for better contrast */
+  padding: 10px; /* Padding around text */
+  border-radius: 5px; /* Rounded corners */
+}
+
 .picture {
   text-align: center; /* Center the image horizontally */
   margin: 20px 0; /* Add some margin for spacing */
 }
 
 .scaled-image {
-  max-width: 100%; /* Ensure the image scales within its container */
+  max-width: 300px; /* Ensure the image scales within its container */
   height: auto; /* Maintain aspect ratio */
 }
 
@@ -93,10 +149,44 @@ hr {
   aspect-ratio: 1 / 1.414; /* Maintain aspect ratio of A4 paper (1:1.414) */
 }
 
-.content, .content2, .content3, .content4, .content5 {
+.content {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 24px; /* Set font size to 16px */
+  padding: 10px;
+  background: transparent; /* Add a gradient background */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: white; /* Change text color to white */
+  margin: 10px 0; /* Add some margin between the content blocks */
+  margin-top: 30px; /* Add top margin to move elements down */
+  width: 100%; /* Adjust width as needed */
+  max-width: 800px; /* Adjust max-width as needed */
+  position: relative;
+  box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+.content2 {
   font-family: 'Cormorant Garamond', sans-serif;
+  font-size: 20px; /* Set font size to 16px */
   padding: 10px;
   background: linear-gradient(135deg, #333, #555); /* Add a gradient background */
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: white; /* Change text color to white */
+  margin: 10px 0; /* Add some margin between the content blocks */
+  margin-top: 30px; /* Add top margin to move elements down */
+  width: 100%; /* Adjust width as needed */
+  max-width: 800px; /* Adjust max-width as needed */
+  position: relative;
+  box-sizing: border-box; /* Include padding in the width calculation */
+}
+
+.content3, .content4, .content5 {
+  font-family: 'Cormorant Garamond', sans-serif;
+  font-size: 24px; /* Set font size to 16px */
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   color: white; /* Change text color to white */
@@ -112,6 +202,7 @@ hr {
   display: flex;
   flex-direction: column;
 }
+
 .content form input,
 .content form textarea {
   margin-bottom: 10px;
