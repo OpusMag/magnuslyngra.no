@@ -27,14 +27,12 @@
           </nav>
         </div>
       </header>
-
       <!-- Add this modal structure to your HTML -->
       <div id="mediaModal" class="modal">
         <span class="close">&times;</span>
         <img class="modal-content" id="modalImage">
         <video class="modal-content" id="modalVideo" controls></video>
       </div>
-
       <div class="content">
         <main role="main" class="inner cover" style="margin-top: 10px;">
           <div class="header-container">
@@ -49,14 +47,16 @@
                 <p>Jeg er en dataingeniør som for tiden jobber ved UiT Norges arktiske universitet med driftssikkerhet av universitetets utstyr på møte- og underviningsrom. Tidligere har jeg drevet med avansert brukerstøtte og strømming av arrangementer på UiT der både statsråder, kronprinsen og andre har deltatt og presentert.</p>
               </div>
               <div class="media-container">
-                <video src="/kontoret.mp4" alt="Magnus" class="scaled-image" controls autoplay loop muted>
+                <video id="myVideo" src="/kontoret.mp4" class="scaled-image" controls autoplay loop muted>
                   Your browser does not support the video tag.
                 </video>
               </div>
             </div>
             <div class="content-wrapper">
               <div class="media-container">
-                <img src="/pause.jpg" alt="Magnus" class="scaled-image">
+                <video id="myVideo1" src="/lostglasses.mp4" class="scaled-image" controls autoplay loop muted>
+                  Your browser does not support the video tag.
+                </video>
               </div>
               <div class="text-wrapper2">
                 <p>Nå er mitt hovedansvar å sikre at utstyr på møte- og undervisningsrom fungerer til enhver tid. Jeg er også delvis på utlån til en annen avdeling for å bistå med de tekniske endringene tilknyttet studieporteføljen. Jeg er også tilknyttet UiTs utviklermiljø og deltar sporadisk i prosjekter i den sammenheng.</p>
@@ -106,7 +106,6 @@
           </p>
         </main>
       </div>
-
       <footer class="mastfoot mt-auto">
         <div class="footer-button-container">
           <a href="https://github.com/OpusMag" class="footer-button">
@@ -127,14 +126,25 @@
         </div>
       </footer>
     </div>
-
+    <script>
+      document.getElementById('myVideo').addEventListener('click', function() {
+        if (this.requestFullscreen) {
+          this.requestFullscreen();
+        } else if (this.mozRequestFullScreen) { // Firefox
+          this.mozRequestFullScreen();
+        } else if (this.webkitRequestFullscreen) { // Chrome, Safari and Opera
+          this.webkitRequestFullscreen();
+        } else if (this.msRequestFullscreen) { // IE/Edge
+          this.msRequestFullscreen();
+        }
+      });
+    </script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var modal = document.getElementById("mediaModal");
         var modalImg = document.getElementById("modalImage");
         var modalVideo = document.getElementById("modalVideo");
         var span = document.getElementsByClassName("close")[0];
-
         document.querySelectorAll('.media-container img, .media-container video').forEach(function(media) {
           media.onclick = function() {
             if (media.tagName === 'IMG') {
@@ -149,12 +159,10 @@
             modal.style.display = "block";
           }
         });
-
         span.onclick = function() { 
           modal.style.display = "none";
           modalVideo.pause();
         }
-
         window.onclick = function(event) {
           if (event.target == modal) {
             modal.style.display = "none";
