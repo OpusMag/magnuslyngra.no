@@ -66,25 +66,29 @@ hr {
   margin-right: 1.25rem; 
 }
 
-/* General styles for content-wrapper */
+/* Define the grid container */
 .content-wrapper {
-  display: flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two columns of equal width */
+  grid-template-rows: auto; /* Rows will adjust based on content */
+  gap: 2rem; /* Add some space between grid items */
   margin-bottom: 2rem; /* Add some space between content sections */
 }
 
 /* Alternate the order of text and media containers */
 .content-wrapper:nth-child(odd) {
-  flex-direction: row;
+  grid-template-areas: 
+    "media text";
 }
 
 .content-wrapper:nth-child(even) {
-  flex-direction: row-reverse;
+  grid-template-areas: 
+    "text media";
 }
 
-/* Text Wrapper */
-/* General styles for text-wrapper classes */
+/* Assign grid areas to child elements */
 .text-wrapper1, .text-wrapper2, .text-wrapper3 {
+  grid-area: text;
   margin: 1rem; /* Add some margin around the text */
   padding: 1rem; /* Add some padding inside the text container */
   font-family: Arial, sans-serif; /* Set a font family */
@@ -94,17 +98,16 @@ hr {
   background: linear-gradient(to bottom, #1a1a1a, #000000);
   border-radius: 0.5rem; /* Optional: Add rounded corners */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
-  flex: 1; /* Allow text wrapper to grow and fill available space */
 }
 
-/* Media container */
 .media-container {
-  background: linear-gradient(to bottom, #1a1a1a, #000000);
+  grid-area: media;
   display: flex;
-  flex: 1;
   justify-content: center;
   align-items: center;
   margin: 0 1rem; /* Add some margin around the media container */
+  width: 100%; /* Set the width to 100% of the parent container */
+  height: 100%; /* Set a fixed height, adjust as needed */
 }
 
 .media-container img,
@@ -114,6 +117,20 @@ hr {
   height: 100%; /* Ensure the media fills the container */
   object-fit: cover;
   border-radius: 0.625rem; 
+}
+
+/* Ensure the carousel and its parent containers have a defined height */
+.carousel,
+.carousel-inner,
+.carousel-item {
+  height: 100%;
+}
+
+/* Add this rule to ensure carousel images fill the container */
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .index-scaled-image {
