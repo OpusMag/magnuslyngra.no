@@ -1,37 +1,21 @@
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');
-
-/* Links */
-a,
-a:focus,
-a:hover {
-  color: #fff;
-}
-
-/* Custom default button */
-.btn-secondary,
-.btn-secondary:hover,
-.btn-secondary:focus {
-  color: #333;
-  text-shadow: none; /* Prevent inheritance from `body` */
-  background-color: #fff;
-  border: .05rem solid #fff;
-}
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,400..700;1,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Base structure */
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'EB Garamond', serif; /* Corrected font-family */
+  font-family: 'EB Garamond', serif;
 }
 
 body {
-  background-image: url('/background.jpg'); /* Add your background image here */
-  background-size: cover; /* Ensure the image covers the entire background */
-  background-repeat: no-repeat; /* Prevent the image from repeating */
-  background-position: center center; /* Center the image */
-  background-attachment: fixed; /* Make the background image fixed */
+  background-image: url('/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
   color: #fff;
   text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
   box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
@@ -39,178 +23,193 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
+  padding: 10px;
 }
 
+/* Links */
+a, a:focus, a:hover {
+  color: #fff;
+}
+
+/* Custom default button */
+.btn-secondary, .btn-secondary:hover, .btn-secondary:focus {
+  color: #333;
+  text-shadow: none;
+  background-color: #fff;
+  border: .05rem solid #fff;
+}
+
+/* Blog post styling */
 .blog-post {
   padding: 20px;
   margin-bottom: 30px;
-  background-color: #333; /* Optional: Add a background color */
-  border-radius: 5px; /* Optional: Add rounded corners */
+  background: linear-gradient(to bottom, #1a1a1a, #000000);
+  border-radius: 5px;
 }
 
+/* Horizontal rule */
 hr {
   border: 0;
   height: 1px;
   background: #333;
-  margin: 60px 0; /* Adjust the spacing as needed */
+  margin: 60px 0;
 }
 
+/* Header container */
 .header-container {
+  font-family: "Archivo Narrow", sans-serif;
   display: flex;
-  align-items: center; /* Align items vertically centered */
+  align-items: center;
 }
 
 .index-picture {
   margin-right: 20px;
 }
 
+/* Content wrapper */
 .content-wrapper {
-  border: 1px solid #333;
-  /*background: linear-gradient(to bottom, #333, #424242);*/
   display: flex;
-  justify-content: flex-start;
-  /*align-items: flex-start;*/ /* Align items to the top */
-  margin-bottom: 20px; /* Space between each content-wrapper */
-  border-radius: 50px; /* Add rounded corners */
+  flex-direction: column;
+  margin-bottom: 20px;
+  border-radius: 50px;
 }
 
+@media (min-width: 768px) {
+  .content-wrapper {
+    flex-direction: row;
+  }
+}
+
+/* Media container */
 .media-container {
-  position: center;
   display: flex;
   justify-content: flex-start;
-  margin-right: 10px; /* Space between media and text */
+  margin-right: 10px;
   align-items: center;
 }
 
 .index-scaled-image {
-  max-width: 300px; /* Ensure the image scales within its container */
-  height: auto; /* Maintain aspect ratio */
-  border-radius: 50%; /* Make the image round */
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
 }
 
+/* Image containers */
 .image-container {
-  position: center;
-  display: inline-block; /* Ensure the container only takes up as much space as the image */
+  display: inline-block;
 }
 
-.image-container::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+.image-container2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100%;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)); /* Adjust the gradient colors as needed */
-  pointer-events: none; /* Ensure the overlay does not interfere with interactions */
+  width: 100%;
 }
 
+/* Carousel container */
 .carousel-container {
-  position: center;
   display: flex;
   justify-content: flex-end;
-  margin-right: 10px; /* Space between media and text */
+  margin-right: 10px;
   align-items: center;
 }
 
-.text-container {
-  flex: 2; /* Adjust the flex value as needed */
+.carousel-container img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
+/* Text container */
+.text-container {
+  flex: 2;
+}
+
+/* Paragraph styling */
 p {
-  font-family: "Cormorant Garamond", serif;
-  font-weight: 600;
-  font-style: italic;
-  font-size: 24px; /* Set font size to 16px */
-  color: #ffffff; /* White text for better contrast */
-  padding: 10px; /* Padding around text */
+  font-family: "Roboto Mono", monospace;
+  font-weight: 300;
+  font-size: 1.5rem;
+  color: #ffffff;
+  padding: 10px;
   mix-blend-mode: luminosity;
   opacity: 0.95;
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 5px;
 }
 
+/* Picture styling */
 .picture {
-  text-align: center; /* Center the image horizontally */
-  margin: 20px 0; /* Add some margin for spacing */
+  text-align: center;
+  margin: 20px 0;
 }
 
 .scaled-image {
-  max-width: 300px; /* Ensure the image scales within its container */
-  height: auto; /* Maintain aspect ratio */
+  max-width: 100%;
+  height: auto;
 }
 
+/* Cover container */
 .cover-container {
   max-width: 42em;
   margin-top: 2rem;
 }
 
+/* PDF container */
 .pdf-container {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%; /* Full height of the parent container */
-  margin: 10px 0 0 0; /* Add top margin */
-  padding: 0; /* Remove default padding */
+  height: 100%;
+  margin: 10px 0 0 0;
+  padding: 0;
 }
 
 .pdf-container iframe {
-  width: 200%;
+  width: 100%;
   height: 100%;
-  max-width: 200%;
+  max-width: 100%;
   max-height: 100%;
-  border: none; /* Remove border */
-  aspect-ratio: 1 / 1.414; /* Maintain aspect ratio of A4 paper (1:1.414) */
+  border: none;
+  aspect-ratio: 1 / 1.414;
 }
 
+/* Content sections */
 .content {
-  font-family: "Cormorant Garamond", serif;
+  font-family: "Roboto Mono", monospace;
   font-weight: 300;
-  font-style: italic;
-  font-size: 24px; /* Set font size to 16px */
-  padding: 10px;
-  background: transparent; /* Add a gradient background */
+  font-size: 1.5rem;
+  padding: 2%;
+  background: transparent;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  color: white; /* Change text color to white */
-  margin: 10px 0; /* Add some margin between the content blocks */
-  margin-top: 30px; /* Add top margin to move elements down */
-  width: 100%; /* Adjust width as needed */
-  max-width: 800px; /* Adjust max-width as needed */
+  color: white;
+  margin: 2% 0;
+  width: 90%;
+  max-width: 800px;
   position: relative;
-  box-sizing: border-box; /* Include padding in the width calculation */
+  box-sizing: border-box;
 }
 
-.content2 {
-  font-family: 'Cormorant Garamond', sans-serif;
-  font-size: 20px; /* Set font size to 16px */
-  padding: 10px;
-  background: linear-gradient(135deg, #333, #555); /* Add a gradient background */
+.content2, .content3, .content4, .content5 {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 300;
+  font-size: 1.25rem;
+  padding: 2%;
+  background: linear-gradient(to bottom, #1a1a1a, #000000);
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  color: white; /* Change text color to white */
-  margin: 10px 0; /* Add some margin between the content blocks */
-  margin-top: 30px; /* Add top margin to move elements down */
-  width: 100%; /* Adjust width as needed */
-  max-width: 800px; /* Adjust max-width as needed */
+  color: white;
+  margin: 2% 0;
+  width: 90%;
+  max-width: 800px;
   position: relative;
-  box-sizing: border-box; /* Include padding in the width calculation */
+  box-sizing: border-box;
 }
 
-.content3, .content4, .content5 {
-  font-family: 'Cormorant Garamond', sans-serif;
-  font-size: 24px; /* Set font size to 16px */
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  color: white; /* Change text color to white */
-  margin: 10px 0; /* Add some margin between the content blocks */
-  margin-top: 30px; /* Add top margin to move elements down */
-  width: 100%; /* Adjust width as needed */
-  max-width: 800px; /* Adjust max-width as needed */
-  position: relative;
-  box-sizing: border-box; /* Include padding in the width calculation */
-}
-
+/* Form styling */
 .content form {
   display: flex;
   flex-direction: column;
@@ -222,15 +221,16 @@ p {
   padding: 10px;
   border: 1px solid #333;
   border-radius: 4px;
-  background-color: #333; /* Match the background color */
-  color: white; /* Change text color to white */
+  background-color: #333;
+  color: white;
 }
 
+/* Success and error messages */
 .success-message {
   color: green;
   font-weight: bold;
   text-align: center;
-  background: linear-gradient(135deg, #333, #555); /* Add a gradient background */
+  background: linear-gradient(135deg, #333, #555);
   padding: 10px;
   border-radius: 5px;
 }
@@ -239,11 +239,12 @@ p {
   color: red;
   font-weight: bold;
   text-align: center;
-  background: linear-gradient(135deg, #333, #555); /* Add a gradient background */
+  background: linear-gradient(135deg, #333, #555);
   padding: 10px;
   border-radius: 5px;
 }
 
+/* Form group */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -261,21 +262,30 @@ p {
   font-size: 16px;
 }
 
+/* Grid container */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 20px;
   padding: 20px;
 }
 
+@media (min-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Grid item */
 .grid-item {
-  background-color: #333;
+  background: linear-gradient(to bottom, #1a1a1a, #000000);
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
   text-align: left;
 }
 
+/* Project title and ingress */
 .project-title {
   font-size: 1.5em;
   margin: 10px 0;
@@ -286,6 +296,7 @@ p {
   margin: 10px 0;
 }
 
+/* Project link */
 .project-link {
   color: #007bff;
   text-decoration: none;
@@ -295,11 +306,12 @@ p {
   text-decoration: underline;
 }
 
-/*
- * Header
- */
- .masthead {
-  font-family: 'Cormorant Garamond', sans-serif;
+/* Header */
+.masthead {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: light;
   margin-bottom: 1rem;
   background-color: #000000; /* Change background color */
   height: 2.7rem; /* Adjust height as needed */
@@ -320,6 +332,7 @@ p {
   color: white; /* Adjust color as needed */
 }
 
+/* Navigation */
 .nav-masthead {
   display: flex;
   justify-content: center; /* Center horizontally */
@@ -333,77 +346,11 @@ p {
   color: rgba(255, 255, 255, .5);
   background-color: transparent;
   border-bottom: .25rem solid transparent;
+  margin: 0 0.5rem; /* Add margin to create space between text boxes */
 }
 
 .nav-masthead .nav-link:hover,
 .nav-masthead .nav-link:focus {
+  color: rgba(255, 255, 255, 1);
   border-bottom-color: rgba(255, 255, 255, .25);
-}
-
-.nav-masthead .nav-link + .nav-link {
-  margin-left: 1rem;
-}
-
-.nav-masthead .active {
-  color: #fff;
-  border-bottom-color: #fff;
-}
-
-@media (min-width: 48em) {
-  .masthead-brand {
-    float: left;
-  }
-  .nav-masthead {
-    float: right;
-  }
-}
-
-/*
- * Cover
- */
-.cover {
-  padding: 0 1.5rem;
-}
-.cover .btn-lg {
-  padding: .75rem 1.25rem;
-  font-weight: 700;
-}
-
-/*
- * Footer
- */
- .mastfoot {
-  color: rgba(255, 255, 255, .5);
-  display: flex;
-  justify-content: flex-end; /* Space out the items */
-  align-items: right; /* Center items vertically */
-  background-color: transparent; /* Optional: Add a background color */
-  font-size: 0.8rem; /* Adjust font size */
-}
-
-.footer-button-container {
-  display: flex; /* Use flexbox for alignment */
-  justify-content: flex-start; /* Align items to the left */
-  margin-top: 0; /* Remove top margin to align with mastfoot */
-}
-
-.footer-button {
-  text-decoration: none; /* Remove underline from the link */
-  margin-right: 10px; /* Add some space between buttons */
-}
-
-.footer-button button {
-  background-color: transparent; /* Make button background transparent */
-  border: none; /* Remove border */
-  color: rgba(255, 255, 255, .5); /* Match the footer text color */
-  font-family: 'Cormorant Garamond', sans-serif; /* Match the footer font */
-  font-size: 1.2rem; /* Adjust font size */
-  cursor: pointer; /* Change cursor to pointer */
-  display: flex; /* Use flexbox for alignment */
-  align-items: center; /* Center items vertically */
-  justify-content: center; /* Center items horizontally */
-}
-
-.footer-button button i {
-  margin-right: 5px; /* Add some space between the icon and text */
 }
