@@ -23,7 +23,7 @@ body {
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 10px;
+  padding: 0.625rem;
 }
 
 /* Links */
@@ -36,23 +36,23 @@ a, a:focus, a:hover {
   color: #333;
   text-shadow: none;
   background-color: #fff;
-  border: .05rem solid #fff;
+  border: 0.05rem solid #fff;
 }
 
 /* Blog post styling */
 .blog-post {
-  padding: 20px;
-  margin-bottom: 30px;
+  padding: 1.25rem; 
+  margin-bottom: 1.875rem; 
   background: linear-gradient(to bottom, #1a1a1a, #000000);
-  border-radius: 5px;
+  border-radius: 0.3125rem; 
 }
 
 /* Horizontal rule */
 hr {
   border: 0;
-  height: 1px;
+  height: 0.0625rem; 
   background: #333;
-  margin: 60px 0;
+  margin: 3.75rem 0; 
 }
 
 /* Header container */
@@ -63,17 +63,16 @@ hr {
 }
 
 .index-picture {
-  margin-right: 20px;
+  margin-right: 1.25rem; 
 }
 
 /* Content wrapper */
 .content-wrapper {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
-  border-radius: 50px;
+  margin-bottom: 1.25rem; 
+  border-radius: 3.125rem; 
 }
-
 @media (min-width: 768px) {
   .content-wrapper {
     flex-direction: row;
@@ -84,7 +83,7 @@ hr {
 .media-container {
   display: flex;
   justify-content: flex-start;
-  margin-right: 10px;
+  margin-right: 0.625rem; 
   align-items: center;
 }
 
@@ -111,7 +110,7 @@ hr {
 .carousel-container {
   display: flex;
   justify-content: flex-end;
-  margin-right: 10px;
+  margin-right: 0.625rem; 
   align-items: center;
 }
 
@@ -119,7 +118,7 @@ hr {
   width: 100%;
   height: auto;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 0.625rem; 
 }
 
 /* Text container */
@@ -133,16 +132,16 @@ p {
   font-weight: 300;
   font-size: 1.5rem;
   color: #ffffff;
-  padding: 10px;
+  padding: 0.625rem; 
   mix-blend-mode: luminosity;
   opacity: 0.95;
-  border-radius: 5px;
+  border-radius: 0.3125rem; 
 }
 
 /* Picture styling */
 .picture {
   text-align: center;
-  margin: 20px 0;
+  margin: 1.25rem 0; 
 }
 
 .scaled-image {
@@ -163,7 +162,7 @@ p {
   align-items: center;
   width: 100%;
   height: 100%;
-  margin: 10px 0 0 0;
+  margin: 0.625rem 0 0 0; 
   padding: 0;
 }
 
@@ -183,12 +182,12 @@ p {
   font-size: 1.5rem;
   padding: 2%;
   background: transparent;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem; 
+  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1); 
   color: white;
   margin: 2% 0;
   width: 90%;
-  max-width: 800px;
+  max-width: 50rem; 
   position: relative;
   box-sizing: border-box;
 }
@@ -199,12 +198,12 @@ p {
   font-size: 1.25rem;
   padding: 2%;
   background: linear-gradient(to bottom, #1a1a1a, #000000);
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.1); 
   color: white;
   margin: 2% 0;
   width: 90%;
-  max-width: 800px;
+  max-width: 50rem;
   position: relative;
   box-sizing: border-box;
 }
@@ -217,10 +216,10 @@ p {
 
 .content form input,
 .content form textarea {
-  margin-bottom: 10px;
-  padding: 10px;
+  margin-bottom: 0.625rem; 
+  padding: 0.625rem; 
   border: 1px solid #333;
-  border-radius: 4px;
+  border-radius: 0.25rem; 
   background-color: #333;
   color: white;
 }
@@ -231,8 +230,8 @@ p {
   font-weight: bold;
   text-align: center;
   background: linear-gradient(135deg, #333, #555);
-  padding: 10px;
-  border-radius: 5px;
+  padding: 0.625rem; 
+  border-radius: 0.3125rem; 
 }
 
 .error-message {
@@ -240,34 +239,34 @@ p {
   font-weight: bold;
   text-align: center;
   background: linear-gradient(135deg, #333, #555);
-  padding: 10px;
-  border-radius: 5px;
+  padding: 0.625rem; 
+  border-radius: 0.3125rem; 
 }
 
 /* Form group */
 .form-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 0.9375rem; 
 }
 
 .form-group label {
-  margin-bottom: 5px;
+  margin-bottom: 0.3125rem;
 }
 
 .form-control {
-  padding: 10px;
+  padding: 0.625rem; 
   border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 0.25rem; 
+  font-size: 1rem; 
 }
 
 /* Grid container */
 .grid-container {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
-  padding: 20px;
+  gap: 1.25rem; 
+  padding: 1.25rem; 
 }
 
 @media (min-width: 768px) {
@@ -279,21 +278,21 @@ p {
 /* Grid item */
 .grid-item {
   background: linear-gradient(to bottom, #1a1a1a, #000000);
-  padding: 20px;
+  padding: 1.25rem; 
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 0.5rem; 
   text-align: left;
 }
 
 /* Project title and ingress */
 .project-title {
   font-size: 1.5em;
-  margin: 10px 0;
+  margin: 0.625rem 0; 
 }
 
 .project-ingress {
   font-size: 1em;
-  margin: 10px 0;
+  margin: 0.625rem 0; 
 }
 
 /* Project link */
@@ -313,44 +312,44 @@ p {
   font-weight: 300;
   font-style: light;
   margin-bottom: 1rem;
-  background-color: #000000; /* Change background color */
-  height: 2.7rem; /* Adjust height as needed */
-  position: fixed; /* Fix to the top of the page */
+  background-color: #000000;
+  height: 2.7rem;
+  position: fixed;
   top: 0;
-  left: 50%; /* Move to the center horizontally */
-  transform: translateX(-50%); /* Adjust position to center */
-  width: 100vw; /* Ensure it takes full width of the page */
-  z-index: 1000; /* Ensure it stays on top of other elements */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  z-index: 1000;
 }
 
 .masthead-brand {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 0.625rem; 
+  left: 0.625rem; 
   margin: 0;
   padding: 0;
-  color: white; /* Adjust color as needed */
+  color: white;
 }
 
 /* Navigation */
 .nav-masthead {
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically if needed */
-  width: 100%; /* Ensure it takes full width of the page */
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .nav-masthead .nav-link {
-  padding: .25rem 0;
+  padding: 0.25rem 0;
   font-weight: 700;
-  color: rgba(255, 255, 255, .5);
+  color: rgba(255, 255, 255, 0.5);
   background-color: transparent;
-  border-bottom: .25rem solid transparent;
-  margin: 0 0.5rem; /* Add margin to create space between text boxes */
+  border-bottom: 0.25rem solid transparent;
+  margin: 0 0.5rem;
 }
 
 .nav-masthead .nav-link:hover,
 .nav-masthead .nav-link:focus {
   color: rgba(255, 255, 255, 1);
-  border-bottom-color: rgba(255, 255, 255, .25);
+  border-bottom-color: rgba(255, 255, 255, 0.25);
 }
