@@ -64,11 +64,10 @@ hr {
   margin-right: 1.25rem; 
 }
 
-/* Define the grid container */
+/* Define the grid container for desktop layout */
 .content-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr; /* Two columns of equal width */
-  grid-template-rows: auto; /* Rows will adjust based on content */
   gap: 2rem; /* Add some space between grid items */
   margin-bottom: 2rem; /* Add some space between content sections */
 }
@@ -78,7 +77,6 @@ hr {
   grid-template-areas: 
     "media text";
 }
-
 .content-wrapper:nth-child(even) {
   grid-template-areas: 
     "text media";
@@ -98,11 +96,12 @@ hr {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
 }
 
+/* Desktop layout using CSS Grid */
 .media-container {
   grid-area: media;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust as needed */
+  gap: 1rem; /* Add some gap between grid items */
   margin: 0 1rem; /* Add some margin around the media container */
   width: 100%; /* Set the width to 100% of the parent container */
   height: 100%; /* Set a fixed height, adjust as needed */
@@ -111,8 +110,8 @@ hr {
 .media-container img,
 .media-container video,
 .media-container .carousel-item img {
-  width: 100%; /* Ensure the media fills the container */
-  height: 100%; /* Ensure the media fills the container */
+  width: 100%; /* Set width to 100% of the grid item */
+  height: 100%; /* Maintain aspect ratio */
   object-fit: cover;
   border-radius: 0.625rem; 
 }
@@ -122,6 +121,34 @@ hr {
 .carousel-inner,
 .carousel-item {
   height: 100%;
+}
+
+/* Mobile layout using Flexbox */
+@media (max-width: 1200px) {
+  .content-wrapper {
+    display: flex;
+    flex-direction: column; /* Arrange items in a column */
+    gap: 1rem; /* Add some space between items */
+  }
+
+  .media-container {
+    display: flex;
+    flex-direction: row; /* Arrange items in a row */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+    order: 1; /* Ensure media-container comes after text-wrapper */
+  }
+
+  .text-wrapper1, .text-wrapper2, .text-wrapper3 {
+    order: 0; /* Ensure text-wrapper comes before media-container */
+  }
+
+  .media-container img,
+  .media-container video,
+  .media-container .carousel-item img {
+    width: 100%; /* Set width to 100% of the container */
+    height: 100%; /* Set height to 100% of the container */
+    object-fit: cover; /* Ensure the media covers the container while maintaining aspect ratio */
+  }
 }
 
 /* Add this rule to ensure carousel images fill the container */
