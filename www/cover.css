@@ -12,7 +12,7 @@ html, body {
 }
 
 body {
-  background-image: url('/background.jpg');
+  background-image: url('/background1.jpg');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -58,6 +58,7 @@ hr {
   font-family: "Archivo Narrow", sans-serif;
   display: flex;
   align-items: center;
+  margin-left: 1.25rem;
 }
 
 .index-picture {
@@ -260,6 +261,10 @@ p {
   margin-top: 2rem;
 }
 
+.cover-heading {
+  margin-left: 1.25rem;
+}
+
 /* PDF container */
 .pdf-container {
   display: flex;
@@ -455,7 +460,7 @@ p {
   font-weight: 400;
   font-style: normal;
   margin-bottom: 1rem;
-  background-color: #000000;
+  background: linear-gradient(to bottom, #000000, #3a3a3a); /* Gradient background */
   height: 2.7rem;
   position: fixed;
   top: 0;
@@ -463,6 +468,8 @@ p {
   transform: translateX(-50%);
   width: 100vw;
   z-index: 1000;
+  border-radius: 10px; /* Rounded corners */
+  color: white; /* Text color */
 }
 
 .masthead-brand {
@@ -483,16 +490,17 @@ p {
 }
 
 .nav-masthead .nav-link {
-  padding: 0.25rem 0;
+  padding: 0.3rem 0rem; /* Increase padding */
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.5);
-  background-color: transparent;
-  border-bottom: 0.25rem solid transparent;
+  color: rgba(255, 255, 255, 0.9); /* Make text color more opaque */
+  border-radius: 10px; /* Add rounded corners */
   margin: 0 0.5rem;
+  transition: background-color 0.3s, color 0.3s; /* Add transition for smooth hover effect */
 }
 
 .nav-masthead .nav-link:hover,
 .nav-masthead .nav-link:focus {
-  color: rgba(255, 255, 255, 1);
-  border-bottom-color: rgba(255, 255, 255, 0.25);
+  color: rgb(105, 105, 105);
+  background-color: rgba(0, 0, 0, 0.5); /* Change background color on hover */
+  border-bottom-color: rgba(202, 202, 202, 0.25);
 }
