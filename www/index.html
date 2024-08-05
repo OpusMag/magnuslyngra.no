@@ -27,15 +27,47 @@
             <a class="nav-link" href="blogg.html">Blogg</a>
           </nav>
         </div>
-      </header>
+      </header> <!-- Correctly closed header tag -->
       <div class="content">
         <main role="main" class="inner cover" style="margin-top: 10px;">
           <div class="header-container">
             <div class="image-container">
               <img src="/magnus.jpg" alt="Magnus" class="index-scaled-image">
             </div>
-            <h1 class="cover-heading">Hei! Magnus heter jeg.</h1>
+            <h1 class="cover-heading">Hei! <span class="highlight">Magnus</span> heter <span class="highlight">jeg</span>.</h1>
           </div>
+          <body>
+            <div class="content6"></div>
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                const myTags = [
+                  'Utvikler', 'Statsviter', 'Evig student',
+                  'C', 'Driftssikkerhet', 'Dokumentasjon',
+                  'Python', 'Linux', 'git',
+                  'Audio/video', 'Felles studentsystem', 'Brukerveiledninger',
+                  'Brukerstøtte', 'SQL',
+                ];
+          
+                var tagCloud = TagCloud('.content6', myTags, {
+                  // radius in px
+                  radius: 250,
+                  // animation speed
+                  // slow, normal, fast
+                  maxSpeed: 'normal',
+                  initSpeed: 'normal',
+                  // 0 = top
+                  // 90 = left
+                  // 135 = right-bottom
+                  direction: 135,
+                  // interact with cursor move on mouse out
+                  keep: true
+                });
+              });
+            </script>
+          </body>
+        </main>
+      </div>
+    </div>
     <!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script>
@@ -43,5 +75,6 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
   </body>
 </html>
