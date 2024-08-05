@@ -19,15 +19,15 @@ body {
   background-attachment: fixed;
   -webkit-background-attachment: fixed; /* Add vendor prefix */
   color: #fff;
-  text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
-  box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
-  -webkit-box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5); /* Add vendor prefix */
+  /*text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);*/
+  /*box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);*/
+  /*-webkit-box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);*/ /* Add vendor prefix */
   position: relative;
   padding: 0.625rem;
 }
 
 .highlight {
-  color: #8016a7; /* Change this to your desired color */
+  color: #9cccff; /* Change this to your desired color */
 }
 
 /* Links */
@@ -65,6 +65,10 @@ hr {
   display: flex;
   align-items: center;
   margin-left: 1.25rem;
+}
+
+h2 {
+  color: #9cccff;
 }
 
 .index-picture {
@@ -277,10 +281,21 @@ p {
 .cover-container {
   max-width: 42em;
   margin-top: 2rem;
+  padding: 1rem; /* Add padding to ensure content doesn't touch the edges */
+  min-height: 100%; /* Ensure the container grows to fit the content */
+  box-sizing: border-box; /* Ensure padding is included in the element's total width and height */
 }
 
 .cover-heading {
   margin-left: 1.25rem;
+  color: #9cccff;
+}
+
+.cover-image {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /* PDF container */
@@ -349,6 +364,8 @@ p {
   margin: 2% 0;
   width: 100%;
   max-width: 50rem;
+  justify-content: center; /* Center horizontally */
+  align-items: center;    /* Center vertically */
   position: relative;
   box-sizing: border-box;
 }
@@ -523,6 +540,24 @@ p {
 
 .nav-masthead .nav-link:hover,
 .nav-masthead .nav-link:focus {
-  color: rgb(105, 105, 105);
+  color: #9cccff;
   border-bottom-color: rgba(202, 202, 202, 0.25);
+}
+
+.mastfoot {
+  font-family: "Archivo Narrow", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  margin-top: 1rem;
+  /* background: linear-gradient(to bottom, #000000, #3a3a3a);*/ /* Gradient background */
+  height: 2.7rem;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  z-index: 1000;
+  border-radius: 5px; /* Rounded corners */
+  /*color: white;*/ /* Text color */
 }
