@@ -69,6 +69,7 @@ hr {
   margin-bottom: 1.875rem; 
   background: linear-gradient(to bottom, var(--main-bg-color), #000);
   border-radius: var(--border-radius);
+  border: 1px solid #ddd;
 }
 
 /* Header container */
@@ -77,6 +78,26 @@ hr {
   display: flex;
   align-items: center;
   margin-left: var(--spacing-medium);
+}
+
+/* Footer button container */
+.footer-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Footer buttons */
+.footer-button {
+  margin: 0 0.5rem; /* Add margin between buttons */
+}
+
+.footer-button button {
+  font-size: 2rem; /* Adjust icon size */
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
 }
 
 h2 {
@@ -291,11 +312,6 @@ p {
   height: 100%;
   max-width: 100%;
   max-height: 100%;
-}
-
-.cover-blogpost {
-  border: 1px solid #ddd;
-  border-radius: var(--border-radius);
 }
 
 /* PDF container */
@@ -536,7 +552,7 @@ p {
   font-family: var(--font-family-sans);
   font-weight: 400;
   margin-top: var(--spacing-medium);
-  height: 2.7rem;
+  height: auto; /* Adjust height to auto */
   position: fixed;
   bottom: 0;
   left: 50%;
@@ -544,4 +560,6 @@ p {
   width: 100vw;
   z-index: 1000;
   border-radius: var(--border-radius);
+  padding: 1rem; /* Add padding to ensure content fits */
+  box-sizing: border-box; /* Ensure padding is included in height */
 }
