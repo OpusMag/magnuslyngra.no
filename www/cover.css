@@ -68,7 +68,7 @@ hr {
   padding: var(--spacing-medium); 
   margin-bottom: 1.875rem; 
   background: linear-gradient(to bottom, var(--main-bg-color), #000);
-  border-radius: 0.3125rem; 
+  border-radius: var(--border-radius);
 }
 
 /* Header container */
@@ -114,6 +114,7 @@ h2 {
   color: var(--main-text-color);
   background: linear-gradient(to bottom, var(--main-bg-color), #000);
   border-radius: var(--border-radius);
+  border: 1px solid #ddd;
   box-shadow: 0 2px 4px var(--box-shadow-color);
 }
 
@@ -134,7 +135,7 @@ h2 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 0.625rem; 
+  border-radius: var(--border-radius);
 }
 
 /* Ensure the carousel and its parent containers have a defined height */
@@ -207,7 +208,7 @@ p {
   padding: var(--spacing-small);
   mix-blend-mode: luminosity;
   opacity: 0.95;
-  border-radius: 0.3125rem; 
+  border-radius: var(--border-radius);
 }
 
 /* Picture styling */
@@ -292,6 +293,11 @@ p {
   max-height: 100%;
 }
 
+.cover-blogpost {
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+}
+
 /* PDF container */
 .pdf-container {
   display: flex;
@@ -335,6 +341,7 @@ p {
   padding: 2%;
   background: linear-gradient(to bottom, #1a1a1a, #000000);
   border-radius: var(--border-radius);
+  border: 1px solid #ddd;
   box-shadow: var(--box-shadow);
 }
 
@@ -375,7 +382,7 @@ p {
   margin-bottom: var(--spacing-small);
   padding: var(--spacing-small);
   border: 1px solid #333;
-  border-radius: 0.25rem;
+  border-radius: var(--border-radius);
   background-color: #333;
   color: white;
   width: 100%;
@@ -388,7 +395,7 @@ p {
   text-align: center;
   background: linear-gradient(135deg, #333, #555);
   padding: var(--spacing-small);
-  border-radius: 0.3125rem;
+  border-radius: var(--border-radius);
 }
 
 .success-message {
@@ -413,7 +420,7 @@ p {
 .form-control {
   padding: var(--spacing-small);
   border: 1px solid #ccc;
-  border-radius: 0.25rem;
+  border-radius: var(--border-radius);
   font-size: var(--font-size-base);
 }
 
@@ -427,19 +434,19 @@ p {
   margin: 0 auto;
 }
 
-@media (min-width: 32rem) {
+@media (min-width: 64rem) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
   }
 }
 
-@media (min-width: 48rem) {
+@media (min-width: 160rem) {
   .grid-container {
     grid-template-columns: repeat(3, 1fr); /* Three columns for larger screens */
   }
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 215rem) {
   .grid-container {
     grid-template-columns: repeat(4, 1fr); /* Four columns for extra-large screens */
   }
@@ -488,7 +495,7 @@ p {
   transform: translateX(-50%);
   width: 100vw;
   z-index: 1000;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   color: white;
 }
 
@@ -513,7 +520,7 @@ p {
   padding: 0.3rem 0;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
-  border-radius: 5px;
+  border-radius: var(--border-radius);
   margin: 0 0.5rem;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -536,5 +543,5 @@ p {
   transform: translateX(-50%);
   width: 100vw;
   z-index: 1000;
-  border-radius: 5px;
+  border-radius: var(--border-radius);
 }
