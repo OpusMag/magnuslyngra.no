@@ -38,8 +38,14 @@ html, body {
 }
 
 body {
-  background: url('/background1.jpg') center center / cover no-repeat fixed;
+  background: url('/media/background1.jpg') center center / cover no-repeat fixed;
   color: var(--main-text-color);
+  position: relative;
+  padding: var(--spacing-small);
+}
+
+body.specific-page {
+  background: url('/media/pagenotfound.jpg') center center / cover no-repeat fixed;
   position: relative;
   padding: var(--spacing-small);
 }
@@ -83,7 +89,7 @@ hr {
 /* Footer button container */
 .footer-button-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
 }
 
@@ -249,11 +255,16 @@ p {
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;
-  margin-left: 0%;
+  font-size: 16px; /* Set a base font size */
+  line-height: 1.5; /* Set a consistent line height */
+  margin-left: 0%; /* Ensure no margin shifts */
+  width: 100%; /* Ensure the container takes full width */
+  height: 300px; /* Reserve space for the tag cloud */
+  overflow: hidden; /* Prevent overflow issues */
 }
 
 .tagcloud--item:hover {
-  color: #186294;
+  color: #9cccff;
 }
 
 /* Modal styles */
@@ -302,6 +313,10 @@ p {
   padding: var(--spacing-medium);
   min-height: 100%;
   box-sizing: border-box;
+}
+
+.cover-header {
+  margin-top: 10px;
 }
 
 .cover-heading {
@@ -425,6 +440,7 @@ p {
 /* Form group */
 .form-group {
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
   margin-bottom: 0.9375rem;
 }

@@ -1,12 +1,27 @@
 <!doctype html>
-<html lang="en">
+<html lang="no">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Velkommen til Magnus nettside</title>
+    <meta name="description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med erfaring innen C, Python, Linux, SQL, driftssikkerhet og mer." />
+    <meta name="author" content="Magnus Lyngra" />
+    <meta tag="keywords" content="Magnus Lyngra, utvikler, statsviter, C, Python, Linux, SQL, driftssikkerhet, dokumentasjon, brukerveiledninger, brukerstøtte, audio/video, felles studentsystem, git" />
+    <meta heading="Hei! Magnus heter jeg." />
+    <meta property="og:title" content="Bli kjent med meg og hva jeg kan | Magnus Lyngra">
+    <meta property="og:description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med erfaring innen C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <meta property="og:image" content="https://magnuslyngra.no/media/magnus.jpg">
+    <meta property="og:url" content="https://magnuslyngra.no">
+    <meta name="twitter:title" content="Bli kjent med meg og hva jeg kan | Magnus Lyngra">
+    <meta name="twitter:description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med erfaring innen C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <meta name="twitter:url" content="https://magnuslyngra.no/media/magnus.jpg">
+    <meta name="twitter:card" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med erfaring innen C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <title>Bli kjent med meg og hva jeg kan | Magnus Lyngra</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/favicon_io/site.webmanifest">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
     <link rel="preload" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></noscript>
     <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -28,35 +43,33 @@
         </div>
       </header> 
       <div class="content">
-        <main role="main" class="cover-header" style="margin-top: 10px;">
+        <main role="main" class="cover-header">
           <div class="header-container">
             <div class="image-container">
-              <img src="/magnus.jpg" alt="Magnus" class="index-scaled-image">
+              <img src="/media/magnus.jpg" alt="Et bilde av Magnus" class="index-scaled-image" width="300" height="300">
             </div>
             <h1 class="cover-heading"><span class="highlight">Hei!</span> Magnus <span class="highlight">heter</span> jeg.</h1>
           </div>
-          <body>
-            <div class="content6"></div>
-            <script>
-              document.addEventListener('DOMContentLoaded', function () {
-                const myTags = [
-                  'Utvikler', 'Statsviter', 'Evig student',
-                  'C', 'Driftssikkerhet', 'Dokumentasjon',
-                  'Python', 'Linux', 'Git',
-                  'Audio/video', 'Felles studentsystem', 'Brukerveiledninger',
-                  'Brukerstøtte', 'SQL',
-                ];
-          
-                var tagCloud = TagCloud('.content6', myTags, {
-                  radius: 250,
-                  maxSpeed: 'normal',
-                  initSpeed: 'normal',
-                  direction: 135,
-                  keep: true // Cursor interaction
-                });
+          <div class="content6"></div>
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              const myTags = [
+                'Utvikler', 'Statsviter', 'Evig student',
+                'C', 'Driftssikkerhet', 'Dokumentasjon',
+                'Python', 'Linux', 'Git',
+                'Audio/video', 'Felles studentsystem', 'Brukerveiledninger',
+                'Brukerstøtte', 'SQL',
+              ];
+        
+              var tagCloud = TagCloud('.content6', myTags, {
+                radius: 250,
+                maxSpeed: 'normal',
+                initSpeed: 'normal',
+                direction: 135,
+                keep: true // Cursor interaction
               });
-            </script>
-          </body>
+            });
+          </script>
         </main>
       </div>
     </div>
