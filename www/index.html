@@ -29,7 +29,7 @@
     <noscript><link rel="stylesheet" href="cover.css"></noscript>
   </head>
   <body class="text-center">
-    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+    <div class="cover-container d-flex h-50 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
           <h3 class="masthead-brand"></h3>
@@ -51,7 +51,7 @@
             </div>
             <h1 class="cover-heading"><span class="highlight">Hei!</span> Magnus <span class="highlight">heter</span> jeg.</h1>
           </div>
-          <div class="content6"></div>
+          <div class="content6">
           <script>
             document.addEventListener('DOMContentLoaded', function () {
               const myTags = [
@@ -61,35 +61,58 @@
                 'Audio/video', 'Felles studentsystem', 'Brukerveiledninger',
                 'Brukerstøtte', 'SQL',
               ];
+
+              function calculateRadius() {
+                const screenWidth = window.innerWidth;
+                if (screenWidth < 600) {
+                  return 150; // Small screens
+                } else if (screenWidth < 1024) {
+                  return 200; // Medium screens
+                } else {
+                  return 300; // Large screens
+                }
+              }
         
-              var tagCloud = TagCloud('.content6', myTags, {
-                radius: 250,
-                maxSpeed: 'normal',
-                initSpeed: 'normal',
-                direction: 135,
-                keep: true // Cursor interaction
+              function initializeTagCloud() {
+                const radius = calculateRadius();
+                TagCloud('.content6', myTags, {
+                  radius: radius,
+                  position: {
+                    x: 0.5,
+                    y: 0.5
+                  },
+                  maxSpeed: 'normal',
+                  initSpeed: 'normal',
+                  direction: 135,
+                  keep: true // Cursor interaction
+                });
+              }
+            
+              // Initialize tag cloud on page load
+              initializeTagCloud();
+            
+              // Update tag cloud on window resize
+              window.addEventListener('resize', function () {
+                // Clear existing tag cloud
+                document.querySelector('.content6').innerHTML = '';
+                // Reinitialize tag cloud with new radius
+                initializeTagCloud();
               });
             });
           </script>
+        </div>
         </main>
       </div>
-    </div>
     <footer class="mastfoot mt-auto">
       <div class="footer-button-container">
         <a href="https://github.com/OpusMag" class="footer-button">
-        <button>
-          <i class="fab fa-github-square"></i>
-        </button>
+          <i class="fa-brands fa-github"></i>
         </a>
         <a href="https://www.linkedin.com/in/magnuslyngra/" class="footer-button">
-        <button>
           <i class="fab fa-linkedin"></i>
-        </button>
         </a>
         <a href="https://soundcloud.com/opusmag" class="footer-button">
-          <button>
             <i class="fa-brands fa-soundcloud"></i>
-          </button>
           </a>
       </div>
       </footer>
