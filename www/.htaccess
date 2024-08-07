@@ -1,7 +1,12 @@
 ErrorDocument 404 /404.html  
-Redirect 301 http://magnuslyngra.no https://magnuslyngra.no
-RewriteCond %{HTTP_HOST} ^www\.magnuslyngra\.no$
-RewriteRule ^/?$ "http\:\/\/magnuslyngra\.no\/" [R=301,L]
+# Redirect non-www to www
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^magnuslyngra\.no [NC]
+RewriteRule ^(.*)$ https://www.magnuslyngra.no/$1 [R=301,L]
+
+# Redirect HTTP to HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 <IfModule mod_expires.c>
     ExpiresActive on
