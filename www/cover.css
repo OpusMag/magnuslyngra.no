@@ -576,7 +576,7 @@ p {
   font-family: var(--font-family-sans);
   font-weight: 400;
   margin-top: var(--spacing-medium);
-  height: auto; /* Adjust height to auto */
+  height: auto;
   position: fixed;
   bottom: 0;
   left: 50%;
@@ -584,6 +584,6 @@ p {
   width: 100vw;
   z-index: 1000;
   border-radius: var(--border-radius);
-  padding: 1rem; /* Add padding to ensure content fits */
-  box-sizing: border-box; /* Ensure padding is included in height */
+  padding: 1rem;
+  box-sizing: border-box;
 }

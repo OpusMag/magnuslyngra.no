@@ -53,6 +53,7 @@
           </div>
           <div class="content6">
           <script>
+            // Tag cloud
             document.addEventListener('DOMContentLoaded', function () {
               const myTags = [
                 'Utvikler', 'Statsviter', 'Evig student',
@@ -61,7 +62,7 @@
                 'Audio/video', 'Felles studentsystem', 'Brukerveiledninger',
                 'Brukerstøtte', 'SQL',
               ];
-
+              // Calculate radius based on screen width
               function calculateRadius() {
                 const screenWidth = window.innerWidth;
                 if (screenWidth < 600) {
@@ -72,7 +73,7 @@
                   return 300; // Large screens
                 }
               }
-        
+              // Initialize tag cloud
               function initializeTagCloud() {
                 const radius = calculateRadius();
                 TagCloud('.content6', myTags, {
