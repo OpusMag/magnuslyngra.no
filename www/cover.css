@@ -379,7 +379,9 @@ p {
   justify-content: center;
   align-items: center;
   margin: auto;
+  margin-top: var(--spacing-large);
   max-width: 27.5rem;
+  max-height: 36rem;
   position: relative;
   box-sizing: border-box;
   overflow-wrap: break-word;
