@@ -74,6 +74,7 @@ hr {
 .blog-post {
   padding: var(--spacing-medium); 
   margin-bottom: 1.875rem; 
+  max-width: 80vw;
   background: linear-gradient(to bottom, var(--main-bg-color), #000);
   border-radius: var(--border-radius);
   border: 1px solid #ddd;
@@ -120,10 +121,12 @@ h2 {
 /* Define the grid container for desktop layout */
 .content-wrapper {
   display: grid;
+  justify-self: center;
+  align-items: center;
+  align-self: center;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-large);
-  margin-bottom: var(--spacing-large);
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
 .content-wrapper:nth-child(odd) {
@@ -143,6 +146,7 @@ h2 {
   font-size: var(--font-size-base);
   line-height: 1.5;
   color: var(--main-text-color);
+  width: 80%;
   background: linear-gradient(to bottom, var(--main-bg-color), #000);
   border-radius: var(--border-radius);
   border: 1px solid #ddd;
@@ -156,8 +160,9 @@ h2 {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--spacing-small);
   margin: 0 1rem;
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 100vh;
+  overflow: hidden; /* Prevent vertical scrolling */
 }
 
 .media-container img,
@@ -172,6 +177,19 @@ h2 {
 /* Ensure the carousel and its parent containers have a defined height */
 .carousel, .carousel-inner, .carousel-item {
   height: 100%;
+  overflow: hidden; /* Prevent vertical scrolling */
+}
+
+/* Additional styles to ensure proper carousel behavior */
+.carousel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-item img {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 /* Mobile layout using Flexbox */
@@ -216,8 +234,8 @@ h2 {
 }
 
 .image-container2 {
-  height: 55%;
-  width: 55%;
+  height: 40%;
+  width: 40%;
 }
 
 /* Text container */
@@ -544,7 +562,7 @@ p {
   max-width: 1200px; /* Optional: set a max-width for better control */
   height: 1rem;
   font-family: var(--font-family-sans);
-  font-weight: 400;
+  font-weight: 500;
   font-size: 1.3rem;
   padding: 2%;
   display: flex;
