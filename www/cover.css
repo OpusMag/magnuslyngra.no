@@ -5,7 +5,7 @@
 :root {
   --main-bg-color: #1a1a1a;
   --main-text-color: #ffffff;
-  --highlight-color: #9cccff;
+  --highlight-color: #76b7fd;
   --btn-bg-color: #fff;
   --btn-text-color: #333;
   --btn-border-color: #fff;
@@ -14,7 +14,7 @@
   --modal-bg-color: rgba(0, 0, 0, 0.9);
   --close-btn-color: #f1f1f1;
   --close-btn-hover-color: #bbb;
-  --primary-color: #9cccff;
+  --primary-color: #80b5ee;
   --secondary-color: #007bff;
   --font-family-mono: "Roboto Mono", monospace;
   --font-family-sans: "Archivo Narrow", sans-serif;
@@ -39,7 +39,7 @@ html, body {
 }
 
 body {
-  background: url('/media/background1.jpg') center center / cover no-repeat fixed;
+  background: url('/media/background7.jpg') center center / cover no-repeat fixed;
   color: var(--main-text-color);
   position: relative;
   padding: var(--spacing-small);
@@ -81,18 +81,20 @@ hr {
 
 /* Header container */
 .header-container {
-  font-family: var(--font-family-sans);
   display: flex;
+  justify-content: center;
   align-items: center;
+  margin: auto;
+  position: relative;
+  flex-direction: row; /* Ensure the flex direction is row */
+  font-family: var(--font-family-sans);
   margin-left: var(--spacing-medium);
   margin-right: var(--spacing-medium);
 }
 
 /* Footer button container */
 .footer-button-container {
-  display: flex;
   justify-content: flex-end;
-  align-items: center;
 }
 
 /* Footer buttons */
@@ -175,12 +177,10 @@ h2 {
 /* Mobile layout using Flexbox */
 @media (max-width: 1200px) {
   .content-wrapper {
-    display: flex;
     flex-direction: column;
     gap: var(--spacing-small);
   }
   .media-container {
-    display: flex;
     flex-direction: row;
     overflow-x: auto;
     order: 1;
@@ -216,11 +216,8 @@ h2 {
 }
 
 .image-container2 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
+  height: 55%;
+  width: 55%;
 }
 
 /* Text container */
@@ -260,9 +257,6 @@ p {
   font-size: 2vw;
   line-height: 1.5;
   overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .tagcloud--item:hover {
@@ -273,7 +267,7 @@ p {
 .modal {
   display: none;
   position: fixed;
-  z-index: 1;
+  z-index: 1000;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -310,20 +304,29 @@ p {
 
 /* Cover container */
 .cover-container {
-  max-width: 42em;
-  margin-top: var(--spacing-large);
-  padding: var(--spacing-medium);
+  flex-direction: column;
   height: 100vh;
-  box-sizing: border-box;
+  max-width: 100vw;
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-small);
 }
 
 .cover-header {
   margin-top: 5px;
+  z-index: 1000;
+  height: auto; /* Adjusted to avoid conflict */
+  width: 100%;
 }
 
 .cover-heading {
   margin-left: var(--spacing-medium);
+  max-width: 10rem;
 }
+
+.cover-heading2 {
+  margin-left: var(--spacing-medium);
+}
+
 .cover-image {
   width: 100%;
   height: 100%;
@@ -333,9 +336,6 @@ p {
 
 /* PDF container */
 .pdf-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
   height: 100%;
   margin: var(--spacing-small) 0 0 0;
@@ -357,27 +357,37 @@ p {
   font-weight: 300;
   font-size: var(--font-size-large);
   padding: 1%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  position: relative;
   background: transparent;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   color: white;
   margin: 2% 0;
-  height: auto;
-  width: 100%;
-  max-width: 50rem;
-  position: relative;
-  box-sizing: border-box;
-  overflow: hidden;
 }
+
 
 .content2, .content3 {
   font-family: var(--font-family-sans);
   font-weight: 400;
-  padding: 2%;
+  font-size: var(--font-size-small);
+  padding: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  max-width: 27.5rem;
+  position: relative;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: normal; 
   background: linear-gradient(to bottom, #1a1a1a, #000000);
   border-radius: var(--border-radius);
-  border: 1px solid #ddd;
   box-shadow: var(--box-shadow);
+  border: 1px solid #ddd;
 }
 
 .content4, .content5 {
@@ -385,16 +395,17 @@ p {
   font-weight: 300;
   font-size: var(--font-size-small);
   padding: 2%;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  color: white;
-  margin: 2% 0;
-  width: 100%;
-  max-width: 50rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
   position: relative;
   box-sizing: border-box;
   overflow-wrap: break-word;
   word-break: normal; 
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  color: white;
 }
 
 .content6 {
@@ -403,7 +414,10 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  margin: auto;
+  height: fit-content;
+  width: fit-content;
+  z-index: 1000;
 }
 
 /* Form styling */
@@ -524,16 +538,19 @@ p {
 
 /* Header */
 .masthead {
+  width: 100%; /* Adjust the width as needed */
+  max-width: 1200px; /* Optional: set a max-width for better control */
+  height: 1rem;
   font-family: var(--font-family-sans);
   font-weight: 400;
-  margin-bottom: var(--spacing-medium);
-  background: linear-gradient(to bottom, #000000, #3a3a3a);
-  height: 2.7rem;
-  position: fixed;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
+  font-size: 1.3rem;
+  padding: 2%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  position: relative;
+  margin-bottom: var(--spacing-small);
   z-index: 1000;
   border-radius: var(--border-radius);
   color: white;
@@ -550,9 +567,6 @@ p {
 
 /* Navigation */
 .nav-masthead {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
 }
 
@@ -563,6 +577,12 @@ p {
   border-radius: var(--border-radius);
   margin: 0 0.5rem;
   transition: background-color 0.3s, color 0.3s;
+  text-decoration: none;
+}
+
+.nav-masthead .nav-link.active {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
 }
 
 .nav-masthead .nav-link:hover,
@@ -578,6 +598,9 @@ p {
   margin-top: var(--spacing-medium);
   height: auto;
   position: fixed;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);

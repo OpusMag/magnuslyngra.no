@@ -23,17 +23,15 @@
     <link rel="manifest" href="/favicon_io/site.webmanifest">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
-    <link rel="preload" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></noscript>
     <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="cover.css"></noscript>
   </head>
   <body class="text-center">
-    <div class="cover-container d-flex h-50 p-3 mx-auto flex-column">
-      <header class="masthead mb-auto">
+    <div class="cover-container">
+      <header class="masthead">
         <div class="inner">
           <h3 class="masthead-brand"></h3>
-          <nav class="nav nav-masthead justify-content-center">
+          <nav class="nav nav-masthead">
             <a class="nav-link active" href="index.html">Hjem</a>
             <a class="nav-link" href="ommeg.html">Om meg</a>
             <a class="nav-link" href="cv.html">CV</a>
@@ -42,14 +40,14 @@
             <a class="nav-link" href="blogg.html">Blogg</a>
           </nav>
         </div>
-      </header> 
+      </header>
       <div class="content">
         <main role="main" class="cover-header">
           <div class="header-container">
             <div class="image-container">
               <img src="/media/magnus.jpg" alt="Et bilde av Magnus" class="index-scaled-image" width="300" height="300">
             </div>
-            <h1 class="cover-heading"><span class="highlight">Hei!</span> Magnus <span class="highlight">heter</span> jeg.</h1>
+            <h1 class="cover-heading">Hei! <span class="highlight">Magnus</span> heter <span class="highlight">jeg</span>.</h1>
           </div>
           <div class="content6">
           <script>
@@ -66,22 +64,17 @@
               function calculateRadius() {
                 const screenWidth = window.innerWidth;
                 if (screenWidth < 600) {
-                  return 150; // Small screens
-                } else if (screenWidth < 1024) {
-                  return 200; // Medium screens
+                  return 200; // Small screens
                 } else {
-                  return 300; // Large screens
-                }
+                    return 300; // Medium screens
+                } 
               }
               // Initialize tag cloud
               function initializeTagCloud() {
                 const radius = calculateRadius();
                 TagCloud('.content6', myTags, {
                   radius: radius,
-                  position: {
-                    x: 0.5,
-                    y: 0.5
-                  },
+                  fontSize: [14, 24],
                   maxSpeed: 'normal',
                   initSpeed: 'normal',
                   direction: 135,
@@ -104,7 +97,7 @@
         </div>
         </main>
       </div>
-    <footer class="mastfoot mt-auto">
+    <footer class="mastfoot">
       <div class="footer-button-container">
         <a href="https://github.com/OpusMag" class="footer-button">
           <i class="fa-brands fa-github"></i>
@@ -132,8 +125,8 @@
         ],
         "jobTitle": "Developer and Political Scientist",
         "worksFor": {
-          "@type": "Organization",
-          "name": "Your Company Name"
+          "@type": "University",
+          "name": "UiT The Arctic University of Norway"
         }
       }
       </script>
