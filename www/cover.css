@@ -646,7 +646,6 @@ p {
     height: 40px; /* Adjust height as needed */
     font-size: 20px; /* Adjust font size as needed */
     background: linear-gradient(to bottom, #ffffff, #e1e1e1);
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
     float: inline-end;
     margin-right: 1px; /* Add some margin to the right */
     /*border-radius: 10px;*/
@@ -656,9 +655,9 @@ p {
   }
 
   .navbar-toggler.toggled {
-    background-color: #0f1015;
-    border: none;
-  }
+    background: transparent;
+    color: #fff;
+}
 
   .collapse {
     display: none; /* Hide by default */
@@ -680,8 +679,6 @@ p {
 
   .collapse.show {
     display: block; /* Show when toggled */
-    opacity: 1; /* Fully opaque */
-    visibility: visible; /* Make it visible */
   }
 }
 
