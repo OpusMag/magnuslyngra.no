@@ -21,6 +21,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
     <link rel="manifest" href="/favicon_io/site.webmanifest">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
     <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -29,9 +30,9 @@
   <body class="text-center">
     <div class="cover-container">
       <header class="masthead">
-        <div class="inner">
           <h3 class="masthead-brand"></h3>
-          <nav class="nav nav-masthead">
+          <!-- First navbar: visible on larger screens -->
+          <nav class="nav nav-masthead d-md-flex">
             <a class="nav-link active" href="index.html">Hjem</a>
             <a class="nav-link" href="ommeg.html">Om meg</a>
             <a class="nav-link" href="cv.html">CV</a>
@@ -39,7 +40,64 @@
             <a class="nav-link" href="prosjekter.html">Prosjekter</a>
             <a class="nav-link" href="blogg.html">Blogg</a>
           </nav>
-        </div>
+          <nav class="nav-mobile nav-masthead-mobile flex-column">
+            <!-- Toggle button: visible on smaller screens -->
+            <button class="navbar-toggler d-md-none" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                const navbarToggler = document.querySelector('.navbar-toggler');
+                const headerContainer = document.querySelector('.header-container');
+                const iconElement = navbarToggler.querySelector('i');
+        
+                if (!navbarToggler) {
+                  console.error('Navbar toggler not found');
+                  return;
+                }
+        
+                if (!headerContainer) {
+                  console.error('Header container not found');
+                  return;
+                }
+        
+                navbarToggler.addEventListener('click', function() {
+                  console.log('Navbar toggler clicked');
+                  headerContainer.classList.toggle('move-left');
+                  console.log('Header container classes:', headerContainer.classList);
+        
+                  // Toggle the icon class
+                  if (iconElement.classList.contains('fa-bars')) {
+                    iconElement.classList.remove('fa-bars');
+                    iconElement.classList.add('fa-times'); // Change to a different icon, e.g., fa-times
+                  } else {
+                    iconElement.classList.remove('fa-times');
+                    iconElement.classList.add('fa-bars');
+                  }
+                });
+              });
+            </script>
+            <!-- Second navbar: visible on smaller screens -->
+            <div class="collapse d-md-none" id="navbarNav">
+              <a class="nav-link active" href="index.html">Hjem</a>
+              <a class="nav-link" href="ommeg.html">Om meg</a>
+              <a class="nav-link" href="cv.html">CV</a>
+              <a class="nav-link" href="kontakt.html">Kontakt</a>
+              <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+              <a class="nav-link" href="blogg.html">Blogg</a>
+            </div>
+          </nav>
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const navLinks = document.querySelectorAll('.nav-link');
+        
+              navLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                  console.log('Link clicked:', link.href);
+                });
+              });
+            });
+          </script>
       </header>
       <div class="content">
         <main role="main" class="cover-header">
@@ -56,8 +114,8 @@
               const myTags = [
                 'Utvikler', 'Statsviter', 'Evig student',
                 'C', 'Driftssikkerhet', 'Dokumentasjon',
-                'Python', 'Linux', 'Git',
-                'Audio/video', 'Felles studentsystem', 'Brukerveiledninger',
+                'Python', 'Brukerveiledninger', 'Git',
+                'Audio/video', 'Felles studentsystem', 'Linux',
                 'Brukerstøtte', 'SQL',
               ];
               // Calculate radius based on screen width
@@ -97,18 +155,19 @@
         </div>
         </main>
       </div>
-    <footer class="mastfoot">
-      <div class="footer-button-container">
-        <a href="https://github.com/OpusMag" class="footer-button">
-          <i class="fa-brands fa-github"></i>
-        </a>
-        <a href="https://www.linkedin.com/in/magnuslyngra/" class="footer-button">
-          <i class="fab fa-linkedin"></i>
-        </a>
-        <a href="https://soundcloud.com/opusmag" class="footer-button">
+    </div>
+      <footer class="mastfoot">
+        <div class="footer-button-container">
+          <a href="https://github.com/OpusMag" class="footer-button">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/magnuslyngra/" class="footer-button">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://soundcloud.com/opusmag" class="footer-button">
             <i class="fa-brands fa-soundcloud"></i>
           </a>
-      </div>
+        </div>
       </footer>
     </div>
     <script type="application/ld+json">
@@ -130,12 +189,12 @@
         }
       }
       </script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      window.jQuery || document.write('<script src="assets/js/vendor/jquery-slim.min.js"><\/script>');
+      window.jQuery || document.write('https://code.jquery.com/jquery-3.6.0.min.js"><\/script>');
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
   </body>
 </html>

@@ -51,7 +51,11 @@ body.specific-page {
   padding: var(--spacing-small);
 }
 
-.highlight, a, a:focus, a:hover {
+a {
+  color: #fff;
+}
+
+.highlight, a:hover, a:focus {
   color: var(--highlight-color);
 }
 
@@ -91,6 +95,12 @@ hr {
   font-family: var(--font-family-sans);
   margin-left: var(--spacing-medium);
   margin-right: var(--spacing-medium);
+  z-index: 1000;
+}
+
+.header-container.move-left {
+  transform: scale(0.8); /* Adjust the value as needed */
+  transition: transform 0.3s ease; /* Smooth transition */
 }
 
 /* Footer button container */
@@ -104,7 +114,7 @@ hr {
 }
 
 .footer-button button {
-  font-size: 2rem; /* Adjust icon size */
+  font-size: 4rem; /* Adjust icon size */
   background: none;
   border: none;
   color: inherit;
@@ -334,11 +344,15 @@ p {
   z-index: 1000;
   height: auto; /* Adjusted to avoid conflict */
   width: 100%;
+  position: relative; /* Ensure it has a position property */
+  z-index: 1000;
 }
 
 .cover-heading {
   margin-left: var(--spacing-medium);
   max-width: 10rem;
+  position: relative; /* Ensure it has a position property */
+  z-index: 1000; /* Set a lower z-index */
 }
 
 .cover-heading2 {
@@ -379,12 +393,13 @@ p {
   justify-content: center;
   align-items: center;
   margin: auto;
-  position: relative;
+  position: relative; /* Ensure it has a position property */
   background: transparent;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   color: white;
   margin: 2% 0;
+  z-index: 999; /* Set a lower z-index */
 }
 
 
@@ -566,7 +581,7 @@ p {
   font-size: 1.3rem;
   padding: 2%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   margin: auto;
   position: relative;
@@ -577,6 +592,7 @@ p {
 }
 
 .masthead-brand {
+  display: none;
   position: absolute;
   top: var(--spacing-small);
   left: var(--spacing-small);
@@ -587,7 +603,19 @@ p {
 
 /* Navigation */
 .nav-masthead {
-  width: 100%;
+  display: none; /* Hide by default */
+  justify-content: center; /* Center the first navbar */
+  flex-grow: 1;
+  position: relative;
+  z-index: 1000;
+}
+
+.navbar-toggler {
+  display: none; /* Hide by default */
+}
+
+.collapse {
+  display: none; /* Hide by default */
 }
 
 .nav-masthead .nav-link {
@@ -611,10 +639,54 @@ p {
   border-bottom-color: rgba(202, 202, 202, 0.25);
 }
 
+/* Show the first navbar on larger screens */
+@media (min-width: 1024px) {
+  .nav-masthead.d-md-flex {
+    display: flex;
+  }
+}
+
+/* Show the second navbar and the toggle button on smaller screens */
+@media (max-width: 1023.98px) {
+  .navbar-toggler {
+    display: block;
+    width: 40px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed */
+    font-size: 20px; /* Adjust font size as needed */
+    background: linear-gradient(to bottom, #ffffff, #a5a5a5);
+    float: inline-end;
+    margin-right: 10px; /* Add some margin to the right */
+    border-radius: 10px;
+    position: relative; /* Ensure it stays in place */
+    z-index: 1;
+  }
+
+  .collapse {
+    display: none; /* Hide by default */
+    position: absolute; /* Position it absolutely */
+    margin-top: 155px;
+    top: 100%; /* Center it vertically */
+    right: 20px;
+    transition: transform 0.3s ease;
+    transform: translateY(-50%); /* Adjust for perfect centering */
+    background: linear-gradient(to bottom, #162635, #463758);
+    border-radius: 10px; /* Optional: rounded corners */
+    height: auto; /* Adjust height as needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for better visibility */
+    overflow: auto; /* Optional: add scroll if content overflows */
+    z-index: 2000; /* Ensure it has a higher z-index */
+  }
+
+  .collapse.show {
+    display: block; /* Show when toggled */
+  }
+}
+
 /* Footer */
 .mastfoot {
   font-family: var(--font-family-sans);
   font-weight: 400;
+  font-size: 1.5rem;
   margin-top: var(--spacing-medium);
   height: auto;
   position: fixed;
