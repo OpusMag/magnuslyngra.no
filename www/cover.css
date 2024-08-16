@@ -667,7 +667,6 @@ p {
     margin-top: 155px;
     top: 100%; /* Center it vertically */
     right: 20px;
-    transition: transform 0.3s ease;
     transform: translateY(-50%); /* Adjust for perfect centering */
     background: linear-gradient(to bottom, #162635, #463758);
     border-radius: 10px; /* Optional: rounded corners */
@@ -675,10 +674,14 @@ p {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for better visibility */
     overflow: auto; /* Optional: add scroll if content overflows */
     z-index: 2000; /* Ensure it has a higher z-index */
-  }
+    opacity: 1; /* Fully opaque */
+    visibility: visible; /* Make it visible */
+}
 
   .collapse.show {
     display: block; /* Show when toggled */
+    opacity: 1; /* Fully opaque */
+    visibility: visible; /* Make it visible */
   }
 }
 
