@@ -95,12 +95,12 @@ hr {
   font-family: var(--font-family-sans);
   margin-left: var(--spacing-medium);
   margin-right: var(--spacing-medium);
-  z-index: 1000;
+  z-index: 999;
 }
 
 .header-container.move-left {
   transform: scale(0.8); /* Adjust the value as needed */
-  transition: transform 0.3s ease; /* Smooth transition */
+  /*transition: transform 0.3s ease;*/ /* Smooth transition */
 }
 
 /* Footer button container */
@@ -205,10 +205,12 @@ h2 {
 /* Mobile layout using Flexbox */
 @media (max-width: 1200px) {
   .content-wrapper {
+    display: flex;
     flex-direction: column;
     gap: var(--spacing-small);
   }
   .media-container {
+    display: flex;
     flex-direction: row;
     overflow-x: auto;
     order: 1;
@@ -591,16 +593,6 @@ p {
   color: white;
 }
 
-.masthead-brand {
-  display: none;
-  position: absolute;
-  top: var(--spacing-small);
-  left: var(--spacing-small);
-  margin: 0;
-  padding: 0;
-  color: white;
-}
-
 /* Navigation */
 .nav-masthead {
   display: none; /* Hide by default */
@@ -641,7 +633,7 @@ p {
 
 /* Show the first navbar on larger screens */
 @media (min-width: 1024px) {
-  .nav-masthead.d-md-flex {
+  .nav-masthead {
     display: flex;
   }
 }
@@ -653,30 +645,38 @@ p {
     width: 40px; /* Adjust width as needed */
     height: 40px; /* Adjust height as needed */
     font-size: 20px; /* Adjust font size as needed */
-    background: linear-gradient(to bottom, #ffffff, #a5a5a5);
+    background: linear-gradient(to bottom, #ffffff, #e1e1e1);
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
     float: inline-end;
-    margin-right: 10px; /* Add some margin to the right */
-    border-radius: 10px;
+    margin-right: 1px; /* Add some margin to the right */
+    /*border-radius: 10px;*/
     position: relative; /* Ensure it stays in place */
-    z-index: 1;
+    z-index: 1001;
+    border: none;
+  }
+
+  .navbar-toggler.toggled {
+    background-color: #0f1015;
+    border: none;
   }
 
   .collapse {
     display: none; /* Hide by default */
     position: absolute; /* Position it absolutely */
-    margin-top: 155px;
+    margin-top: 90px;
     top: 100%; /* Center it vertically */
-    right: 20px;
+    right: 10px;
     transform: translateY(-50%); /* Adjust for perfect centering */
-    background: linear-gradient(to bottom, #162635, #463758);
+    background: linear-gradient(to bottom, #0d0e12, #1d2635);
     border-radius: 10px; /* Optional: rounded corners */
     height: auto; /* Adjust height as needed */
+    width: 160px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for better visibility */
-    overflow: auto; /* Optional: add scroll if content overflows */
-    z-index: 2000; /* Ensure it has a higher z-index */
+    overflow: hidden; /* Optional: add scroll if content overflows */
+    z-index: 1000; /* Ensure it has a higher z-index */
     opacity: 1; /* Fully opaque */
     visibility: visible; /* Make it visible */
-}
+  }
 
   .collapse.show {
     display: block; /* Show when toggled */
