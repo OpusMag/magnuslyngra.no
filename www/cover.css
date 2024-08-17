@@ -211,7 +211,7 @@ h2 {
   }
   .media-container {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     overflow-x: auto;
     order: 1;
   }
@@ -334,7 +334,14 @@ p {
 
 /* Cover container */
 .cover-container {
-  flex-direction: column;
+  height: 100vh;
+  max-width: 100vw;
+  margin-top: var(--spacing-small);
+  padding: var(--spacing-small);
+}
+
+.grid-cover-container {
+  margin-top: 120px;
   height: 100vh;
   max-width: 100vw;
   margin-top: var(--spacing-small);
@@ -372,7 +379,7 @@ p {
 .pdf-container {
   width: 100%;
   height: 100%;
-  margin: var(--spacing-small) 0 0 0;
+  margin: var(--spacing-medium) 0 0 0;
   padding: 0;
 }
 
@@ -435,7 +442,6 @@ p {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: auto;
   position: relative;
   box-sizing: border-box;
   overflow-wrap: break-word;
@@ -462,7 +468,7 @@ p {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -515,6 +521,12 @@ p {
   font-size: var(--font-size-base);
 }
 
+/* Cover for the grid container*/
+.cover-grid-container {
+  display: flex;
+  justify-content: center;
+}
+
 /* Grid container */
 .grid-container {
   display: grid;
@@ -525,20 +537,40 @@ p {
   margin: 0 auto;
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 160rem) {
   .grid-container {
+    grid-template-columns: repeat(2, 1fr); /* Three columns for larger screens */
+  }
+}
+
+/* Grid container 2*/
+.grid-container2 {
+  display: grid;
+  grid-template-columns: 1fr; /* Single column layout for small screens */
+  box-sizing: border-box;
+  transform-origin: center center;
+  transform: translate(0%, -15%) scale(0.7); /* Adjust the position and scale */
+  gap: var(--spacing-large);
+  padding: var(--spacing-large);
+  width: 100%;
+  max-width: 100vw;
+  margin: 0 auto;
+}
+
+@media (min-width: 64rem) {
+  .grid-container2 {
     grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
   }
 }
 
 @media (min-width: 160rem) {
-  .grid-container {
+  .grid-container2 {
     grid-template-columns: repeat(3, 1fr); /* Three columns for larger screens */
   }
 }
 
 @media (min-width: 215rem) {
-  .grid-container {
+  .grid-container2 {
     grid-template-columns: repeat(4, 1fr); /* Four columns for extra-large screens */
   }
 }
@@ -559,7 +591,7 @@ p {
 }
 
 .project-ingress {
-  font-size: var(--font-size-base);
+  font-size: var(--font-size-small);
   margin: var(--spacing-small) 0;
 }
 
@@ -673,12 +705,15 @@ p {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for better visibility */
     overflow: hidden; /* Optional: add scroll if content overflows */
     z-index: 1000; /* Ensure it has a higher z-index */
-    opacity: 1; /* Fully opaque */
-    visibility: visible; /* Make it visible */
+    opacity: 0; /* Initially hidden */
+    visibility: hidden; /* Initially hidden */
+    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
   }
 
   .collapse.show {
     display: block; /* Show when toggled */
+    opacity: 1; /* Fully opaque */
+    visibility: visible; /* Make it visible */
   }
 }
 
