@@ -93,7 +93,7 @@ hr {
   align-items: center;
   margin: auto;
   position: relative;
-  flex-direction: row; /* Ensure the flex direction is row */
+  flex-direction: row;
   font-family: var(--font-family-header);
   margin-left: var(--spacing-medium);
   margin-right: var(--spacing-medium);
@@ -101,7 +101,7 @@ hr {
 }
 
 .header-container.move-left {
-  transform: scale(0.8); /* Adjust the value as needed */
+  transform: scale(0.8);
   /*transition: transform 0.3s ease;*/ /* Smooth transition */
 }
 
@@ -364,9 +364,9 @@ p {
 .cover-header {
   margin-top: 5px;
   z-index: 1000;
-  height: auto; /* Adjusted to avoid conflict */
+  height: auto;
   width: 100%;
-  position: relative; /* Ensure it has a position property */
+  position: relative; 
   z-index: 1000;
 }
 
@@ -374,8 +374,8 @@ p {
   margin-left: var(--spacing-small);
   max-width: 14rem;
   justify-content: center;
-  position: relative; /* Ensure it has a position property */
-  z-index: 1000; /* Set a lower z-index */
+  position: relative;
+  z-index: 1000; 
 }
 
 .cover-heading2 {
@@ -416,13 +416,13 @@ p {
   justify-content: center;
   align-items: center;
   margin: auto;
-  position: relative; /* Ensure it has a position property */
+  position: relative;
   background: transparent;
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   color: white;
   margin: 2% 0;
-  z-index: 999; /* Set a lower z-index */
+  z-index: 999;
 }
 
 
@@ -563,7 +563,7 @@ p {
   grid-template-columns: 1fr; /* Single column layout for small screens */
   box-sizing: border-box;
   transform-origin: center center;
-  transform: translate(0%, -15%) scale(0.7); /* Adjust the position and scale */
+  transform: translate(0%, -15%) scale(0.7);
   gap: var(--spacing-large);
   padding: var(--spacing-large);
   width: 100%;
@@ -622,8 +622,8 @@ p {
 
 /* Header */
 .masthead {
-  width: 100%; /* Adjust the width as needed */
-  max-width: 1200px; /* Optional: set a max-width for better control */
+  width: 100%;
+  max-width: 1200px;
   height: 1rem;
   font-family: var(--font-family-header);
   font-weight: 500;
@@ -643,18 +643,18 @@ p {
 /* Navigation */
 .nav-masthead {
   display: none; /* Hide by default */
-  justify-content: center; /* Center the first navbar */
+  justify-content: center;
   flex-grow: 1;
   position: relative;
   z-index: 1000;
 }
 
 .navbar-toggler {
-  display: none; /* Hide by default */
+  display: none;
 }
 
 .collapse {
-  display: none; /* Hide by default */
+  display: none;
 }
 
 .nav-masthead .nav-link {
@@ -689,14 +689,14 @@ p {
 @media (max-width: 1023.98px) {
   .navbar-toggler {
     display: block;
-    width: 40px; /* Adjust width as needed */
-    height: 40px; /* Adjust height as needed */
-    font-size: 20px; /* Adjust font size as needed */
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
     background: linear-gradient(to bottom, #ffffff, #e1e1e1);
     float: inline-end;
-    margin-right: 1px; /* Add some margin to the right */
+    margin-right: 1px;
     /*border-radius: 10px;*/
-    position: relative; /* Ensure it stays in place */
+    position: relative;
     z-index: 1001;
     border: none;
   }
@@ -708,28 +708,27 @@ p {
 
   .collapse {
     display: none; /* Hide by default */
-    position: absolute; /* Position it absolutely */
+    position: absolute;
     margin-top: 90px;
     top: 100%; /* Center it vertically */
     right: 10px;
     transform: translateY(-50%); /* Adjust for perfect centering */
     background: linear-gradient(to bottom, #0d0e12, #1d2635);
-    border-radius: 10px; /* Optional: rounded corners */
-    height: auto; /* Adjust height as needed */
+    border-radius: 10px; /*rounded corners */
+    height: auto; 
     width: 160px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for better visibility */
-    overflow: hidden; /* Optional: add scroll if content overflows */
-    z-index: 1000; /* Ensure it has a higher z-index */
-    opacity: 0; /* Initially hidden */
-    visibility: hidden; /* Initially hidden */
-    transition: opacity 0.3s ease, visibility 0.3s ease; /* Smooth transition */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* shadow for better visibility */
+    overflow: hidden; /* add scroll if content overflows */
+    z-index: 1000; 
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease; 
   }
 
   .collapse.show {
     display: block; /* Show when toggled */
-    opacity: 1; /* Fully opaque */
-    visibility: visible; /* Make it visible */
-  }
+    opacity: 1;
+    visibility: visible;
 }
 
 /* Footer */
