@@ -16,11 +16,13 @@
   --close-btn-hover-color: #bbb;
   --primary-color: #80b5ee;
   --secondary-color: #007bff;
-  --font-family-mono: "Roboto Mono", monospace;
-  --font-family-sans: "Archivo Narrow", sans-serif;
+  --font-family-sans: "Montserrat", sans-serif;
+  --font-family-header: "Archivo Narrow", sans-serif;
   --font-size-base: 1rem;
-  --font-size-large: 1.5rem;
   --font-size-small: 1.25rem;
+  --font-size-medium: 1.375rem;
+  --font-size-large: 1.5rem;
+  --font-size-extra-large: 1.75rem;
   --spacing-small: 0.625rem;
   --spacing-medium: 1.25rem;
   --spacing-large: 2rem;
@@ -35,7 +37,7 @@ html, body {
   width: 100%;
   margin: 0;
   padding: 0;
-  font-family: 'EB Garamond', serif;
+  font-family: var(--font-family-sans);
 }
 
 body {
@@ -92,7 +94,7 @@ hr {
   margin: auto;
   position: relative;
   flex-direction: row; /* Ensure the flex direction is row */
-  font-family: var(--font-family-sans);
+  font-family: var(--font-family-header);
   margin-left: var(--spacing-medium);
   margin-right: var(--spacing-medium);
   z-index: 999;
@@ -163,7 +165,7 @@ h2 {
   grid-area: text;
   margin: 1rem;
   padding: 1rem;
-  font-family: Arial, sans-serif;
+  font-family: var(--font-family-sans);
   font-size: var(--font-size-base);
   line-height: 1.5;
   color: var(--main-text-color);
@@ -268,7 +270,7 @@ h2 {
 
 /* Paragraph styling */
 p {
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-sans);
   font-weight: 300;
   font-size: var(--font-size-large);
   color: var(--main-text-color);
@@ -291,7 +293,7 @@ p {
 
 /* Tag cloud styling */
 .tagcloud {
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-family-sans);
   font-optical-sizing: auto;
   font-weight: 300;
   font-style: normal;
@@ -369,8 +371,9 @@ p {
 }
 
 .cover-heading {
-  margin-left: var(--spacing-medium);
-  max-width: 10rem;
+  margin-left: var(--spacing-small);
+  max-width: 14rem;
+  justify-content: center;
   position: relative; /* Ensure it has a position property */
   z-index: 1000; /* Set a lower z-index */
 }
@@ -405,7 +408,7 @@ p {
 
 /* Content sections */
 .content {
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-sans);
   font-weight: 300;
   font-size: var(--font-size-large);
   padding: 1%;
@@ -446,7 +449,7 @@ p {
 }
 
 .content4, .content5 {
-  font-family: var(--font-family-mono);
+  font-family: var(--font-family-sans);
   font-weight: 300;
   font-size: var(--font-size-small);
   padding: 2%;
@@ -597,17 +600,18 @@ p {
 
 /* Project title and ingress */
 .project-title {
-  font-size: var(--font-size-large);
+  font-size: var(--font-size-extra-large);
   margin: var(--spacing-small) 0;
 }
 
 .project-ingress {
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-medium);
   margin: var(--spacing-small) 0;
 }
 
 /* Project link */
 .project-link {
+  font-size: var(--font-size-medium);
   color: var(--secondary-color);
   text-decoration: none;
 }
@@ -621,7 +625,7 @@ p {
   width: 100%; /* Adjust the width as needed */
   max-width: 1200px; /* Optional: set a max-width for better control */
   height: 1rem;
-  font-family: var(--font-family-sans);
+  font-family: var(--font-family-header);
   font-weight: 500;
   font-size: 1.3rem;
   padding: 2%;
@@ -730,7 +734,7 @@ p {
 
 /* Footer */
 .mastfoot {
-  font-family: var(--font-family-sans);
+  font-family: var(--font-family-header);
   font-weight: 400;
   font-size: 1.5rem;
   margin-top: var(--spacing-medium);
