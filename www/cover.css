@@ -107,16 +107,22 @@ hr {
 
 /* Footer button container */
 .footer-button-container {
+  position: fixed;
+  margin-bottom: 1rem;
+  bottom: 0;
+  right: 0;
   justify-content: flex-end;
+  display: flex;
+  font-size: 2rem; /* Adjust icon size */
+  padding: 1rem;
 }
 
 /* Footer buttons */
 .footer-button {
-  margin: 0 0.5rem; /* Add margin between buttons */
+  margin: 0 0.5rem;
 }
 
 .footer-button button {
-  font-size: 4rem; /* Adjust icon size */
   background: none;
   border: none;
   color: inherit;
