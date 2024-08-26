@@ -246,6 +246,12 @@ h2 {
   }
 }
 
+.slideshow-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Hide the images by default */
 .mySlides {
   display: none;
@@ -302,15 +308,15 @@ h2 {
 /* The dots/bullets/indicators */
 .carousel-indicators {
   position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   gap: 5px;
   z-index: 1; /* Ensure dots are above slides */
+  justify-content: center; /* Center the dots horizontally */
+  align-items: center;
+  width: 100%; /* Ensure the indicators span the full width of the container */
 }
 
-.dot {
+.dots {
   cursor: pointer;
   height: 15px;
   width: 15px;
@@ -319,10 +325,6 @@ h2 {
   border-radius: 50%;
   display: inline-block;
   transition: background-color 0.6s ease;
-}
-
-.active, .dot:hover {
-  background-color: #717171;
 }
 
 /* Fading animation */
