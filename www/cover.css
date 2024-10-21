@@ -41,14 +41,16 @@ html, body {
 }
 
 body {
-  background: url('/media/background7.jpg') center center / cover no-repeat fixed;
+  background: url('/media/background7.jpg') center center / cover no-repeat;
+  background-attachment: fixed;
   color: var(--main-text-color);
   position: relative;
   padding: var(--spacing-small);
 }
 
 body.specific-page {
-  background: url('/media/pagenotfound.jpg') center center / cover no-repeat fixed;
+  background: url('/media/pagenotfound.jpg') center center / cover no-repeat;
+  background-attachment: fixed;
   position: relative;
   padding: var(--spacing-small);
 }
