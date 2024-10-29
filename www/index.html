@@ -104,11 +104,11 @@
               // Calculate radius based on screen width
               function calculateRadius() {
                 const screenWidth = window.innerWidth;
-                if (screenWidth < 600) {
-                  return 200; // Small screens
-                } else {
-                    return 300; // Medium screens
-                } 
+                if (screenWidth > 1000) {
+                  return 400; // Big screens
+                } else if (screenWidth < 999) {
+                  return 200; // Small screen 
+                }
               }
               // Initialize tag cloud
               function initializeTagCloud() {
