@@ -777,6 +777,16 @@ p {
   text-decoration: underline;
 }
 
+/* Hidden project */
+.hidden-title, .hidden-link {
+  color: #1a1a1a; /* Match the background color */
+  text-decoration: none;
+}
+.hidden-title:hover, .hidden-link:hover,
+.hidden-title:focus, .hidden-link:focus {
+  color: #1a1a1a; /* Change color on hover or focus */
+}
+
 /* Header */
 .masthead {
   width: 100%;
