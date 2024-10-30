@@ -91,50 +91,103 @@
             <h1 class="cover-heading">Hei! <span class="highlight">Magnus</span> heter <span class="highlight">jeg</span>.</h1>
           </div>
           <div class="content6">
-          <script>
-            // Tag cloud
-            document.addEventListener('DOMContentLoaded', function () {
-              const myTags = [
-                'Utvikler', 'Statsviter', 'Evig student',
-                'C', 'Driftssikkerhet', 'Dokumentasjon',
-                'Python', 'Brukerveiledninger', 'Git',
-                'Audio/video', 'Felles studentsystem', 'Linux',
-                'Brukerstøtte', 'SQL',
-              ];
-              // Calculate radius based on screen width
-              function calculateRadius() {
-                const screenWidth = window.innerWidth;
-                if (screenWidth > 1000) {
-                  return 400; // Big screens
-                } else if (screenWidth < 999) {
-                  return 200; // Small screen 
+            <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                const myTags = [
+                  'Utvikler', 'Statsviter', 'Evig student',
+                  'C', 'Driftssikkerhet', 'Dokumentasjon',
+                  'Python', 'Brukerveiledninger', 'Git',
+                  'Audio/video', 'Felles studentsystem', 'Linux',
+                  'Brukerstøtte', 'SQL',
+                ];
+            
+                let isDragging = false;
+                let startX = 0;
+                let speedIncreased = false;
+                let speedTimeout;
+                let tabOpened = false;
+            
+                // Calculate radius based on screen width
+                function calculateRadius() {
+                  const screenWidth = window.innerWidth;
+                  if (screenWidth > 1000) {
+                    return 400; // Big screens
+                  } else if (screenWidth < 999) {
+                    return 200; // Small screen 
+                  }
                 }
-              }
-              // Initialize tag cloud
-              function initializeTagCloud() {
-                const radius = calculateRadius();
-                TagCloud('.content6', myTags, {
-                  radius: radius,
-                  fontSize: [14, 24],
-                  maxSpeed: 'normal',
-                  initSpeed: 'normal',
-                  direction: 135,
-                  keep: true // Cursor interaction
-                });
-              }
             
-              // Initialize tag cloud on page load
-              initializeTagCloud();
+                // Initialize tag cloud
+                function initializeTagCloud(initSpeed = 'normal', maxSpeed = 'normal') {
+                  const radius = calculateRadius();
+                  TagCloud('.content6', myTags, {
+                    radius: radius,
+                    fontSize: [14, 24],
+                    maxSpeed: maxSpeed,
+                    initSpeed: initSpeed,
+                    direction: 135,
+                    keep: true, // Cursor interaction
+                    afterUpdate: function() {
+                      // Get the current angle of the first tag
+                      const firstTag = document.querySelector('.content6 span');
+                      if (firstTag) {
+                        const transform = window.getComputedStyle(firstTag).transform;
+                        console.log(`Transform: ${transform}`);
+                      }
+                    }
+                  });
+                }
             
-              // Update tag cloud on window resize
-              window.addEventListener('resize', function () {
-                // Clear existing tag cloud
-                document.querySelector('.content6').innerHTML = '';
-                // Reinitialize tag cloud with new radius
+                // Initialize tag cloud on page load
                 initializeTagCloud();
+            
+                // Update tag cloud on window resize
+                window.addEventListener('resize', function () {
+                  // Clear existing tag cloud
+                  document.querySelector('.content6').innerHTML = '';
+                  // Reinitialize tag cloud with new radius
+                  initializeTagCloud();
+                });
+            
+                // Add mousedown event listener to start dragging
+                document.querySelector('.content6').addEventListener('mousedown', function (event) {
+                  isDragging = true;
+                  startX = event.clientX;
+                  console.log('Drag started');
+                });
+            
+                // Add mousemove event listener to track dragging
+                document.addEventListener('mousemove', function (event) {
+                  if (isDragging && !speedIncreased) {
+                    const currentX = event.clientX;
+                    const deltaX = currentX - startX;
+                    if (deltaX > 0) {
+                      // User is dragging to the right
+                      speedIncreased = true;
+                      console.log('Increasing speed by a factor of three');
+                      // Clear existing tag cloud
+                      document.querySelector('.content6').innerHTML = '';
+                      // Reinitialize tag cloud with increased speed
+                      initializeTagCloud('fast', 'fast');
+                    }
+                    startX = currentX;
+                  }
+                });
+            
+                // Add mouseup event listener to stop dragging and set timeout for opening tab
+                document.addEventListener('mouseup', function () {
+                  if (isDragging && speedIncreased && !tabOpened) {
+                    console.log('Drag ended, setting timeout to open tab');
+                    speedTimeout = setTimeout(function() {
+                      console.log('Opening new tab...');
+                      window.open('https://www.youtube.com/watch?v=K0HSD_i2DvA', '_blank');
+                      tabOpened = true;
+                    }, 5000);
+                  }
+                  isDragging = false;
+                });
               });
-            });
-          </script>
+            </script>
         </div>
         </main>
       </div>

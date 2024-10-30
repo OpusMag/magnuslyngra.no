@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'X-Mailer: PHP/' . phpversion();
 
     if (mail($email_to, $email_subject, $email_message, $headers)) {
-        echo 'Takk for din henvendelse. Jeg kommer tilbake til deg så snart som råd.';
+        echo 'Din melding snor seg gjennom nettverket. Jeg vil svare deg plutselig.';
     } else {
         echo 'Det oppstod en feil ved sending av meldingen. Vennligst prøv igjen senere.';
     }

@@ -49,7 +49,7 @@ body {
 }
 
 body.specific-page {
-  background: url('/media/pagenotfound.jpg') center center / cover no-repeat;
+  background: url('/media/pagenotfound.jpg') center center / 100% 100% no-repeat;
   background-attachment: fixed;
   position: relative;
   padding: var(--spacing-small);
@@ -203,6 +203,27 @@ h2 {
   height: 100%;
   object-fit: cover;
   border-radius: var(--border-radius);
+}
+
+.image-overlay {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.9); /* Black background with opacity */
+}
+
+.image-overlay img {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  max-height: 80%;
+  object-fit: contain; /* Ensure the image fits within the container */
 }
 
 /* Ensure the carousel and its parent containers have a defined height */
@@ -598,6 +619,7 @@ p {
   width: 60vw;
   height: 60vh;
   overflow-y: auto;
+  text-align: left;
 }
 
 .terminal-input {
@@ -607,6 +629,10 @@ p {
   font-family: monospace;
   width: 100%;
   outline: none;
+}
+
+.terminal-output {
+  text-align: left; /* Ensure terminal output is aligned to the left */
 }
 
 .content form {

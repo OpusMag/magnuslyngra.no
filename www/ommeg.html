@@ -127,6 +127,9 @@
           </div> 
         </div> 
       </main>
+      <div id="image-overlay" class="image-overlay">
+        <img id="overlay-image" src="" alt="Overlay Image">
+      </div>
       </div>
       <footer class="mastfoot">
         <div class="footer-button-container">
@@ -196,6 +199,43 @@
                 this.msRequestFullscreen();
               }
             });
+          }
+        });
+      </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const textWrapper = document.querySelector('.text-wrapper1');
+          const imageOverlay = document.getElementById('image-overlay');
+          const overlayImage = document.getElementById('overlay-image');
+      
+          if (textWrapper && imageOverlay && overlayImage) {
+            textWrapper.addEventListener('click', function() {
+              // Set the image source
+              overlayImage.src = '/media/edb.jpg';
+              // Display the overlay
+              imageOverlay.style.display = 'block';
+            });
+      
+            // Function to close the overlay
+            function closeOverlay() {
+              imageOverlay.style.display = 'none';
+            }
+      
+            // Close the overlay when clicking outside the image
+            imageOverlay.addEventListener('click', function(event) {
+              if (event.target === imageOverlay) {
+                closeOverlay();
+              }
+            });
+      
+            // Close the overlay when pressing the Escape key
+            document.addEventListener('keydown', function(event) {
+              if (event.key === 'Escape') {
+                closeOverlay();
+              }
+            });
+          } else {
+            console.error('Required elements not found');
           }
         });
       </script>

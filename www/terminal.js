@@ -8,14 +8,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const prompts = [
         'Hallo Operatør',
-        'Hvis du ønsker å nå meg gjennom dypet av cyberspace, fortell meg navnet verden vil huske deg for',
-        'Hvis du ønsker at jeg skal nå deg, fortell meg hvor. Gi meg sekvensen som forbinder ditt digitale jeg med virkeligheten',
+        'Hva kalles du i cyberspace, Operatør?',
+        'Hvis du ønsker at jeg skal nå deg, gi meg navnet og domenet som forbinder ditt digitale jeg med virkeligheten, ',
         'Hva vil du fortelle meg, '
     ];
 
     function printPrompt() {
         terminalInput.value = ''; // Clear the input field before printing the next prompt
-        let promptText = step === 3 ? `${prompts[step]}${name}?` : prompts[step];
+        let promptText;
+        if (step === 2) {
+            promptText = `${prompts[step]}${name}`;
+        } else if (step === 3) {
+            promptText = `${prompts[step]}${name}?`;
+        } else {
+            promptText = prompts[step];
+        }
         let index = 0;
 
         function typeCharacter() {
