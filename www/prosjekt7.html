@@ -88,7 +88,7 @@
           width: 50,
           height: 50,
           dy: 0,
-          gravity: 0.5,
+          gravity: 0.4,
           jumpPower: -15,
           grounded: true
         };
@@ -99,6 +99,16 @@
         let gameOver = false;
       
         function createObstacle() {
+          // Check the position of the last obstacle
+          if (obstacles.length > 0) {
+            let lastObstacle = obstacles[obstacles.length - 1];
+            if (lastObstacle.x + lastObstacle.width + 75 > canvas.width) {
+              // Delay the creation of the new obstacle if the last one is too close
+              return;
+            }
+          }
+      
+          // Create a new obstacle
           let obstacle = {
             x: canvas.width,
             y: 350,
