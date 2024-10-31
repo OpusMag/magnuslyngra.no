@@ -25,6 +25,53 @@
         display: block;
         margin: 0 auto;
       }
+      #highScores {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 200px;
+        background: rgba(0, 0, 0, 0.5); /* Black background with 50% opacity */
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      #highScores h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.25rem;
+      }
+      #highScores ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      #highScores li {
+        margin: 5px 0;
+        font-size: 1rem;
+      }
+      #controls {
+        position: absolute;
+        top: 200px; /* Adjust as needed */
+        left: 10px;
+        width: 200px;
+        background: rgba(0, 0, 0, 0.5); /* Black background with 50% opacity */
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        color: white;
+      }
+      #controls h2 {
+        margin: 0 0 10px 0;
+        font-size: 1.25rem;
+      }
+      #controls ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      #controls li {
+        margin: 5px 0;
+        font-size: 1rem;
+      }
     </style>
   </head>
   <body class="text-center">
@@ -48,6 +95,19 @@
       </header>
       <main>
         <canvas id="gameCanvas" width="800" height="400"></canvas>
+        <div id="highScores">
+          <h2>High Scores</h2>
+          <ul id="highScoresList"></ul>
+        </div>
+        <div id="controls">
+          <h2>Controls</h2>
+          <ul>
+            <li>Go left: Left arrow</li>
+            <li>Go right: Right arrow</li>
+            <li>Jump: Space</li>
+            <li>Shoot furball: Enter</li>
+          </ul>
+        </div>
       </main>
       <footer class="mastfoot">
         <div class="footer-button-container">
@@ -68,7 +128,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      window.jQuery || document.write('https://code.jquery.com/jquery-3.6.0.min.js"><\/script>');
+      window.j || document.write('https://code.jquery.com/jquery-3.6.0.min.js"><\/script>');
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -82,6 +142,12 @@
         const obstacleImage = new Image();
         obstacleImage.src = 'media/npc.png';
       
+        const flyingObstacleImage = new Image();
+        flyingObstacleImage.src = 'media/bird.png';
+      
+        const bulletImage = new Image();
+        bulletImage.src = 'media/ball.png';
+      
         let player = {
           x: 50,
           y: 300,
@@ -94,9 +160,61 @@
         };
       
         let obstacles = [];
+        let flyingObstacles = [];
+        let bullets = [];
         let score = 0;
         let gameSpeed = 2;
         let gameOver = false;
+        let lastFlyingObstacleTime = 0;
+        let highScores = [];
+      
+        // Load high scores from server
+        function loadHighScores() {
+          fetch('highscores.php')
+            .then(response => response.json())
+            .then(data => {
+              highScores = data;
+              displayHighScores();
+            })
+            .catch(error => console.error('Error loading high scores:', error));
+        }
+      
+        // Save high scores to server
+        function saveHighScores(newScore) {
+          fetch('highscores.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newScore)
+          })
+            .then(response => response.json())
+            .then(data => {
+              highScores = data;
+              displayHighScores();
+            })
+            .catch(error => console.error('Error saving high scores:', error));
+        }
+      
+        // Display high scores
+        function displayHighScores() {
+          const highScoresList = document.getElementById('highScoresList');
+          highScoresList.innerHTML = '';
+          highScores.forEach((score, index) => {
+            const li = document.createElement('li');
+            li.textContent = `${index + 1}. ${score.name}: ${score.score}`;
+            highScoresList.appendChild(li);
+          });
+        }
+      
+        // Check if the player's score is a new high score
+        function checkHighScore() {
+          if (highScores.length < 10 || score > highScores[highScores.length - 1].score) {
+            const name = prompt('New High Score! Enter your name:');
+            const newScore = { name, score };
+            saveHighScores(newScore);
+          }
+        }
       
         function createObstacle() {
           // Check the position of the last obstacle
@@ -116,6 +234,34 @@
             height: 50
           };
           obstacles.push(obstacle);
+        }
+      
+        function createFlyingObstacle() {
+          const now = Date.now();
+          if (now - lastFlyingObstacleTime < 2000) {
+            return; // Ensure a maximum interval of 1 every 2 seconds
+          }
+          lastFlyingObstacleTime = now;
+      
+          // Create a new flying obstacle
+          let flyingObstacle = {
+            x: canvas.width,
+            y: Math.max(50, Math.random() * (canvas.height - 100)),
+            width: 50,
+            height: 50
+          };
+          flyingObstacles.push(flyingObstacle);
+        }
+      
+        function shoot() {
+          let bullet = {
+            x: player.x + player.width,
+            y: player.y + player.height / 2 - 5,
+            width: 10,
+            height: 10,
+            dx: 5
+          };
+          bullets.push(bullet);
         }
       
         function update() {
@@ -151,6 +297,7 @@
               // Game over
               gameOver = true;
               alert('Game Over! Your score: ' + score);
+              checkHighScore();
               document.addEventListener('keydown', resetGame);
               document.addEventListener('click', resetGame);
             }
@@ -164,6 +311,66 @@
       
             // Draw obstacle
             ctx.drawImage(obstacleImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+          }
+      
+          // Update and draw flying obstacles
+          for (let i = 0; i < flyingObstacles.length; i++) {
+            let flyingObstacle = flyingObstacles[i];
+            flyingObstacle.x -= gameSpeed;
+      
+            // Check for collision
+            if (player.x < flyingObstacle.x + flyingObstacle.width &&
+                player.x + player.width > flyingObstacle.x &&
+                player.y < flyingObstacle.y + flyingObstacle.height &&
+                player.y + player.height > flyingObstacle.y) {
+              // Game over
+              gameOver = true;
+              alert('Game Over! Your score: ' + score);
+              checkHighScore();
+              document.addEventListener('keydown', resetGame);
+              document.addEventListener('click', resetGame);
+            }
+      
+            // Remove off-screen flying obstacles and increase score
+            if (flyingObstacle.x + flyingObstacle.width < 0) {
+              flyingObstacles.splice(i, 1);
+              score++;
+              i--;
+            }
+      
+            // Draw flying obstacle
+            ctx.drawImage(flyingObstacleImage, flyingObstacle.x, flyingObstacle.y, flyingObstacle.width, flyingObstacle.height);
+          }
+      
+          // Update and draw bullets
+          for (let i = 0; i < bullets.length; i++) {
+            let bullet = bullets[i];
+            bullet.x += bullet.dx;
+      
+            // Check for collision with flying obstacles
+            for (let j = 0; j < flyingObstacles.length; j++) {
+              let flyingObstacle = flyingObstacles[j];
+              if (bullet.x < flyingObstacle.x + flyingObstacle.width &&
+                  bullet.x + bullet.width > flyingObstacle.x &&
+                  bullet.y < flyingObstacle.y + flyingObstacle.height &&
+                  bullet.y + bullet.height > flyingObstacle.y) {
+                // Destroy both the bullet and the flying obstacle
+                bullets.splice(i, 1);
+                flyingObstacles.splice(j, 1);
+                score++;
+                i--;
+                break;
+              }
+            }
+      
+            // Remove off-screen bullets
+            if (bullet.x > canvas.width) {
+              bullets.splice(i, 1);
+              i--;
+            }
+      
+            // Draw bullet
+            ctx.drawImage(bulletImage, bullet.x, bullet.y, bullet.width, bullet.height);
           }
       
           // Display score
@@ -187,6 +394,8 @@
           player.y = 300;
           player.dy = 0;
           obstacles = [];
+          flyingObstacles = [];
+          bullets = [];
           score = 0;
           gameOver = false;
       
@@ -205,10 +414,15 @@
             player.x += 20;
           } else if (event.key === ' ') {
             jump();
+          } else if (event.key === 'Enter') {
+            shoot();
           }
         });
       
         setInterval(createObstacle, 2000);
+        setInterval(createFlyingObstacle, 1000); // Check for flying obstacle creation every second
+        loadHighScores();
+        displayHighScores();
         update();
       </script>
   </body>

@@ -471,6 +471,8 @@ p {
   height: 100vh;
   max-width: 100vw;
   margin-top: var(--spacing-small);
+  margin-left: 150px;
+  margin-right: 150px;
   padding: var(--spacing-small);
 }
 
@@ -484,6 +486,8 @@ p {
 
 .cover-header {
   margin-top: 5px;
+  margin-left: 150px;
+  margin-right: 150px;
   z-index: 1000;
   height: auto;
   width: 100%;
