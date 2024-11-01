@@ -42,17 +42,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleInput() {
         const input = terminalInput.value.trim();
         if (input === '') return;
-
+    
         terminalOutput.innerHTML += `<div>> ${input}</div>`;
-
+    
+        // Sanitize input to remove punctuation
+        const sanitizedInput = input.replace(/[^\w\s]/gi, '').toLowerCase();
+    
         if (step === 0) {
-            if (input === "Wake up, Neo...") {
+            if (sanitizedInput.includes("wake up neo")) {
                 transformToMatrix();
                 return;
-            } else if (input === "The cake is a lie") {
+            } else if (sanitizedInput.includes("the cake is a lie")) {
                 displayImage('media/glados.jpg');
                 return;
-            } else if (input === "Open the pod bay doors, HAL") {
+            } else if (sanitizedInput.includes("open the pod bay doors hal")) {
                 displayImage('media/hal.jpg');
                 return;
             }
