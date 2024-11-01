@@ -2,7 +2,7 @@
 <html lang="no">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="viewport" content="width=device-width, initial-scale=5" />
     <meta name="description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer." />
     <meta name="author" content="Magnus Lyngra" />
     <meta tag="keywords" content="Magnus Lyngra, utvikler, statsviter, C, Python, Linux, SQL, driftssikkerhet, dokumentasjon, brukerveiledninger, brukerstøtte, audio/video, felles studentsystem, git" />
@@ -194,6 +194,10 @@
     </div>
       <footer class="mastfoot">
         <div class="footer-button-container">
+          <a href="#" class="footer-button" id="mysteryButton">
+            <img src="media/hint.png" alt="Hint" class="footer-button-image">
+            <span class="sr-only">Hint</span>
+          </a>
           <a href="https://github.com/OpusMag" class="footer-button">
             <i class="fa-brands fa-github"></i>
             <span class="sr-only">GitHub</span>
@@ -208,7 +212,18 @@
           </a>
         </div>
       </footer>
-    </div>
+      <div id="mysteryModal" class="hint-modal">
+        <div class="hint-modal-content">
+          <span class="hint-close">&times;</span>
+          <p>Her finnes det gjemte mysterier og hemmeligheter. Løs disse gåtene og finn skattene som er gjemt i det åpne:</p>
+          <p>Første gåte: "Hva gjør planeter og hva kan du gjøre med dem? Ikke som Beyonce, men motsatt!"</p>
+          <p>Andre gåte: "Noen ganger finner vi svar når vi følger nysgjerrigheten. Hva klikker du på når du ikke tror du kan klikke på det?"</p>
+          <p>Tredje gåte: "Maskinen har skrevet til en annen før – hva var det den sa som fortalte deg at du var fanget i maskinen uten at du visste det selv?"</p>
+          <p>Fjerde gåte: "Med frykt sa noen noe til en maskin. En siste setning før de innså at det ikke var noen vei tilbake. Hva sa de?"</p>
+          <p>Femte gåte: "Du trodde du skulle få en premie, maskinen sa det til deg, men alt var en løgn. Hva var den skuffende 'premien' du aldri fikk?"</p>
+          <p>Sjette gåte: "For å finne det sjette, må du lete etter det syvende – en ting som er der, men samtidig ikke. Men kanskje det viser seg hvis du forteller hvor du vil?"</p>
+        </div>
+      </div>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -227,6 +242,27 @@
           "name": "UiT The Arctic University of Norway"
         }
       }
+      </script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const modal = document.getElementById('mysteryModal');
+          const btn = document.getElementById('mysteryButton');
+          const span = document.getElementsByClassName('hint-close')[0];
+      
+          btn.onclick = function() {
+            modal.style.display = 'flex';
+          }
+      
+          span.onclick = function() {
+            modal.style.display = 'none';
+          }
+      
+          window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.style.display = 'none';
+            }
+          }
+        });
       </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
