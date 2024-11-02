@@ -41,7 +41,7 @@ html, body {
 }
 
 body {
-  background: url('/media/background-blank.png') center center / cover no-repeat;
+  background: url('/media/background-blank.png') center center / cover repeat-y;
   background-attachment: fixed;
   color: var(--main-text-color);
   position: relative;
@@ -82,7 +82,7 @@ hr {
 .blog-post {
   padding: var(--spacing-medium); 
   margin-bottom: 1.875rem; 
-  max-width: 80vw;
+  max-width: 50rem;
   background: linear-gradient(to bottom, var(--main-bg-color), #000);
   border-radius: var(--border-radius);
   border: 1px solid #ddd;
@@ -531,7 +531,7 @@ p {
 .cover-header {
   margin-top: 5px;
   margin-left: 150px;
-  margin-right: 15p0px;
+  margin-right: 150px;
   z-index: 1000;
   height: auto;
   width: 100%;
