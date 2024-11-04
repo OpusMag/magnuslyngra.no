@@ -42,7 +42,7 @@ html, body {
 
 body {
   background-color: #131418; 
-  background: url('/media/background-blank.png') center center / cover repeat-y;
+  background: url('/media/background.png') center center / cover repeat-y;
   background-attachment: fixed;
   color: var(--main-text-color);
   position: relative;
