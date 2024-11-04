@@ -105,7 +105,7 @@
             <li>Go left: Left arrow</li>
             <li>Go right: Right arrow</li>
             <li>Jump: Space</li>
-            <li>Shoot furball: Enter</li>
+            <li>Shoot furball: Shift</li>
           </ul>
         </div>
       </main>
@@ -154,8 +154,8 @@
           width: 50,
           height: 50,
           dy: 0,
-          gravity: 0.4,
-          jumpPower: -15,
+          gravity: 0.2,
+          jumpPower: -12,
           grounded: true
         };
       
@@ -414,7 +414,7 @@
             player.x += 20;
           } else if (event.key === ' ') {
             jump();
-          } else if (event.key === 'Enter') {
+          } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
             shoot();
           }
         });
