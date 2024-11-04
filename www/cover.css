@@ -50,7 +50,7 @@ body {
 }
 
 body.specific-page {
-  background: url('/media/pagenotfound.jpg') center center / 100% 100% no-repeat;
+  background: url('/media/404notfound.png') center center / 100% 100% no-repeat;
   background-attachment: fixed;
   position: relative;
   padding: var(--spacing-small);
