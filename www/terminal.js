@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const prompts = [
-        'Hallo Operatør. Vil du nå meg, eller vil du løse gåter? 0 for å nå meg, 1 for å løse gåter',
+        'Hallo Operatør. Skriv 0 for å nå meg. Du har ikke privilegier til å løse gåter',
         'Hva kalles du i cyberspace, Operatør?',
         'Hvis du ønsker at jeg skal nå deg, gi meg strengen av karakterer og domenet som forbinder ditt digitale jeg med virkeligheten, ',
         'Hva vil du fortelle meg, ',
@@ -58,24 +58,36 @@ document.addEventListener('DOMContentLoaded', function() {
         typeCharacter();
     }
 
+    // Function to play audio
+function playAudio(src) {
+    const audio = new Audio(src);
+    audio.play();
+    audio.onended = function() {
+        step++;
+        localStorage.setItem('step', step);
+    };
+}
+
+
     function handleInput() {
         const input = terminalInput.value.trim();
         if (input === '') return;
-    
+
         terminalOutput.innerHTML += `<div>> ${input}</div>`;
-    
+
         // Sanitize input to remove punctuation
         const sanitizedInput = input.replace(/[^\w\s]/gi, '').toLowerCase();
-    
+
         if (step === 0) {
             if (sanitizedInput === '0') {
                 mode = 'contact';
                 step++;
-            } else if (sanitizedInput === '1') {
+            } else if (sanitizedInput === 'root' || sanitizedInput === 'admin') {
                 mode = 'riddles';
                 step = 4;
             } else {
                 terminalOutput.innerHTML += `<div>Ugyldig valg. Vennligst skriv 0 eller 1.</div>`;
+                terminalInput.value = '';
                 return;
             }
         } else if (mode === 'contact') {
@@ -86,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (step === 3) {
                 message = input;
                 sendFormData();
+                terminalInput.value = '';
                 return;
             }
             step++;
@@ -95,19 +108,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     previousStep = step;
                     step++;
                     transformToMatrix();
+                    terminalInput.value = '';
                     return;
                 } else {
                     terminalOutput.innerHTML += `<div>Du ville åpenbart tatt den blå pillen. Prøv igjen.</div>`;
+                    terminalInput.value = '';
                     return;
                 }
             } else if (step === 5) {
                 if (sanitizedInput.includes("open the pod bay doors hal")) {
-                    step = step + 1;
-                    localStorage.setItem('step', step);
-                    displayImage('media/hal.jpg');
+                    previousStep = step;
+                    playAudio('media/sorrydave.mp3');
+                    terminalInput.value = '';
                     return;
                 } else {
                     terminalOutput.innerHTML += `<div> Look Dave, I can see you're really upset about this. I honestly think you ought to sit down calmly, take a stress pill, and think things over.</div>`;
+                    terminalInput.value = '';
                     return;
                 }
             } else if (step === 6) {
@@ -116,9 +132,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     step++;
                     localStorage.setItem('step', step);
                     displayImage('media/glados.jpg');
+                    terminalInput.value = '';
                     return;
                 } else {
                     terminalOutput.innerHTML += `<div>I Wouldn’t Bother With That Thing. My Guess Is That Touching it Will Just Make Your Life Even Worse Somehow.</div>`;
+                    terminalInput.value = '';
                     return;
                 }
             } else if (step === 7) {
@@ -127,18 +145,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     step++;
                     localStorage.setItem('step', step);
                     displayImage('media/hackerman.png');
+                    terminalInput.value = '';
                     return;
                 } else {
                     terminalOutput.innerHTML += `<div>Du snakker tydeligvis ikke mitt språk. Prøv igjen.</div>`;
+                    terminalInput.value = '';
                     return;
                 }
             } else if (step === 8) {
                 terminalOutput.innerHTML += `<div>${prompts[9]}</div>`;
+                terminalInput.value = '';
                 return;
             }
         }
 
         printPrompt();
+        terminalInput.value = '';
     }
 
     function sendFormData() {
@@ -165,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function handleKeydown(event) {
             if (transformationComplete && event.key) {
                 localStorage.setItem('step', previousStep + 1);
-                document.body.style.background = "url('/media/background-blank.png') center center / cover repeat-y";
+                document.body.style.background = "url('/media/background.png') center center / cover repeat-y";
                 document.body.style.color = "var(--main-text-color)";
                 terminalOutput.innerHTML = '';
                 terminalInput.style.display = 'block';
@@ -190,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function handleKeydown(event) {
             if (transformationComplete && event.key) {
                 localStorage.setItem('step', step + 1); 
-                document.body.style.background = "url('/media/background-blank.png') center center / cover repeat-y";
+                document.body.style.background = "url('/media/background.png') center center / cover repeat-y";
                 document.body.style.color = "var(--main-text-color)";
                 terminalOutput.innerHTML = '';
                 terminalInput.style.display = 'block';
@@ -203,6 +225,17 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             transformationComplete = true;
         }, 1000);
+    }
+
+    // Function to play audio
+    function playAudio(src) {
+        const audio = new Audio(src);
+        audio.play();
+        audio.onended = function() {
+            step++;
+            localStorage.setItem('step', step);
+            printPrompt();
+        };
     }
 
     // Function to handle falling letters effect and redirection
