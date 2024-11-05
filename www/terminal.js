@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'Hva kalles du i cyberspace, Operatør?',
         'Hvis du ønsker at jeg skal nå deg, gi meg strengen av karakterer og domenet som forbinder ditt digitale jeg med virkeligheten, ',
         'Hva vil du fortelle meg, ',
+        'Passord: ',
         'Her finnes det tre svar, alle like riktig men de gir ulike resultat. Det første: Våkner du hvis terminalen skriver til deg?',
         'Det andre: Noen maskiner åpner dører, andre gjør ikke det.',
         'Det tredje: Hvor har du sett en sannhet skrevet på veggen om en løgn?',
@@ -86,7 +87,7 @@ function playAudio(src) {
                 mode = 'riddles';
                 step = 4;
             } else {
-                terminalOutput.innerHTML += `<div>Ugyldig valg. Vennligst skriv 0 eller 1.</div>`;
+                terminalOutput.innerHTML += `<div>Ugyldig valg. Kan du ikke lese?</div>`;
                 terminalInput.value = '';
                 return;
             }
@@ -104,6 +105,19 @@ function playAudio(src) {
             step++;
         } else if (mode === 'riddles') {
             if (step === 4) {
+                if (sanitizedInput.includes("password1")) {
+                    previousStep = step;
+                    step++;
+                    terminalInput.value = '';
+                    printPrompt();
+                    return;
+                } else {
+                    terminalOutput.innerHTML += `<div>Access denied.</div>`;
+                    window.open('https://www.youtube.com/shorts/Sl7-7dU9nqw', '_blank');
+                    terminalInput.value = '';
+                    return;
+                }
+            } else if (step === 5) {
                 if (sanitizedInput.includes("wake up neo")) {
                     previousStep = step;
                     step++;
@@ -115,7 +129,7 @@ function playAudio(src) {
                     terminalInput.value = '';
                     return;
                 }
-            } else if (step === 5) {
+            } else if (step === 6) {
                 if (sanitizedInput.includes("open the pod bay doors hal")) {
                     previousStep = step;
                     playAudio('media/sorrydave.mp3');
@@ -126,7 +140,7 @@ function playAudio(src) {
                     terminalInput.value = '';
                     return;
                 }
-            } else if (step === 6) {
+            } else if (step === 7) {
                 if (sanitizedInput.includes("the cake is a lie")) {
                     previousStep = step;
                     step++;
@@ -139,7 +153,7 @@ function playAudio(src) {
                     terminalInput.value = '';
                     return;
                 }
-            } else if (step === 7) {
+            } else if (step === 8) {
                 if (sanitizedInput.includes("65 72 6a 6f 74 65 6e 6b 64 69 6c")) {
                     previousStep = step;
                     step++;
@@ -152,7 +166,7 @@ function playAudio(src) {
                     terminalInput.value = '';
                     return;
                 }
-            } else if (step === 8) {
+            } else if (step === 9) {
                 terminalOutput.innerHTML += `<div>${prompts[9]}</div>`;
                 terminalInput.value = '';
                 return;
@@ -264,7 +278,7 @@ function playAudio(src) {
     // Add event listener to handle the user's input
     terminalInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
-            if (step === 8) {
+            if (step === 9) {
                 fallingLettersAndRedirect();
             } else {
                 handleInput();
