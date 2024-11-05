@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const prompts = [
-        'Hallo Operatør. Skriv 0 for å nå meg. Du har ikke privilegier til å løse gåter',
+        'Hallo Operatør. Skriv "kontakt" for å nå meg. Du har ikke privilegier til å løse gåter på denne brukeren',
         'Hva kalles du i cyberspace, Operatør?',
         'Hvis du ønsker at jeg skal nå deg, gi meg strengen av karakterer og domenet som forbinder ditt digitale jeg med virkeligheten, ',
         'Hva vil du fortelle meg, ',
@@ -80,7 +80,7 @@ function playAudio(src) {
         const sanitizedInput = input.replace(/[^\w\s]/gi, '').toLowerCase();
 
         if (step === 0) {
-            if (sanitizedInput === '0') {
+            if (sanitizedInput === 'kontakt') {
                 mode = 'contact';
                 step++;
             } else if (sanitizedInput === 'root' || sanitizedInput === 'admin') {
