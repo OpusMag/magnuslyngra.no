@@ -118,6 +118,7 @@ hr {
   display: flex;
   font-size: 2rem; /* Adjust icon size */
   padding: 1rem;
+  z-index: 1003;
 }
 
 /* Footer buttons */
@@ -962,7 +963,7 @@ p {
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  z-index: 1000;
+  z-index: 1002;
   border-radius: var(--border-radius);
   padding: 1rem;
   box-sizing: border-box;
