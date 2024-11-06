@@ -154,7 +154,7 @@ function playAudio(src) {
                     return;
                 }
             } else if (step === 8) {
-                if (sanitizedInput.includes("65 72 6a 6f 74 65 6e 6b 64 69 6c")) {
+                if (sanitizedInput.includes("65726a6f74656e6b64696c")) {
                     previousStep = step;
                     step++;
                     localStorage.setItem('step', step);
