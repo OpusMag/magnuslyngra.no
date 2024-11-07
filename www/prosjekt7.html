@@ -30,7 +30,7 @@
         top: 10px;
         right: 10px;
         width: 200px;
-        background: rgba(0, 0, 0, 0.5); /* Black background with 50% opacity */
+        background: rgba(0, 0, 0, 0.5);
         padding: 10px;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -50,10 +50,10 @@
       }
       #controls {
         position: absolute;
-        top: 200px; /* Adjust as needed */
-        left: 10px;
+        top: 200px;
+        left: 50px;
         width: 200px;
-        background: rgba(0, 0, 0, 0.5); /* Black background with 50% opacity */
+        background: rgba(0, 0, 0, 0.5);
         padding: 10px;
         border-radius: 5px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -154,7 +154,7 @@
           width: 50,
           height: 50,
           dy: 0,
-          gravity: 0.2,
+          gravity: 0.4,
           jumpPower: -12,
           grounded: true
         };
@@ -163,7 +163,7 @@
         let flyingObstacles = [];
         let bullets = [];
         let score = 0;
-        let gameSpeed = 1;
+        let gameSpeed = 2;
         let gameOver = false;
         let lastFlyingObstacleTime = 0;
         let highScores = [];
@@ -264,31 +264,36 @@
           bullets.push(bullet);
         }
       
-        function update() {
+        let lastTime = 0;
+
+        function update(time = 0) {
           if (gameOver) return;
-      
+
+          const deltaTime = time - lastTime;
+          lastTime = time;
+
           // Clear the canvas
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
+
           // Update player position
           player.dy += player.gravity;
-          player.y += player.dy;
-      
+          player.y += player.dy * (deltaTime / 16.67); // Adjust for time elapsed
+
           // Check for ground collision
           if (player.y + player.height > canvas.height) {
             player.y = canvas.height - player.height;
             player.dy = 0;
             player.grounded = true;
           }
-      
+
           // Draw player
           ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
-      
+
           // Update and draw obstacles
           for (let i = 0; i < obstacles.length; i++) {
             let obstacle = obstacles[i];
-            obstacle.x -= gameSpeed;
-      
+            obstacle.x -= gameSpeed * (deltaTime / 16.67); // Adjust for time elapsed
+
             // Check for collision
             if (player.x < obstacle.x + obstacle.width &&
                 player.x + player.width > obstacle.x &&
@@ -301,23 +306,23 @@
               document.addEventListener('keydown', resetGame);
               document.addEventListener('click', resetGame);
             }
-      
+
             // Remove off-screen obstacles and increase score
             if (obstacle.x + obstacle.width < 0) {
               obstacles.splice(i, 1);
               score++;
               i--;
             }
-      
+
             // Draw obstacle
             ctx.drawImage(obstacleImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
           }
-      
+
           // Update and draw flying obstacles
           for (let i = 0; i < flyingObstacles.length; i++) {
             let flyingObstacle = flyingObstacles[i];
-            flyingObstacle.x -= gameSpeed;
-      
+            flyingObstacle.x -= gameSpeed * (deltaTime / 16.67); // Adjust for time elapsed
+
             // Check for collision
             if (player.x < flyingObstacle.x + flyingObstacle.width &&
                 player.x + player.width > flyingObstacle.x &&
@@ -330,23 +335,23 @@
               document.addEventListener('keydown', resetGame);
               document.addEventListener('click', resetGame);
             }
-      
+
             // Remove off-screen flying obstacles and increase score
             if (flyingObstacle.x + flyingObstacle.width < 0) {
               flyingObstacles.splice(i, 1);
               score++;
               i--;
             }
-      
+
             // Draw flying obstacle
             ctx.drawImage(flyingObstacleImage, flyingObstacle.x, flyingObstacle.y, flyingObstacle.width, flyingObstacle.height);
           }
-      
+
           // Update and draw bullets
           for (let i = 0; i < bullets.length; i++) {
             let bullet = bullets[i];
-            bullet.x += bullet.dx;
-      
+            bullet.x += bullet.dx * (deltaTime / 16.67); // Adjust for time elapsed
+
             // Check for collision with flying obstacles
             for (let j = 0; j < flyingObstacles.length; j++) {
               let flyingObstacle = flyingObstacles[j];
@@ -362,32 +367,32 @@
                 break;
               }
             }
-      
+
             // Remove off-screen bullets
             if (bullet.x > canvas.width) {
               bullets.splice(i, 1);
               i--;
             }
-      
+
             // Draw bullet
             ctx.drawImage(bulletImage, bullet.x, bullet.y, bullet.width, bullet.height);
           }
-      
+
           // Display score
           ctx.fillStyle = 'white';
           ctx.font = '24px Arial';
           ctx.fillText('Score: ' + score, 10, 20);
-      
+
           requestAnimationFrame(update);
         }
-      
+
         function jump() {
           if (player.grounded) {
             player.dy = player.jumpPower;
             player.grounded = false;
           }
         }
-      
+
         function resetGame() {
           // Reset game variables
           player.x = 50;
@@ -398,15 +403,16 @@
           bullets = [];
           score = 0;
           gameOver = false;
-      
+
           // Remove event listeners
           document.removeEventListener('keydown', resetGame);
           document.removeEventListener('click', resetGame);
-      
+
           // Restart the game
+          lastTime = 0;
           update();
         }
-      
+
         document.addEventListener('keydown', function(event) {
           if (event.key === 'ArrowLeft') {
             player.x -= 20;
@@ -418,7 +424,7 @@
             shoot();
           }
         });
-      
+
         setInterval(createObstacle, 2000);
         setInterval(createFlyingObstacle, 1000); // Check for flying obstacle creation every second
         loadHighScores();
