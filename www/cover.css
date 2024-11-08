@@ -85,7 +85,7 @@ hr {
 .blog-post {
   padding: var(--spacing-medium); 
   margin-bottom: 1.875rem; 
-  max-width: 80vw;
+  max-width: 60vw;
   background: linear-gradient(to bottom, var(--main-bg-color), #000);
   border-radius: var(--border-radius);
   border: 1px solid #ddd;
@@ -777,12 +777,11 @@ p {
   display: grid;
   grid-template-columns: 1fr; /* Single column layout for small screens */
   box-sizing: border-box;
-  gap: var(--spacing-large);
-  padding: var(--spacing-large);
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  max-width: 100vw;
+  gap: var(--spacing-medium);
+  padding: var(--spacing-medium);
+  margin-left: var(--spacing-medium);
+  margin-right: var(--spacing-medium);
+  max-width: 80vw;
 }
 
 @media (min-width: 64rem) {
