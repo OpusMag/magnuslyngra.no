@@ -804,6 +804,7 @@ p {
 
 /* Grid item */
 .grid-item {
+  max-width: 80vw;
   background: linear-gradient(to bottom, #1a1a1a, #000000);
   padding: var(--spacing-medium);
   border: 1px solid #ddd;
