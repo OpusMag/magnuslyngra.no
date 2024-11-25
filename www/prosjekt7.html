@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="no">
-  <head>
+  <head> <!--reading the code explains the code-->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="CV" />
@@ -241,11 +241,10 @@
       function createFlyingObstacle() {
         const now = Date.now();
         if (now - lastFlyingObstacleTime < 2000) {
-          return; // Ensure a maximum interval of 1 every 2 seconds
+          return;
         }
         lastFlyingObstacleTime = now;
     
-        // Create a new flying obstacle
         let flyingObstacle = {
           x: canvas.width,
           y: Math.max(50, Math.random() * (canvas.height - 100)),
@@ -261,7 +260,7 @@
           y: player.y + player.height / 2 - 5,
           width: 10,
           height: 10,
-          dx: 20 // Adjust bullet speed
+          dx: 15 // Speed
         };
         bullets.push(bullet);
       }
@@ -271,37 +270,31 @@
       function update(time = 0) {
         if (gameOver) return;
     
-        const deltaTime = (time - lastTime) / 1000; // Convert to seconds
+        const deltaTime = (time - lastTime) / 1000;
         lastTime = time;
     
-        // Clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-        // Update player position
         player.dy += player.gravity * deltaTime;
-        player.y += player.dy * deltaTime * player.jumpSpeed; // Adjust for jump speed
+        player.y += player.dy * deltaTime * player.jumpSpeed;
     
-        // Check for ground collision
         if (player.y + player.height > canvas.height) {
           player.y = canvas.height - player.height;
           player.dy = 0;
           player.grounded = true;
         }
     
-        // Draw player
         ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
     
-        // Update and draw obstacles
         for (let i = 0; i < obstacles.length; i++) {
           let obstacle = obstacles[i];
           obstacle.x -= gameSpeed * deltaTime;
     
-          // Check for collision
           if (player.x < obstacle.x + obstacle.width &&
               player.x + player.width > obstacle.x &&
               player.y < obstacle.y + obstacle.height &&
               player.y + player.height > obstacle.y) {
-            // Game over
+          
             gameOver = true;
             alert('Game Over! Your score: ' + score);
             checkHighScore();
@@ -309,23 +302,19 @@
             document.addEventListener('click', resetGame);
           }
     
-          // Remove off-screen obstacles and increase score
           if (obstacle.x + obstacle.width < 0) {
             obstacles.splice(i, 1);
             score++;
             i--;
           }
     
-          // Draw obstacle
           ctx.drawImage(obstacleImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
         }
     
-        // Update and draw flying obstacles
         for (let i = 0; i < flyingObstacles.length; i++) {
           let flyingObstacle = flyingObstacles[i];
           flyingObstacle.x -= gameSpeed * deltaTime;
     
-          // Check for collision
           if (player.x < flyingObstacle.x + flyingObstacle.width &&
               player.x + player.width > flyingObstacle.x &&
               player.y < flyingObstacle.y + flyingObstacle.height &&
@@ -338,30 +327,25 @@
             document.addEventListener('click', resetGame);
           }
     
-          // Remove off-screen flying obstacles and increase score
           if (flyingObstacle.x + flyingObstacle.width < 0) {
             flyingObstacles.splice(i, 1);
             score++;
             i--;
           }
     
-          // Draw flying obstacle
           ctx.drawImage(flyingObstacleImage, flyingObstacle.x, flyingObstacle.y, flyingObstacle.width, flyingObstacle.height);
         }
     
-        // Update and draw bullets
         for (let i = 0; i < bullets.length; i++) {
           let bullet = bullets[i];
-          bullet.x += bullet.dx * deltaTime * gameSpeed; // Adjust bullet speed with gameSpeed
+          bullet.x += bullet.dx * deltaTime * gameSpeed; // Adjust bullet speed with gameSpeed to avoid them running amok
     
-          // Check for collision with flying obstacles
           for (let j = 0; j < flyingObstacles.length; j++) {
             let flyingObstacle = flyingObstacles[j];
             if (bullet.x < flyingObstacle.x + flyingObstacle.width &&
                 bullet.x + bullet.width > flyingObstacle.x &&
                 bullet.y < flyingObstacle.y + flyingObstacle.height &&
                 bullet.y + bullet.height > flyingObstacle.y) {
-              // Destroy both the bullet and the flying obstacle
               bullets.splice(i, 1);
               flyingObstacles.splice(j, 1);
               score++;
@@ -370,17 +354,14 @@
             }
           }
     
-          // Remove off-screen bullets
           if (bullet.x > canvas.width) {
             bullets.splice(i, 1);
             i--;
           }
     
-          // Draw bullet
           ctx.drawImage(bulletImage, bullet.x, bullet.y, bullet.width, bullet.height);
         }
     
-        // Display score
         ctx.fillStyle = 'white';
         ctx.font = '24px Arial';
         ctx.fillText('Score: ' + score, 10, 20);
@@ -396,7 +377,6 @@
       }
     
       function resetGame() {
-        // Reset game variables
         player.x = 50;
         player.y = 300;
         player.dy = 0;
@@ -406,11 +386,9 @@
         score = 0;
         gameOver = false;
     
-        // Remove event listeners
         document.removeEventListener('keydown', resetGame);
         document.removeEventListener('click', resetGame);
     
-        // Restart the game
         lastTime = 0;
         update();
       }

@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="no">
-  <head>
+  <head> <!-- reading the code explains the code-->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer." />
@@ -60,11 +60,9 @@
                 headerContainer.classList.toggle('move-left');
                 console.log('Header container classes:', headerContainer.classList);
 
-                // Toggle the icon class
                 iconElement.classList.toggle('fa-bars');
                 iconElement.classList.toggle('fa-times');
 
-                // Toggle the toggled class
                 this.classList.toggle('toggled');
               });
             });
@@ -117,7 +115,6 @@
                   }
                 }
             
-                // Initialize tag cloud
                 function initializeTagCloud(initSpeed = 'normal', maxSpeed = 'normal') {
                   const radius = calculateRadius();
                   TagCloud('.content6', myTags, {
@@ -126,9 +123,9 @@
                     maxSpeed: maxSpeed,
                     initSpeed: initSpeed,
                     direction: 135,
-                    keep: true, // Cursor interaction
+                    keep: true, // This allows the user to interact with the cloud with their cursor
                     afterUpdate: function() {
-                      // Get the current angle of the first tag
+                      // Get the current angle of the first tag in order to calculate movement
                       const firstTag = document.querySelector('.content6 span');
                       if (firstTag) {
                         const transform = window.getComputedStyle(firstTag).transform;
@@ -138,43 +135,36 @@
                   });
                 }
             
-                // Initialize tag cloud on page load
                 initializeTagCloud();
             
-                // Update tag cloud on window resize
                 window.addEventListener('resize', function () {
-                  // Clear existing tag cloud
+                  // Clear existing tag cloud after to adapt to resizing
                   document.querySelector('.content6').innerHTML = '';
-                  // Reinitialize tag cloud with new radius
+                  // Reinitialize tag cloud with new radius so it fits new size
                   initializeTagCloud();
                 });
             
-                // Add mousedown event listener to start dragging
+                // Check for mouse interaction with the cloud to activate easter egg
                 document.querySelector('.content6').addEventListener('mousedown', function (event) {
                   isDragging = true;
                   startX = event.clientX;
                   console.log('Drag started');
                 });
             
-                // Add mousemove event listener to track dragging
                 document.addEventListener('mousemove', function (event) {
                   if (isDragging && !speedIncreased) {
                     const currentX = event.clientX;
                     const deltaX = currentX - startX;
                     if (deltaX > 0) {
-                      // User is dragging to the right
                       speedIncreased = true;
                       console.log('Increasing speed by a factor of three');
-                      // Clear existing tag cloud
                       document.querySelector('.content6').innerHTML = '';
-                      // Reinitialize tag cloud with increased speed
                       initializeTagCloud('fast', 'fast');
                     }
                     startX = currentX;
                   }
                 });
             
-                // Add mouseup event listener to stop dragging and set timeout for opening tab
                 document.addEventListener('mouseup', function () {
                   if (isDragging && speedIncreased && !tabOpened) {
                     console.log('Drag ended, setting timeout to open tab');
