@@ -410,7 +410,7 @@ p {
 }
 
 .scaled-image {
-  max-width: 100%;
+  max-width: 80%;
   height: auto;
 }
 
@@ -559,7 +559,7 @@ p {
 
 .cover-blogpost {
   height: 80vh;
-  max-width: 80vw;
+  max-width: 85vw;
   margin-top: var(--spacing-small);
   padding: var(--spacing-small);
 }
@@ -775,6 +775,7 @@ p {
   display: grid;
   grid-template-columns: 1fr;
   box-sizing: border-box;
+  justify-content: center;
   gap: var(--spacing-medium);
   padding: var(--spacing-medium);
   margin-left: var(--spacing-medium);
