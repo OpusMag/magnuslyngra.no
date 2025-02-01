@@ -154,11 +154,11 @@
         width: 50,
         height: 50,
         dy: 0,
-        gravity: 0.9,
-        jumpHeight: -200, // Jump height
-        jumpSpeed: 2, // Jump speed
+        gravity: 20,
+        jumpHeight: -100, // Jump height
+        jumpSpeed: 3, // Jump speed
         grounded: true,
-        speed: 20 // Player speed
+        speed: 10 // Player speed
       };
     
       let obstacles = [];
@@ -261,7 +261,7 @@
           y: player.y + player.height / 2 - 5,
           width: 10,
           height: 10,
-          dx: 10 // Adjust bullet speed
+          dx: 8 // Adjust bullet speed
         };
         bullets.push(bullet);
       }
@@ -286,6 +286,12 @@
           player.y = canvas.height - player.height;
           player.dy = 0;
           player.grounded = true;
+        }
+
+        // Check for roof collision
+        if (player.y < 0) {
+          player.y = 0;
+          player.dy = player.gravity;
         }
     
         // Draw player
