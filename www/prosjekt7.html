@@ -167,6 +167,7 @@
       let score = 0;
       let gameSpeed = 80;
       let gameOver = false;
+      let lastObstacleTime = 0;
       let lastFlyingObstacleTime = 0;
       let highScores = [];
     
@@ -220,13 +221,8 @@
     
       function createObstacle() {
         // Check the position of the last obstacle
-        if (obstacles.length > 0) {
-          let lastObstacle = obstacles[obstacles.length - 1];
-          if (lastObstacle.x + lastObstacle.width + 75 > canvas.width) {
-            // Delay the creation of the new obstacle if the last one is too close
-            return;
-          }
-        }
+        if (Date.now() - lastObstacleTime < 2000) return;
+          lastObstacleTime = Date.now();
     
         // Create a new obstacle
         let obstacle = {
@@ -239,11 +235,8 @@
       }
     
       function createFlyingObstacle() {
-        const now = Date.now();
-        if (now - lastFlyingObstacleTime < 2000) {
-          return;
-        }
-        lastFlyingObstacleTime = now;
+        if (Date.now() - lastFlyingObstacleTime < 1000) return;
+        lastFlyingObstacleTime = Date.now();
     
         let flyingObstacle = {
           x: canvas.width,
@@ -285,7 +278,10 @@
         }
     
         ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
-    
+        
+        createObstacle();
+        createFlyingObstacle();
+        
         for (let i = 0; i < obstacles.length; i++) {
           let obstacle = obstacles[i];
           obstacle.x -= gameSpeed * deltaTime;
@@ -405,8 +401,6 @@
         }
       });
     
-      setInterval(createObstacle, 2000);
-      setInterval(createFlyingObstacle, 1000);
       loadHighScores();
       displayHighScores();
       update();
