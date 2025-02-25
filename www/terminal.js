@@ -72,7 +72,7 @@ function playAudio(src) {
 
     function handleInput() {
         const input = terminalInput.value.trim();
-        if (input === '') return;
+        if (input === '' && step > 0) return;
 
         terminalOutput.innerHTML += `<div>> ${input}</div>`;
 
