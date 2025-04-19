@@ -93,10 +93,10 @@
               document.addEventListener('DOMContentLoaded', function () {
                 const myTags = [
                   'Utvikler', 'Statsviter', 'Evig student',
-                  'Brukerveiledninger', 'Go', 'Dokumentasjon',
-                  'Python', 'Driftssikkerhet', 'Git',
-                  'Brukerkontakt', 'SQL', 'Felles studentsystem',
-                  'Docker', 'Linux', 'Innholdsproduksjon',
+                  'Go', 'Musikk', 'Dokumentasjon',
+                  'Python', 'Neovim', 'Felles studentsystem',
+                  'SQL', 'Brukerkontakt', 'Git',
+                  'Linux', 'Dataingeniør', 'Innholdsproduksjon',
                 ];
             
                 let isDragging = false;
@@ -109,9 +109,9 @@
                 function calculateRadius() {
                   const screenWidth = window.innerWidth;
                   if (screenWidth > 1000) {
-                    return 400; // Big screens
+                    return 400;
                   } else if (screenWidth < 999) {
-                    return 200; // Small screen 
+                    return 200;
                   }
                 }
             
@@ -123,9 +123,9 @@
                     maxSpeed: maxSpeed,
                     initSpeed: initSpeed,
                     direction: 135,
-                    keep: true, // This allows the user to interact with the cloud with their cursor
+                    keep: true, // Allow user to interact with the cloud with their cursor for puzzle
                     afterUpdate: function() {
-                      // Get the current angle of the first tag in order to calculate movement
+                      // Get the current angle of the first tag in order to calculate movement for puzzle
                       const firstTag = document.querySelector('.content6 span');
                       if (firstTag) {
                         const transform = window.getComputedStyle(firstTag).transform;
