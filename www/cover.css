@@ -252,29 +252,28 @@ h2 {
 @media (max-width: 1200px) {
   .content-wrapper {
     display: flex;
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     gap: var(--spacing-medium);
-  }
-  .media-container {
-    display: flex;
-    flex-direction: column;
-    overflow-x: auto;
-    order: 1;
-  }
-  .text-wrapper1, .text-wrapper2, .text-wrapper3 {
-    order: 0;
-    scale: 0.4;
-    margin: var(--spacing-small);
-    padding: var(--spacing-small);
-    width: 100%;
     height: auto;
   }
-  .media-container img,
-  .media-container video,
-  .media-container .carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .content-wrapper:nth-child(odd) {
+    flex-direction: column;
+  }
+  .content-wrapper:nth-child(even) {
+    flex-direction: column-reverse;
+  }
+  .text-wrapper1, .text-wrapper2, .text-wrapper3 {
+    width: 80%;
+    height: auto;
+    position: relative;
+    z-index: 1;
+  }
+  .media-container {
+    width: 80%;
+    height: auto;
+    position: relative;
+    z-index: 0;
   }
 }
 
