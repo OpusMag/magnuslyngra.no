@@ -253,7 +253,7 @@ h2 {
   .content-wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-small);
+    gap: var(--spacing-medium);
   }
   .media-container {
     display: flex;
@@ -263,6 +263,11 @@ h2 {
   }
   .text-wrapper1, .text-wrapper2, .text-wrapper3 {
     order: 0;
+    scale: 0.4;
+    margin: var(--spacing-small);
+    padding: var(--spacing-small);
+    width: 100%;
+    height: auto;
   }
   .media-container img,
   .media-container video,
