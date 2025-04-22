@@ -118,6 +118,7 @@ hr {
   bottom: 0;
   right: 0;
   justify-content: flex-end;
+  align-items: center;
   display: flex;
   font-size: 2rem;
   padding: 1rem;
