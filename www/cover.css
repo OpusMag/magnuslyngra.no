@@ -763,11 +763,11 @@ p {
   margin: 0 auto;
 }
 
-@media (min-width: 160rem) {
+/*@media (min-width: 160rem) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
   }
-}
+}*/
 
 /* Grid container 2*/
 .grid-container2 {
