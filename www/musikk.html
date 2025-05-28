@@ -91,175 +91,91 @@
     <div style="width:400px; height:400px; position:absolute; top:600px; bottom:400px; left:350px;">
 	<div id="winamp-container"></div>
     <script>
-    const Winamp = window.Webamp;
-        const webamp = new Webamp({
-            initialTracks: [
-                {
-                    metaData: {
-                        title: "Through the Valley Cover",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=through-the-valley.wav"
-                },
-                {
-                    metaData: {
-                        title: "Jenny of Oldstones Cover",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=jenny-of-oldstones.wav"
-                },
-                {
-                    metaData: {
-                        title: "Hallelujah Cover",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=hallelujah.wav"
-                },
-                {
-                    metaData: {
-                        title: "Pippin's Song Cover",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=pippins-song.wav"
-                },
-                {
-                    metaData: {
-                        title: "Rains of Castamere Cover",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=Rains-of-Castamere-cover.wav"
-                },
-                {
-                    metaData: {
-                        title: "Far Over The Misty Mountains Cold Cover",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=far-over-the-misty-mountains-cold.wav"
-                },
-                {
-                    metaData: {
-                        title: "God Rest Ye Merry Gentlemen Cover",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=god-rest-ye-merry-gentlemen.wav"
-                },
-                {
-                    metaData: {
-                        title: "One Chance",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=One-Chance.mp3"
-                },
-                {
-                    metaData: {
-                        title: "Sunrise",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=Sunrise.mp3"
-                },
-                {
-                    metaData: {
-                        title: "There is a Man",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=there-is-a-man.wav"
-                },
-                {
-                    metaData: {
-                        title: "For the Crows",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=For-the-crows.wav"
-                },
-                {
-                    metaData: {
-                        title: "Something New",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=Something-new.mp3"
-                },
-                {
-                    metaData: {
-                        title: "Rough Blues Take Two",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=rough-blues-take-two.wav"
-                },
-                {
-                    metaData: {
-                        title: "Am I a Good Man",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=Am-I-a-good-man.mp3"
-                },
-                {
-                    metaData: {
-                        title: "Revolution Coming",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=Revolution-coming.mp3"
-                },
-                {
-                    metaData: {
-                        title: "Instrumental",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=Instrumental.mp3"
-                },
-                {
-                    metaData: {
-                        title: "Monster",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=monster.mp3"
-                },
-                {
-                    metaData: {
-                        title: "QR-koda",
-                        artist: "Magnus Lyngra",
-                        album: "No album",
-                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
-                    },
-                    url: "https://magnuslyngra.no/audio-proxy.php?file=QR-koda.wav"
-                }
-            ]
-        });
-        webamp.renderWhenReady(document.getElementById('winamp-container'));
-    </script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Configuration object for better maintainability
+    const AUDIO_CONFIG = {
+        baseUrl: 'https://magnuslyngra.no/audio-proxy.php',
+        artist: 'Magnus Lyngra',
+        album: 'No album',
+        coverArt: 'https://magnuslyngra.no/media/magnus.jpg'
+    };
+
+    // Track list with better data structure
+    const tracks = [
+        { file: 'through-the-valley.wav', title: 'Through the Valley Cover' },
+        { file: 'jenny-of-oldstones.wav', title: 'Jenny of Oldstones Cover' },
+        { file: 'hallelujah.wav', title: 'Hallelujah Cover' },
+        { file: 'pippins-song.wav', title: "Pippin's Song Cover" },
+        { file: 'Rains-of-Castamere-cover.wav', title: 'Rains of Castamere Cover' },
+        { file: 'far-over-the-misty-mountains-cold.wav', title: 'Far Over The Misty Mountains Cold Cover' },
+        { file: 'god-rest-ye-merry-gentlemen.wav', title: 'God Rest Ye Merry Gentlemen Cover' },
+        { file: 'One-Chance.mp3', title: 'One Chance' },
+        { file: 'Sunrise.mp3', title: 'Sunrise' },
+        { file: 'there-is-a-man.wav', title: 'There is a Man' },
+        { file: 'For-the-crows.wav', title: 'For the Crows' },
+        { file: 'Something-new.mp3', title: 'Something New' },
+        { file: 'rough-blues-take-two.wav', title: 'Rough Blues Take Two' },
+        { file: 'Am-I-a-good-man.mp3', title: 'Am I a Good Man' },
+        { file: 'Revolution-coming.mp3', title: 'Revolution Coming' },
+        { file: 'Instrumental.mp3', title: 'Instrumental' },
+        { file: 'monster.mp3', title: 'Monster' },
+        { file: 'QR-koda.wav', title: 'QR-koda' }
+    ];
+
+    // Transform tracks into Webamp format
+    const initialTracks = tracks.map(track => ({
+        metaData: {
+            title: track.title,
+            artist: AUDIO_CONFIG.artist,
+            album: AUDIO_CONFIG.album,
+            coverArt: AUDIO_CONFIG.coverArt
+        },
+        url: `${AUDIO_CONFIG.baseUrl}?file=${encodeURIComponent(track.file)}`
+    }));
+
+    // Enhanced error handling for Webamp initialization
+    function initializeWebamp() {
+        try {
+            if (!window.Webamp) {
+                console.error('Webamp library not loaded');
+                return;
+            }
+
+            const container = document.getElementById('winamp-container');
+            if (!container) {
+                console.error('Webamp container not found');
+                return;
+            }
+
+            const webamp = new window.Webamp({
+                initialTracks: initialTracks,
+                enableHotkeys: true,
+                availableSkins: [
+                    { url: "https://unpkg.com/webamp@1.4.0/built/skins/base-2.91.wsz", name: "Base v2.91" },
+                    { url: "https://unpkg.com/webamp@1.4.0/built/skins/MacOSXAqua1-5.wsz", name: "MacOSX Aqua" }
+                ]
+            });
+
+            // Enhanced error handling for rendering
+            webamp.renderWhenReady(container).catch(error => {
+                console.error('Failed to render Webamp:', error);
+                container.innerHTML = '<p>Audio player failed to load. Please refresh the page.</p>';
+            });
+
+            // Add event listeners for debugging
+            webamp.onTrackDidChange((track) => {
+                console.log('Now playing:', track?.metaData?.title || 'Unknown track');
+            });
+
+        } catch (error) {
+            console.error('Error initializing Webamp:', error);
+        }
+    }
+
+    // Initialize Webamp
+    initializeWebamp();
+});
+</script>
 </body>
       <footer class="mastfoot">
         <div class="footer-button-container">
