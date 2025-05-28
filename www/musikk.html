@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="no">
+  <head> <!-- reading the code explains the code-->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer." />
+    <meta name="author" content="Magnus Lyngra" />
+    <meta heading="Hei! Magnus heter jeg." />
+    <meta property="og:title" content="Hør musikken min | Magnus Lyngra"">
+    <meta property="og:description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <meta property="og:image" content="https://magnuslyngra.no/media/magnus.jpg">
+    <meta property="og:url" content="https://magnuslyngra.no/musikk.html">
+    <meta name="twitter:title" content="Bli kjent med meg | Magnus Lyngra">
+    <meta name="twitter:description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <meta name="twitter:url" content="https://magnuslyngra.no/media/magnus.jpg">
+    <meta name="twitter:card" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <link rel="canonical" href="https://magnuslyngra.no" />
+    <title>"Hør musikken min | Magnus Lyngra"</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/favicon_io/site.webmanifest">
+    <link rel="stylesheet" href="w3.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
+    <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="cover.css"></noscript>
+  </head>
+      <header class="masthead">
+        <!-- First navbar: visible on larger screens -->
+        <nav class="nav nav-masthead">
+          <a class="nav-link active" href="index.html">Hjem</a>
+          <a class="nav-link" href="ommeg.html">Om meg</a>
+          <a class="nav-link" href="cv.html">CV</a>
+          <a class="nav-link" href="kontakt.html">Kontakt</a>
+          <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+          <a class="nav-link" href="blogg.html">Blogg</a>
+          <a class="nav-link" href="musikk.html">Musikk</a>
+        </nav>
+        <nav class="nav-mobile nav-masthead-mobile">
+          <!-- Toggle button: visible on smaller screens -->
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fa fa-bars" aria-hidden="true"></i>
+          </button>
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const navbarToggler = document.querySelector('.navbar-toggler');
+              const headerContainer = document.querySelector('.header-container');
+              const iconElement = navbarToggler ? navbarToggler.querySelector('i') : null;
+              const collapseElement = document.querySelector('#navbarNav');
+
+              if (!navbarToggler || !headerContainer || !iconElement || !collapseElement) {
+                console.error('Required elements not found');
+                return;
+              }
+
+              navbarToggler.addEventListener('click', function() {
+                console.log('Navbar toggler clicked');
+                headerContainer.classList.toggle('move-left');
+                console.log('Header container classes:', headerContainer.classList);
+
+                iconElement.classList.toggle('fa-bars');
+                iconElement.classList.toggle('fa-times');
+
+                this.classList.toggle('toggled');
+              });
+            });
+          </script>
+          <!-- Second navbar: visible on smaller screens -->
+          <div class="collapse w3-animate-opacity" id="navbarNav">
+            <a class="nav-link active" href="index.html">Hjem</a>
+            <a class="nav-link" href="ommeg.html">Om meg</a>
+            <a class="nav-link" href="cv.html">CV</a>
+            <a class="nav-link" href="kontakt.html">Kontakt</a>
+            <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+            <a class="nav-link" href="blogg.html">Blogg</a>
+          </div>
+        </nav>
+      </header>
+    <body>
+        <div class="container">
+            <div class="row">
+            <div class="col-md-12">
+                <h1>Musikk</h1>
+                <p>Her kan du høre musikken jeg har laget. Jeg har puslet med musikk i mange år, med resultater av varierende kvalitet.</p>
+                <p>Likevel har det vært en glede i hverdagen og noe jeg aldri blir lei av å sysle med.</p>
+                <p>Ta et steg inn i nostalgiens verden og hør på sangene mine med denne reimplementasjonen av winamp (sjekk ut https://webamp.org)</p>
+                <div id="app"></div>
+    <script src="https://unpkg.com/webamp"></script>
+    <script>
+        const app = document.getElementById("app");
+        const webamp = new Webamp(configurationObject => {
+            configurationObject.initialTracks = [
+                {
+                    metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                {
+                    metaData: {
+                        title: "Jenny of Oldstones Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/jenny-of-oldstones.wav"
+                },
+                {
+                    metaData: {
+                        title: "Hallelujah Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/hallelujah.wav"
+                },
+                {
+                    metaData: {
+                        title: "Pippin's Song Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/pippin's-song.wav"
+                },
+                {
+                    metaData: {
+                        title: "Rains of Castamere Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/Rains-of-Castamere-cover.wav"
+                },
+                {
+                    metaData: {
+                        title: "Far Over The Misty Mountains Cold Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/far-over-the-misty-mountains-cold.wav"
+                },
+                {
+                metaData: {
+                        title: "God Rest Ye Merry Gentlemen Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/god-rest-ye-merry-gentlemen.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                },
+                metaData: {
+                        title: "Through the Valley Cover",
+                        artist: "Magnus Lyngra",
+                        album: "No album",
+                        coverArt: "https://magnuslyngra.no/media/magnus.jpg"
+                    },
+                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                }
+            ];
+        });
+        webamp.renderWhenReady(app);
+    </script>
+      <footer class="mastfoot">
+        <div class="footer-button-container">
+          <a href="#" class="footer-button" id="mysteryButton">
+            <img src="media/hint.png" alt="Hint" class="footer-button-image">
+            <span class="sr-only">Hint</span>
+          </a>
+          <a href="https://github.com/OpusMag" class="footer-button">
+            <i class="fa-brands fa-github"></i>
+            <span class="sr-only">GitHub</span>
+          </a>
+          <a href="https://www.linkedin.com/in/magnuslyngra/" class="footer-button">
+            <i class="fab fa-linkedin"></i>
+            <span class="sr-only">LinkedIn</span>
+          </a>
+            <iframe width="40%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2025720012&color=%23ff5500&inverse=true&auto_play=false&show_user=true"></iframe>
+            <div style="font-size: 10px; color: #717171; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif; font-weight: 100;">
+          </div>
+        </div>
+      </footer>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      window.jQuery || document.write('https://code.jquery.com/jquery-3.6.0.min.js"><\/script>');
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
+  </body>
+</html>
