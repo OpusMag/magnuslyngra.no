@@ -21,6 +21,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
     <link rel="manifest" href="/favicon_io/site.webmanifest">
     <link rel="stylesheet" href="w3.css">
+    <script src="https://unpkg.com/webamp@1.4.0/built/webamp.bundle.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
@@ -30,13 +31,13 @@
       <header class="masthead">
         <!-- First navbar: visible on larger screens -->
         <nav class="nav nav-masthead">
-          <a class="nav-link active" href="index.html">Hjem</a>
+          <a class="nav-link" href="index.html">Hjem</a>
           <a class="nav-link" href="ommeg.html">Om meg</a>
           <a class="nav-link" href="cv.html">CV</a>
           <a class="nav-link" href="kontakt.html">Kontakt</a>
           <a class="nav-link" href="prosjekter.html">Prosjekter</a>
           <a class="nav-link" href="blogg.html">Blogg</a>
-          <a class="nav-link" href="musikk.html">Musikk</a>
+          <a class="nav-link active" href="musikk.html">Musikk</a>
         </nav>
         <nav class="nav-mobile nav-masthead-mobile">
           <!-- Toggle button: visible on smaller screens -->
@@ -69,13 +70,13 @@
           </script>
           <!-- Second navbar: visible on smaller screens -->
           <div class="collapse w3-animate-opacity" id="navbarNav">
-            <a class="nav-link active" href="index.html">Hjem</a>
+            <a class="nav-link" href="index.html">Hjem</a>
             <a class="nav-link" href="ommeg.html">Om meg</a>
             <a class="nav-link" href="cv.html">CV</a>
             <a class="nav-link" href="kontakt.html">Kontakt</a>
             <a class="nav-link" href="prosjekter.html">Prosjekter</a>
             <a class="nav-link" href="blogg.html">Blogg</a>
-            <a class="nav-link" href="musikk.html">Musikk</a>
+            <a class="nav-link active" href="musikk.html">Musikk</a>
           </div>
         </nav>
       </header>
@@ -87,12 +88,12 @@
                 <p>Her kan du høre musikken jeg har laget. Jeg har puslet med musikk i mange år, med resultater av varierende kvalitet.</p>
                 <p>Likevel har det vært en glede i hverdagen og noe jeg aldri blir lei av å sysle med.</p>
                 <p>Ta et steg inn i nostalgiens verden og hør på sangene mine med denne reimplementasjonen av winamp (sjekk ut https://webamp.org)</p>
-                <div id="app"></div>
-    <script src="https://unpkg.com/webamp"></script>
+    <div style="width:400px; height:400px; position:absolute; top:600px; bottom:400px; left:350px;">
+	<div id="winamp-container"></div>
     <script>
-        const app = document.getElementById("app");
-        const webamp = new Webamp(configurationObject => {
-            configurationObject.initialTracks = [
+    const Winamp = window.Webamp;
+        const webamp = new Webamp({
+            initialTracks: [
                 {
                     metaData: {
                         title: "Through the Valley Cover",
@@ -100,7 +101,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/through-the-valley.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=through-the-valley.wav"
                 },
                 {
                     metaData: {
@@ -109,7 +110,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/jenny-of-oldstones.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=jenny-of-oldstones.wav"
                 },
                 {
                     metaData: {
@@ -118,7 +119,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/hallelujah.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=hallelujah.wav"
                 },
                 {
                     metaData: {
@@ -127,7 +128,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/pippin's-song.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=pippins-song.wav"
                 },
                 {
                     metaData: {
@@ -136,7 +137,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/Rains-of-Castamere-cover.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=Rains-of-Castamere-cover.wav"
                 },
                 {
                     metaData: {
@@ -145,7 +146,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/far-over-the-misty-mountains-cold.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=far-over-the-misty-mountains-cold.wav"
                 },
                 {
                     metaData: {
@@ -154,7 +155,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/god-rest-ye-merry-gentlemen.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=god-rest-ye-merry-gentlemen.wav"
                 },
                 {
                     metaData: {
@@ -163,7 +164,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/One-Chance.mp3"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=One-Chance.mp3"
                 },
                 {
                     metaData: {
@@ -172,7 +173,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/Sunrise.mp3"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=Sunrise.mp3"
                 },
                 {
                     metaData: {
@@ -181,7 +182,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/there-is-a-man.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=there-is-a-man.wav"
                 },
                 {
                     metaData: {
@@ -190,7 +191,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/For-the-crows.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=For-the-crows.wav"
                 },
                 {
                     metaData: {
@@ -199,7 +200,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/Something-new.mp3"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=Something-new.mp3"
                 },
                 {
                     metaData: {
@@ -208,7 +209,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/rough-blues-take-two.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=rough-blues-take-two.wav"
                 },
                 {
                     metaData: {
@@ -217,7 +218,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/Am-I-a-good-man.mp3"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=Am-I-a-good-man.mp3"
                 },
                 {
                     metaData: {
@@ -226,7 +227,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/Revolution-coming.mp3"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=Revolution-coming.mp3"
                 },
                 {
                     metaData: {
@@ -235,7 +236,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/Instrumental.mp3"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=Instrumental.mp3"
                 },
                 {
                     metaData: {
@@ -244,7 +245,7 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/monster.mp3"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=monster.mp3"
                 },
                 {
                     metaData: {
@@ -253,12 +254,13 @@
                         album: "No album",
                         coverArt: "https://magnuslyngra.no/media/magnus.jpg"
                     },
-                    url: "https://magnuslyngra.no/music/QR-koda.wav"
+                    url: "https://magnuslyngra.no/audio-proxy.php?file=QR-koda.wav"
                 }
-            ];
+            ]
         });
-        webamp.renderWhenReady(app);
+        webamp.renderWhenReady(document.getElementById('winamp-container'));
     </script>
+</body>
       <footer class="mastfoot">
         <div class="footer-button-container">
           <a href="#" class="footer-button" id="mysteryButton">
