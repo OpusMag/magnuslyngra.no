@@ -9,6 +9,10 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, HEAD, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Range, Cache-Control');
 header('Access-Control-Expose-Headers: Accept-Ranges, Content-Encoding, Content-Length, Content-Range');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -33,14 +37,18 @@ function logError($message, $context = []) {
     error_log($logMessage);
 }
 
-function validateFilename($filename) {
-    if (empty($filename)) {
+function validateFilename($filename): string|false {
+    if (empty($filename) || strlen($filename) > 255) {
         return false;
     }
     
-    $filename = basename($filename);
+    $filename = basename(str_replace("\0", '', $filename));
     
-    if (!preg_match('/^[a-zA-Z0-9\-_.]+$/', $filename)) {
+    if (!preg_match('/^[a-zA-Z0-9\-_.]{1,100}$/', $filename)) {
+        return false;
+    }
+    
+    if (str_starts_with($filename, '.') || in_array($filename, ['CON', 'PRN', 'AUX', 'NUL'])) {
         return false;
     }
     
