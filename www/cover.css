@@ -871,25 +871,6 @@ p {
   z-index: 1000;
 }
 
-.nav-mobile {
-  padding: 1%;
-  margin-top: 1rem;
-  justify-content: end;
-  position: relative;
-  z-index: 1000;
-
-}
-
-.navbar-toggler {
-  display: none;
-  margin-top: 2px;
-  margin-right: 2px;
-}
-
-.collapse {
-  display: none;
-}
-
 .nav-masthead .nav-link {
   padding: 0.3rem 0;
   font-weight: 700;
@@ -921,14 +902,12 @@ p {
 /* Show the second navbar and the toggle button on smaller screens */
 @media (max-width: 1023.98px) {
   .navbar-toggler {
-    display: block;
     width: 40px;
     height: 40px;
     font-size: 20px;
     background: linear-gradient(to bottom, #ffffff, #e1e1e1);
     float: inline-end;
     margin-right: 1px;
-    /*border-radius: 10px;*/
     position: relative;
     z-index: 1001;
     border: none;
@@ -936,32 +915,28 @@ p {
 
   .navbar-toggler.toggled {
     background: transparent;
-    color: #fff;
+    color: #ffffff;
 }
 
   .collapse {
-    display: none;
-    position: absolute;
-    margin-top: 90px;
-    top: 100%;
     right: 10px;
-    transform: translateY(-50%);
+    position: absolute;
     background: linear-gradient(to bottom, #0d0e12, #1d2635);
     border-radius: 10px;
     height: auto; 
     width: 160px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    z-index: 1000; 
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease; 
+    visibility: visible;
+    transform: translateY(-100%);
+    transition: transform 0.2s ease;
   }
 
   .collapse.show {
-    display: block;
-    opacity: 1;
     visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Footer */
