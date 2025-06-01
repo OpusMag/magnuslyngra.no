@@ -934,7 +934,6 @@ p {
     display: flex;
     flex-direction: column;
     justify-content: left;
-    font: var(--font-family-monospace);
     margin-top: 10px;
     right: 1px;
     position: absolute;
@@ -946,14 +945,14 @@ p {
     overflow: hidden;
     opacity: 0;
     visibility: visible;
-    transform: translateY(-100%);
-    transition: transform 0.2s ease;
+    transform: scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
   .collapse.show {
     visibility: visible;
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
 }
 
 /* Footer */

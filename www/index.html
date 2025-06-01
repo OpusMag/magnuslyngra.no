@@ -105,7 +105,6 @@
                 let speedTimeout;
                 let tabOpened = false;
             
-                // Calculate radius based on screen width
                 function calculateRadius() {
                   const screenWidth = window.innerWidth;
                   if (screenWidth > 1000) {
@@ -138,9 +137,7 @@
                 initializeTagCloud();
             
                 window.addEventListener('resize', function () {
-                  // Clear existing tag cloud after to adapt to resizing
                   document.querySelector('.content6').innerHTML = '';
-                  // Reinitialize tag cloud with new radius so it fits new size
                   initializeTagCloud();
                 });
             
