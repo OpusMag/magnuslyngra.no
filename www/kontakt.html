@@ -15,7 +15,6 @@
     <noscript><link rel="stylesheet" href="cover.css"></noscript>
   </head>
       <header class="masthead">
-        <!-- First navbar: visible on larger screens -->
         <nav class="nav nav-masthead">
           <a class="nav-link" href="index.html">Hjem</a>
           <a class="nav-link" href="ommeg.html">Om meg</a>
@@ -26,7 +25,6 @@
           <a class="nav-link" href="musikk.html">Musikk</a>
         </nav>
         <nav class="nav-mobile nav-masthead-mobile">
-          <!-- Toggle button: visible on smaller screens -->
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fa fa-bars" aria-hidden="true"></i>
           </button>
@@ -41,18 +39,14 @@
                     return;
                 }
 
-                // Add event listener to the navbar toggler button
                 navbarToggler.addEventListener('click', function() {
-                  // Toggle the icon class
                   iconElement.classList.toggle('fa-bars');
                   iconElement.classList.toggle('fa-times');
 
-                  // Toggle the button color and collapse element
                   navbarToggler.classList.toggle('toggled');
               });
             });
             </script>
-          <!-- Second navbar: visible on smaller screens -->
           <div class="collapse" id="navbarNav">
             <a class="nav-link" href="index.html">Hjem</a>
             <a class="nav-link" href="ommeg.html">Om meg</a>
