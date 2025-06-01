@@ -923,6 +923,7 @@ p {
     position: relative;
     z-index: 1001;
     border: none;
+    border-radius: var(--border-radius);
   }
 
   .navbar-toggler.toggled {
