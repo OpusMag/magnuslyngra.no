@@ -21,63 +21,36 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
     <link rel="manifest" href="/favicon_io/site.webmanifest">
-    <link rel="stylesheet" href="w3.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="cover.css"></noscript>
   </head>
       <header class="masthead">
-        <!-- First navbar: visible on larger screens -->
         <nav class="nav nav-masthead">
-          <a class="nav-link active" href="index.html">Hjem</a>
-          <a class="nav-link" href="ommeg.html">Om meg</a>
-          <a class="nav-link" href="cv.html">CV</a>
-          <a class="nav-link" href="kontakt.html">Kontakt</a>
-          <a class="nav-link" href="prosjekter.html">Prosjekter</a>
-          <a class="nav-link" href="blogg.html">Blogg</a>
-        </nav>
-        <nav class="nav-mobile nav-masthead-mobile">
-          <!-- Toggle button: visible on smaller screens -->
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fa fa-bars" aria-hidden="true"></i>
-          </button>
-          <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              const navbarToggler = document.querySelector('.navbar-toggler');
-              const headerContainer = document.querySelector('.header-container');
-              const iconElement = navbarToggler ? navbarToggler.querySelector('i') : null;
-              const collapseElement = document.querySelector('#navbarNav');
-
-              if (!navbarToggler || !headerContainer || !iconElement || !collapseElement) {
-                console.error('Required elements not found');
-                return;
-              }
-
-              navbarToggler.addEventListener('click', function() {
-                console.log('Navbar toggler clicked');
-                headerContainer.classList.toggle('move-left');
-                console.log('Header container classes:', headerContainer.classList);
-
-                iconElement.classList.toggle('fa-bars');
-                iconElement.classList.toggle('fa-times');
-
-                this.classList.toggle('toggled');
-              });
-            });
-          </script>
-          <!-- Second navbar: visible on smaller screens -->
-          <div class="collapse w3-animate-opacity" id="navbarNav">
             <a class="nav-link active" href="index.html">Hjem</a>
             <a class="nav-link" href="ommeg.html">Om meg</a>
             <a class="nav-link" href="cv.html">CV</a>
             <a class="nav-link" href="kontakt.html">Kontakt</a>
             <a class="nav-link" href="prosjekter.html">Prosjekter</a>
             <a class="nav-link" href="blogg.html">Blogg</a>
-          </div>
+            <a class="nav-link" href="musikk.html">Musikk</a>
         </nav>
-      </header>
+        
+        <nav class="nav-mobile nav-masthead-mobile">
+            <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="collapse" id="navbarNav">
+                <a class="nav-link active" href="index.html">Hjem</a>
+                <a class="nav-link" href="ommeg.html">Om meg</a>
+                <a class="nav-link" href="cv.html">CV</a>
+                <a class="nav-link" href="kontakt.html">Kontakt</a>
+                <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+                <a class="nav-link" href="blogg.html">Blogg</a>
+                <a class="nav-link" href="musikk.html">Musikk</a>
+            </div>
+        </nav>
+    </header>
   <body class="body">
     <div class="cover-container">
       <div class="content">
@@ -93,10 +66,10 @@
               document.addEventListener('DOMContentLoaded', function () {
                 const myTags = [
                   'Utvikler', 'Statsviter', 'Evig student',
-                  'Brukerveiledninger', 'Go', 'Musikk',
-                  'Python', 'Driftssikkerhet', 'Git',
-                  'Brukerkontakt', 'SQL', 'Felles studentsystem',
-                  'Docker', 'Linux', 'Dokumentasjon',
+                  'Go', 'Musikk', 'Innholdsproduksjon',
+                  'Python', 'Open Science/Source', 'Felles studentsystem',
+                  'SQL', 'Brukerkontakt', 'Power Automate',
+                  'Linux', 'Dokumentasjon', 'GraphQL',
                 ];
             
                 let isDragging = false;
@@ -105,13 +78,12 @@
                 let speedTimeout;
                 let tabOpened = false;
             
-                // Calculate radius based on screen width
                 function calculateRadius() {
                   const screenWidth = window.innerWidth;
                   if (screenWidth > 1000) {
-                    return 400; // Big screens
+                    return 400;
                   } else if (screenWidth < 999) {
-                    return 200; // Small screen 
+                    return 200;
                   }
                 }
             
@@ -123,9 +95,9 @@
                     maxSpeed: maxSpeed,
                     initSpeed: initSpeed,
                     direction: 135,
-                    keep: true, // This allows the user to interact with the cloud with their cursor
+                    keep: true, // Allow user to interact with the cloud with their cursor for puzzle
                     afterUpdate: function() {
-                      // Get the current angle of the first tag in order to calculate movement
+                      // Get the current angle of the first tag in order to calculate movement for puzzle
                       const firstTag = document.querySelector('.content6 span');
                       if (firstTag) {
                         const transform = window.getComputedStyle(firstTag).transform;
@@ -138,9 +110,7 @@
                 initializeTagCloud();
             
                 window.addEventListener('resize', function () {
-                  // Clear existing tag cloud after to adapt to resizing
                   document.querySelector('.content6').innerHTML = '';
-                  // Reinitialize tag cloud with new radius so it fits new size
                   initializeTagCloud();
                 });
             
@@ -196,10 +166,9 @@
             <i class="fab fa-linkedin"></i>
             <span class="sr-only">LinkedIn</span>
           </a>
-          <a href="https://soundcloud.com/opusmag" class="footer-button">
-            <i class="fa-brands fa-soundcloud"></i>
-            <span class="sr-only">SoundCloud</span>
-          </a>
+            <iframe width="40%" height="20" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2025720012&color=%23ff5500&inverse=true&auto_play=false&show_user=true"></iframe>
+            <div style="font-size: 10px; color: #717171; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif; font-weight: 100;">
+          </div>
         </div>
       </footer>
       <div id="mysteryModal" class="hint-modal">
@@ -256,6 +225,60 @@
           }
         });
       </script>
+      <script>
+            class NavigationManager {
+        constructor() {
+            this.elements = this.getElements();
+        }
+
+        getElements() {
+            return {
+                toggler: document.querySelector('.navbar-toggler'),
+                icon: document.querySelector('.navbar-toggler i'),
+                collapse: document.querySelector('#navbarNav'),
+                header: document.querySelector('.masthead')
+            };
+        }
+
+        init() {
+            if (!this.elements.toggler) {
+                console.warn('Navigation toggler not found');
+                return;
+            }
+
+            this.elements.toggler.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.toggleNavigation();
+            });
+        }
+
+        toggleNavigation() {
+            const { icon, collapse, toggler } = this.elements;
+            
+            try {
+                if (icon) {
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                }
+                
+                if (collapse) {
+                    collapse.classList.toggle('show');
+                }
+                
+                if (toggler) {
+                    toggler.classList.toggle('toggled');
+                }
+            } catch (error) {
+                console.error('Error toggling navigation:', error);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const navManager = new NavigationManager();
+        navManager.init();
+    });
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       window.jQuery || document.write('https://code.jquery.com/jquery-3.6.0.min.js"><\/script>');

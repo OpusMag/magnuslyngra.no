@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="no">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <meta name="author" content="Magnus Lyngra">
+    <meta property="og:title" content="Hør musikken min | Magnus Lyngra">
+    <meta property="og:description" content="Se prosjekter, CV, blogginnlegg og kontaktinformasjon. Jeg er en utvikler og statsviter med kjennskap til C, Python, Linux, SQL, driftssikkerhet og mer.">
+    <meta property="og:image" content="https://magnuslyngra.no/media/magnus.jpg">
+    <meta property="og:url" content="https://magnuslyngra.no/musikk.html">
+    <title>Hør musikken min | Magnus Lyngra</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/favicon_io/site.webmanifest">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="cover.css"></noscript>
+    <style>
+        #winamp-container { min-height: 200px; top: 100px; position: relative; }
+    </style>
+    
+    <script defer src="https://unpkg.com/webamp@1.4.0/built/webamp.bundle.min.js"></script>
+</head>
+<body>
+    <header class="masthead">
+        <nav class="nav nav-masthead">
+            <a class="nav-link" href="index.html">Hjem</a>
+            <a class="nav-link" href="ommeg.html">Om meg</a>
+            <a class="nav-link" href="cv.html">CV</a>
+            <a class="nav-link" href="kontakt.html">Kontakt</a>
+            <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+            <a class="nav-link" href="blogg.html">Blogg</a>
+            <a class="nav-link active" href="musikk.html">Musikk</a>
+        </nav>
+        
+        <nav class="nav-mobile nav-masthead-mobile">
+            <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="collapse" id="navbarNav">
+                <a class="nav-link" href="index.html">Hjem</a>
+                <a class="nav-link" href="ommeg.html">Om meg</a>
+                <a class="nav-link" href="cv.html">CV</a>
+                <a class="nav-link" href="kontakt.html">Kontakt</a>
+                <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+                <a class="nav-link" href="blogg.html">Blogg</a>
+                <a class="nav-link active" href="musikk.html">Musikk</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="content4">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Musikk</h1>
+                <p>Her kan du høre musikken jeg har laget. Jeg har puslet med musikk i mange år, med resultater av varierende kvalitet.</p>
+                <p>Likevel har det vært en glede i hverdagen og noe jeg aldri blir lei av å sysle med.</p>
+                <p>Ta et steg inn i nostalgiens verden og hør på sangene mine med denne reimplementasjonen av winamp (sjekk ut <a href="https://webamp.org">webamp.org</a>)</p>
+                
+                <div class="webamp-wrapper" style="position: relative; margin: 2rem 0; min-height: 400px;">
+                    <div id="winamp-container"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mastfoot">
+        <div class="footer-button-container">
+            <a href="#" class="footer-button" id="mysteryButton">
+                <img src="media/hint.png" alt="Hint" class="footer-button-image">
+                <span class="sr-only">Hint</span>
+            </a>
+            <a href="https://github.com/OpusMag" class="footer-button">
+                <i class="fa-brands fa-github"></i>
+                <span class="sr-only">GitHub</span>
+            </a>
+            <a href="https://www.linkedin.com/in/magnuslyngra/" class="footer-button">
+                <i class="fab fa-linkedin"></i>
+                <span class="sr-only">LinkedIn</span>
+        </div>
+    </footer>
+
+    <script>
+    class AudioPlayerManager {
+        constructor() {
+            this.config = {
+                baseUrl: './audio-proxy.php',
+                artist: 'Magnus Lyngra',
+                album: 'No album',
+                coverArt: 'https://magnuslyngra.no/media/magnus.jpg'
+            };
+            
+            this.tracks = [
+                { file: 'through-the-valley.wav', title: 'Through the Valley Cover' },
+                { file: 'jenny-of-oldstones.wav', title: 'Jenny of Oldstones Cover' },
+                { file: 'hallelujah2.wav', title: 'Hallelujah Cover' },
+                { file: 'Pippins-song.wav', title: "Pippins Song Cover" },
+                { file: 'i-am-a-poor-wayfaring-stranger5.wav', title: 'I am a Poor Wayfaring Stranger Cover' },
+                { file: 'Rains-of-Castamere-cover.wav', title: 'Rains of Castamere Cover' },
+                { file: 'far-over-the-misty-mountains-cold.wav', title: 'Far Over The Misty Mountains Cold Cover' },
+                { file: 'god-rest-ye-merry-gentlemen.wav', title: 'God Rest Ye Merry Gentlemen Cover' },
+                { file: 'One-Chance.mp3', title: 'One Chance' },
+                { file: 'Sunrise.mp3', title: 'Sunrise' },
+                { file: 'there-is-a-man.wav', title: 'There is a Man' },
+                { file: 'For-the-crows.wav', title: 'For the Crows' },
+                { file: 'Something-new.mp3', title: 'Something New' },
+                { file: 'rough-blues-take-two.wav', title: 'Rough Blues Take Two' },
+                { file: 'Am-I-a-good-man.mp3', title: 'Am I a Good Man' },
+                { file: 'Revolution-coming.mp3', title: 'Revolution Coming' },
+                { file: 'Instrumental.mp3', title: 'Instrumental' },
+                { file: 'monster.mp3', title: 'Monster' },
+                { file: 'QR-koda.wav', title: 'QR-koda' }
+            ];
+        }
+
+        prepareTrackList() {
+            return this.tracks.map(track => ({
+                metaData: {
+                    title: track.title,
+                    artist: this.config.artist,
+                    album: this.config.album,
+                    coverArt: this.config.coverArt
+                },
+                url: `${this.config.baseUrl}?file=${encodeURIComponent(track.file)}`
+            }));
+        }
+
+        async initializeWebamp() {
+            try {
+                await this.waitForWebamp();
+                
+                const container = document.getElementById('winamp-container');
+                if (!container) {
+                    throw new Error('Webamp container not found');
+                }
+
+                const webamp = new window.Webamp({
+                    initialTracks: this.prepareTrackList(),
+                    enableHotkeys: true,
+                    availableSkins: [
+                        { url: "https://unpkg.com/webamp@1.4.0/built/skins/base-2.91.wsz", name: "Base v2.91" },
+                        { url: "https://unpkg.com/webamp@1.4.0/built/skins/MacOSXAqua1-5.wsz", name: "MacOSX Aqua" }
+                    ]
+                });
+
+                await webamp.renderWhenReady(container);
+                
+                webamp.onTrackDidChange((track) => {
+                    console.log('Now playing:', track?.metaData?.title || 'Unknown track');
+                });
+
+                console.log('Webamp initialized successfully');
+
+            } catch (error) {
+                console.error('Failed to initialize Webamp:', error);
+                this.showError('Audio player failed to load. Please refresh the page.');
+            }
+        }
+
+        waitForWebamp(maxAttempts = 50) {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const check = () => {
+                    if (window.Webamp) {
+                        resolve();
+                    } else if (attempts < maxAttempts) {
+                        attempts++;
+                        setTimeout(check, 100);
+                    } else {
+                        reject(new Error('Webamp library failed to load'));
+                    }
+                };
+                check();
+            });
+        }
+
+        showError(message) {
+            const container = document.getElementById('winamp-container');
+            if (container) {
+                container.innerHTML = `<div class="alert alert-warning" role="alert">${message}</div>`;
+            }
+        }
+    }
+
+    class NavigationManager {
+        constructor() {
+            this.elements = this.getElements();
+        }
+
+        getElements() {
+            return {
+                toggler: document.querySelector('.navbar-toggler'),
+                icon: document.querySelector('.navbar-toggler i'),
+                collapse: document.querySelector('#navbarNav'),
+                header: document.querySelector('.masthead')
+            };
+        }
+
+        init() {
+            if (!this.elements.toggler) {
+                console.warn('Navigation toggler not found');
+                return;
+            }
+
+            this.elements.toggler.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.toggleNavigation();
+            });
+        }
+
+        toggleNavigation() {
+            const { icon, collapse, toggler } = this.elements;
+            
+            try {
+                if (icon) {
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                }
+                
+                if (collapse) {
+                    collapse.classList.toggle('show');
+                }
+                
+                if (toggler) {
+                    toggler.classList.toggle('toggled');
+                }
+            } catch (error) {
+                console.error('Error toggling navigation:', error);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const navManager = new NavigationManager();
+        navManager.init();
+
+        const audioManager = new AudioPlayerManager();
+        audioManager.initializeWebamp();
+    });
+
+    if (typeof jQuery !== 'undefined') {
+        jQuery.noConflict();
+    }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"><\/script>');
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

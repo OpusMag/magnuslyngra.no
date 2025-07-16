@@ -10,54 +10,34 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
     <link rel="manifest" href="/favicon_io/site.webmanifest">
-    <link rel="stylesheet" href="w3.css">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="cover.css"></noscript>
   </head>
       <header class="masthead">
-        <!-- First navbar: visible on larger screens -->
         <nav class="nav nav-masthead">
-          <a class="nav-link" href="index.html">Hjem</a>
-          <a class="nav-link" href="ommeg.html">Om meg</a>
-          <a class="nav-link" href="cv.html">CV</a>
-          <a class="nav-link" href="kontakt.html">Kontakt</a>
-          <a class="nav-link active" href="prosjekter.html">Prosjekter</a>
-          <a class="nav-link" href="blogg.html">Blogg</a>
-        </nav>
-        <nav class="nav-mobile nav-masthead-mobile">
-          <!-- Toggle button: visible on smaller screens -->
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <i class="fa fa-bars" aria-hidden="true"></i>
-          </button>
-          <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const navbarToggler = document.querySelector('.navbar-toggler');
-                const iconElement = navbarToggler ? navbarToggler.querySelector('i') : null;
-                const collapseElement = document.querySelector('#navbarNav');
-            
-                if (!navbarToggler || !iconElement || !collapseElement) {
-                    console.error('Required elements not found');
-                    return;
-                }
-
-                navbarToggler.addEventListener('click', function() {
-                  iconElement.classList.toggle('fa-bars');
-                  iconElement.classList.toggle('fa-times');
-                  navbarToggler.classList.toggle('toggled');
-              });
-            });
-            </script>
-          <!-- Second navbar: visible on smaller screens -->
-          <div class="collapse w3-animate-opacity" id="navbarNav">
             <a class="nav-link" href="index.html">Hjem</a>
             <a class="nav-link" href="ommeg.html">Om meg</a>
             <a class="nav-link" href="cv.html">CV</a>
             <a class="nav-link" href="kontakt.html">Kontakt</a>
             <a class="nav-link active" href="prosjekter.html">Prosjekter</a>
             <a class="nav-link" href="blogg.html">Blogg</a>
-          </div>
+            <a class="nav-link" href="musikk.html">Musikk</a>
+        </nav>
+        
+        <nav class="nav-mobile nav-masthead-mobile">
+            <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="collapse" id="navbarNav">
+                <a class="nav-link" href="index.html">Hjem</a>
+                <a class="nav-link" href="ommeg.html">Om meg</a>
+                <a class="nav-link" href="cv.html">CV</a>
+                <a class="nav-link" href="kontakt.html">Kontakt</a>
+                <a class="nav-link active" href="prosjekter.html">Prosjekter</a>
+                <a class="nav-link" href="blogg.html">Blogg</a>
+                <a class="nav-link" href="musikk.html">Musikk</a>
+            </div>
         </nav>
     </header>
   <body class="body">
@@ -125,6 +105,60 @@
       </div>
       </footer>
     </div>
+    <script>
+            class NavigationManager {
+        constructor() {
+            this.elements = this.getElements();
+        }
+
+        getElements() {
+            return {
+                toggler: document.querySelector('.navbar-toggler'),
+                icon: document.querySelector('.navbar-toggler i'),
+                collapse: document.querySelector('#navbarNav'),
+                header: document.querySelector('.masthead')
+            };
+        }
+
+        init() {
+            if (!this.elements.toggler) {
+                console.warn('Navigation toggler not found');
+                return;
+            }
+
+            this.elements.toggler.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.toggleNavigation();
+            });
+        }
+
+        toggleNavigation() {
+            const { icon, collapse, toggler } = this.elements;
+            
+            try {
+                if (icon) {
+                    icon.classList.toggle('fa-bars');
+                    icon.classList.toggle('fa-times');
+                }
+                
+                if (collapse) {
+                    collapse.classList.toggle('show');
+                }
+                
+                if (toggler) {
+                    toggler.classList.toggle('toggled');
+                }
+            } catch (error) {
+                console.error('Error toggling navigation:', error);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const navManager = new NavigationManager();
+        navManager.init();
+    });
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       window.jQuery || document.write('https://code.jquery.com/jquery-3.6.0.min.js"><\/script>');

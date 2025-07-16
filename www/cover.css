@@ -36,15 +36,15 @@
 
 /* Base structure */
 html, body {
-  height: 100%;
-  width: 100%;
+  height: 100vw;
   margin: 0;
   padding: 0;
   font-family: var(--font-family-sans);
 }
 
-body {
+body {  
   height: calc(100vh - var(--header-height));
+  max-width: 100vw;
   background-color: #131418; 
   background: url('/media/background.png') center center / cover repeat-y;
   background-attachment: fixed;
@@ -109,7 +109,6 @@ hr {
 
 .header-container.move-left {
   transform: scale(0.8);
-  /*transition: transform 0.3s ease;*/ /* Smooth transition */
 }
 
 /* Footer button container */
@@ -119,6 +118,7 @@ hr {
   bottom: 0;
   right: 0;
   justify-content: flex-end;
+  align-items: center;
   display: flex;
   font-size: 2rem;
   padding: 1rem;
@@ -252,24 +252,28 @@ h2 {
 @media (max-width: 1200px) {
   .content-wrapper {
     display: flex;
-    flex-direction: column;
-    gap: var(--spacing-small);
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: var(--spacing-medium);
+    height: auto;
   }
-  .media-container {
-    display: flex;
+  .content-wrapper:nth-child(odd) {
     flex-direction: column;
-    overflow-x: auto;
-    order: 1;
+  }
+  .content-wrapper:nth-child(even) {
+    flex-direction: column-reverse;
   }
   .text-wrapper1, .text-wrapper2, .text-wrapper3 {
-    order: 0;
+    width: 80%;
+    height: auto;
+    position: relative;
+    z-index: 1;
   }
-  .media-container img,
-  .media-container video,
-  .media-container .carousel-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  .media-container {
+    width: 80%;
+    height: auto;
+    position: relative;
+    z-index: 0;
   }
 }
 
@@ -284,7 +288,6 @@ h2 {
   display: none;
 }
 
-/* Next & previous buttons */
 .prev, .next {
   cursor: pointer;
   position: absolute;
@@ -298,7 +301,7 @@ h2 {
   transition: 0.6s ease;
   border-radius: 0 3px 3px 0;
   user-select: none;
-  z-index: 1; /* Ensure buttons are above slides so they can be used*/
+  z-index: 1;
 }
 
 .next {
@@ -330,15 +333,15 @@ h2 {
   top: 0;
 }
 
-/* The dots/bullets/indicators */
+
 .carousel-indicators {
   position: absolute;
   display: flex;
   gap: 5px;
-  z-index: 1; /* Ensure dots are above slides */
+  z-index: 1;
   justify-content: center; 
   align-items: center;
-  width: 100%; /* Ensure the indicators span the full width of the container */
+  width: 100%;
 }
 
 .dots {
@@ -352,7 +355,6 @@ h2 {
   transition: background-color 0.6s ease;
 }
 
-/* Fading animation */
 .fade {
   animation-name: fade;
   animation-duration: 8s;
@@ -363,7 +365,6 @@ h2 {
   to {opacity: 1;}
 }
 
-/* Add this rule to ensure carousel images fill the container */
 .carousel-item img {
   width: 100%;
   height: 100%;
@@ -386,7 +387,6 @@ h2 {
   width: 35%;
 }
 
-/* Text container */
 .text-container {
   flex: 2;
 }
@@ -686,7 +686,7 @@ p {
 }
 
 .terminal-output {
-  text-align: left; /* Ensure terminal output is aligned to the left */
+  text-align: left;
 }
 
 .content form {
@@ -746,7 +746,6 @@ p {
   font-size: var(--font-size-base);
 }
 
-/* Cover for the grid container*/
 .cover-grid-container {
   display: flex;
   justify-content: center;
@@ -764,11 +763,11 @@ p {
   margin: 0 auto;
 }
 
-@media (min-width: 160rem) {
+/*@media (min-width: 160rem) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
   }
-}
+}*/
 
 /* Grid container 2*/
 .grid-container2 {
@@ -845,7 +844,6 @@ p {
 
 /* Header */
 .masthead {
-  width: 100%;
   max-width: 1200px;
   height: 1rem;
   font-family: var(--font-family-header);
@@ -872,25 +870,6 @@ p {
   z-index: 1000;
 }
 
-.nav-mobile {
-  padding: 1%;
-  margin-top: 1rem;
-  justify-content: end;
-  position: relative;
-  z-index: 1000;
-
-}
-
-.navbar-toggler {
-  display: none;
-  margin-top: 2px;
-  margin-right: 2px;
-}
-
-.collapse {
-  display: none;
-}
-
 .nav-masthead .nav-link {
   padding: 0.3rem 0;
   font-weight: 700;
@@ -912,6 +891,14 @@ p {
   border-bottom-color: rgba(202, 202, 202, 0.25);
 }
 
+.nav-mobile {
+  display: none;
+  position: relative;
+  z-index: 1000;
+}
+
+
+
 /* Show the first navbar on larger screens */
 @media (min-width: 1024px) {
   .nav-masthead {
@@ -921,48 +908,52 @@ p {
 
 /* Show the second navbar and the toggle button on smaller screens */
 @media (max-width: 1023.98px) {
+  .nav-mobile {
+  display: block;
+  position: relative;
+  z-index: 1000;
+}
   .navbar-toggler {
-    display: block;
     width: 40px;
     height: 40px;
     font-size: 20px;
     background: linear-gradient(to bottom, #ffffff, #e1e1e1);
     float: inline-end;
-    margin-right: 1px;
-    /*border-radius: 10px;*/
+    margin-top: 15px;
     position: relative;
     z-index: 1001;
     border: none;
+    border-radius: var(--border-radius);
   }
 
   .navbar-toggler.toggled {
     background: transparent;
-    color: #fff;
+    color: #ffffff;
 }
 
   .collapse {
-    display: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    margin-top: 10px;
+    right: 1px;
     position: absolute;
-    margin-top: 90px;
-    top: 100%;
-    right: 10px;
-    transform: translateY(-50%); /* Adjusted for perfect centering */
     background: linear-gradient(to bottom, #0d0e12, #1d2635);
     border-radius: 10px;
     height: auto; 
-    width: 160px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* shadow for better visibility */
-    overflow: hidden; /* adds scroll to handle content overflows */
-    z-index: 1000; 
+    width: 120px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease; 
+    visibility: visible;
+    transform: scale(0.95);
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
 
   .collapse.show {
-    display: block;
-    opacity: 1;
     visibility: visible;
+    opacity: 1;
+    transform: scale(1);
 }
 
 /* Footer */
