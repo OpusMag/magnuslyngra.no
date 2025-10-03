@@ -66,93 +66,239 @@
             <h1 class="cover-heading">Hei! <span class="highlight">Magnus</span> heter <span class="highlight">jeg</span>.</h1>
           </div>
           <div class="content6">
-            <script>
-              document.addEventListener('DOMContentLoaded', function () {
-                const myTags = [
-                  'Utvikler', 'Statsviter', 'Evig student',
-                  'Go', 'Musikk', 'Innholdsproduksjon',
-                  'Python', 'Open Science/Source', 'GraphQL',
-                  'SQL', 'Brukerkontakt', 'Power Automate',
-                  'Linux', 'Dokumentasjon', 'Felles studentsystem',
-                ];
-            
-                let isDragging = false;
-                let isDragging = false;
-                let speedIncreased = false;
-                let speedTimeout;
-                let tabOpened = false;
-            
-                function calculateRadius() {
-                  const screenWidth = window.innerWidth;
-                  if (screenWidth > 1000) {
-                    return 400;
-                  } else if (screenWidth < 999) {
-                    return 200;
-                  }
-                }
-            
-                function initializeTagCloud(initSpeed = 'normal', maxSpeed = 'normal') {
-                  const radius = calculateRadius();
-                  TagCloud('.content6', myTags, {
-                    radius: radius,
-                    fontSize: [14, 24],
-                    maxSpeed: maxSpeed,
-                    initSpeed: initSpeed,
-                    direction: 135,
-                    keep: true, // Allow user to interact with the cloud with their cursor for puzzle
-                    afterUpdate: function() {
-                      // Get the current angle of the first tag in order to calculate movement for puzzle
-                      const firstTag = document.querySelector('.content6 span');
-                      if (firstTag) {
-                        const transform = window.getComputedStyle(firstTag).transform;
-                        console.log(`Transform: ${transform}`);
-                      }
-                    }
+            <!-- Keywords Container -->
+            <div class="interactive-scene">
+              <ul class="keywords-list left-keywords">
+                <li data-brick="0">Utvikler</li>
+                <li data-brick="1">Statsviter</li>
+                <li data-brick="2">Evig student</li>
+                <li data-brick="3">Go</li>
+                <li data-brick="4">Musikk</li>
+                <li data-brick="5">Innholdsproduksjon</li>
+                <li data-brick="6">Python</li>
+              </ul>
+
+              <div id="animation-container"></div>
+
+              <ul class="keywords-list right-keywords">
+                <li data-brick="7">Open Science/Source</li>
+                <li data-brick="8">GraphQL</li>
+                <li data-brick="9">SQL</li>
+                <li data-brick="10">Brukerkontakt</li>
+                <li data-brick="11">Power Automate</li>
+                <li data-brick="12">Linux</li>
+                <li data-brick="13">Dokumentasjon</li>
+                <li data-brick="14">Felles studentsystem</li>
+              </ul>
+            </div>
+          </div>
+
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              // Initialize the 3D animation scene
+              initInteractiveAnimation();
+            });
+
+            function initInteractiveAnimation() {
+              const container = document.getElementById('animation-container');
+              const scene = new THREE.Scene();
+              const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+              const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+              
+              renderer.setSize(400, 400);
+              renderer.setClearColor(0x000000, 0);
+              container.appendChild(renderer.domElement);
+              
+              // Create SVG-based person at desk
+              const svgGroup = new THREE.Group();
+              
+              // Create simple geometric representation
+              const personMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 });
+              
+              // Desk
+              const deskGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(-2, -1, 0),
+                new THREE.Vector3(2, -1, 0),
+                new THREE.Vector3(2, -0.5, 0),
+                new THREE.Vector3(-2, -0.5, 0),
+                new THREE.Vector3(-2, -1, 0)
+              ]);
+              const desk = new THREE.Line(deskGeometry, personMaterial);
+              svgGroup.add(desk);
+              
+              // Person body
+              const bodyGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(-1, -0.5, 0),
+                new THREE.Vector3(-1, 0.5, 0),
+                new THREE.Vector3(-0.5, 1, 0)
+              ]);
+              const body = new THREE.Line(bodyGeometry, personMaterial);
+              svgGroup.add(body);
+              
+              // Head
+              const headGeometry = new THREE.CircleGeometry(0.3, 32);
+              const headEdges = new THREE.EdgesGeometry(headGeometry);
+              const head = new THREE.LineSegments(headEdges, personMaterial);
+              head.position.set(-0.5, 1.3, 0);
+              svgGroup.add(head);
+              
+              // Arms (typing)
+              const armGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(-0.8, 0.3, 0),
+                new THREE.Vector3(0.5, -0.3, 0)
+              ]);
+              const arm = new THREE.Line(armGeometry, personMaterial);
+              svgGroup.add(arm);
+              
+              // Monitor
+              const monitorGeometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(1, 0, 0),
+                new THREE.Vector3(1, 1.5, 0),
+                new THREE.Vector3(2, 1.5, 0),
+                new THREE.Vector3(2, 0, 0),
+                new THREE.Vector3(1, 0, 0)
+              ]);
+              const monitor = new THREE.Line(monitorGeometry, personMaterial);
+              svgGroup.add(monitor);
+              
+              scene.add(svgGroup);
+              camera.position.z = 8;
+              
+              // Animation variables
+              let isRotating = false;
+              let mouseX = 0, mouseY = 0;
+              let targetRotationX = 0, targetRotationY = 0;
+              let houseBuilt = false;
+              
+              // House building coordinates
+              const housePositions = [
+                { x: -45, y: 60, rot: 0 },   // Foundation left
+                { x: -25, y: 60, rot: 0 },
+                { x: 0, y: 60, rot: 0 },
+                { x: 25, y: 60, rot: 0 },
+                { x: 45, y: 60, rot: 0 },    // Foundation right
+                { x: -45, y: 35, rot: 0 },   // Left wall
+                { x: -45, y: 10, rot: 0 },
+                { x: -45, y: -15, rot: 0 },
+                { x: 45, y: 35, rot: 0 },    // Right wall
+                { x: 45, y: 10, rot: 0 },
+                { x: 45, y: -15, rot: 0 },
+                { x: -25, y: -35, rot: 25 }, // Roof
+                { x: 0, y: -45, rot: 0 },
+                { x: 25, y: -35, rot: -25 },
+                { x: 0, y: -20, rot: 0 }     // Chimney
+              ];
+              
+              // Build house function
+              function buildHouse() {
+                if (houseBuilt) return;
+                houseBuilt = true;
+                
+                const keywords = document.querySelectorAll('.keywords-list li');
+                const sceneRect = container.getBoundingClientRect();
+                
+                keywords.forEach((keyword, index) => {
+                  const pos = housePositions[index] || housePositions[0];
+                  const delay = index * 0.15;
+                  
+                  gsap.to(keyword, {
+                    duration: 1.2,
+                    delay: delay,
+                    ease: "power3.out",
+                    x: pos.x + '%',
+                    y: pos.y + '%',
+                    rotation: pos.rot,
+                    scale: 0.9,
+                    opacity: 1,
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: `translate(${pos.x}%, ${pos.y}%) rotate(${pos.rot}deg) scale(0.9)`,
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '2px solid rgba(255,255,255,0.3)'
                   });
-                }
-            
-                initializeTagCloud();
-            
-                window.addEventListener('resize', function () {
-                  document.querySelector('.content6').innerHTML = '';
-                  initializeTagCloud();
                 });
-            
-                // Check for mouse interaction with the cloud to activate easter egg
-                document.querySelector('.content6').addEventListener('mousedown', function (event) {
-                  isDragging = true;
-                  startX = event.clientX;
-                  console.log('Drag started');
-                });
-            
-                document.addEventListener('mousemove', function (event) {
-                  if (isDragging && !speedIncreased) {
-                    const currentX = event.clientX;
-                    const deltaX = currentX - startX;
-                    if (deltaX > 0) {
-                      speedIncreased = true;
-                      console.log('Increasing speed by a factor of three');
-                      document.querySelector('.content6').innerHTML = '';
-                      initializeTagCloud('fast', 'fast');
-                    }
-                    startX = currentX;
-                  }
-                });
-            
-                document.addEventListener('mouseup', function () {
-                  if (isDragging && speedIncreased && !tabOpened) {
-                    console.log('Drag ended, setting timeout to open tab');
-                    speedTimeout = setTimeout(function() {
-                      console.log('Opening new tab...');
-                      window.open('https://www.youtube.com/watch?v=K0HSD_i2DvA', '_blank');
-                      tabOpened = true;
-                    }, 5000);
-                  }
-                  isDragging = false;
-                });
+                
+                // Start auto-rotation after house is built
+                setTimeout(() => {
+                  gsap.to(svgGroup.rotation, {
+                    duration: 20,
+                    y: Math.PI * 2,
+                    repeat: -1,
+                    ease: "none"
+                  });
+                }, 3000);
+              }
+              
+              // Mouse/touch interaction
+              container.addEventListener('mousedown', (e) => {
+                isRotating = true;
+                if (!houseBuilt) buildHouse();
               });
-            </script>
-        </div>
+              
+              container.addEventListener('mousemove', (e) => {
+                if (!isRotating) return;
+                
+                const rect = container.getBoundingClientRect();
+                mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                
+                targetRotationY = mouseX * Math.PI;
+                targetRotationX = mouseY * Math.PI * 0.5;
+              });
+              
+              document.addEventListener('mouseup', () => {
+                isRotating = false;
+              });
+              
+              // Scroll trigger
+              let scrollTimeout;
+              window.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                  if (!houseBuilt && isInViewport(container)) {
+                    buildHouse();
+                  }
+                }, 100);
+              });
+              
+              // Click trigger
+              container.addEventListener('click', () => {
+                if (!houseBuilt) buildHouse();
+              });
+              
+              // Auto-build after 3 seconds
+              setTimeout(() => {
+                if (!houseBuilt) buildHouse();
+              }, 3000);
+              
+              // Animation loop
+              function animate() {
+                requestAnimationFrame(animate);
+                
+                if (isRotating) {
+                  svgGroup.rotation.x += (targetRotationX - svgGroup.rotation.x) * 0.05;
+                  svgGroup.rotation.y += (targetRotationY - svgGroup.rotation.y) * 0.05;
+                }
+                
+                // Subtle breathing animation
+                svgGroup.position.y = Math.sin(Date.now() * 0.001) * 0.1;
+                
+                renderer.render(scene, camera);
+              }
+              
+              animate();
+              
+              // Utility function
+              function isInViewport(element) {
+                const rect = element.getBoundingClientRect();
+                return rect.top < window.innerHeight && rect.bottom > 0;
+              }
+            }
+          </script>
         </main>
       </div>
     </div>
