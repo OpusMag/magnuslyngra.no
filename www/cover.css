@@ -650,6 +650,24 @@ p {
   z-index: 1000;
 }
 
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .keywords-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .svg-3d-rotate {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .keywords-list {
+    min-width: 100px;
+    text-align: center;
+  }
+}
+
 /* Form styling */
 .terminal-container {
   display: flex;
