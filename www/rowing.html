@@ -143,6 +143,74 @@
   }
   #intro button:active { transform: translateY(4px); box-shadow: 0 2px 0 #a41f2b; }
   #intro.hidden { display: none; }
+
+  /* ---- Milestone banner ---- */
+  #milestone {
+    position: absolute; top: 15%; left: 0; right: 0;
+    display: flex; justify-content: center;
+    pointer-events: none; opacity: 0; z-index: 6; padding: 0 16px;
+  }
+  #milestone span {
+    font-weight: 900; font-size: clamp(22px, 5vw, 52px); text-align: center;
+    padding: 12px 28px; color: #fff;
+    background: linear-gradient(180deg,#c8102e,#8e0b20);
+    border: 3px solid #fff; border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 44px rgba(255,90,90,.5);
+    text-shadow: 0 2px 0 rgba(0,0,0,.35);
+  }
+  #milestone.final span {
+    font-size: clamp(28px, 7vw, 76px);
+    background: linear-gradient(180deg,#ffd23f,#e8a800); color: #7a1020;
+    box-shadow: 0 8px 30px rgba(0,0,0,.5), 0 0 60px rgba(255,210,63,.7);
+  }
+  #milestone.show { animation: msg 3.4s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes msg {
+    0%   { opacity: 0; transform: translateY(-26px) scale(.7); }
+    10%  { opacity: 1; transform: translateY(0) scale(1.06); }
+    18%  { transform: scale(1); }
+    82%  { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: translateY(-10px) scale(.95); }
+  }
+
+  /* ---- High-score window ---- */
+  #highscore {
+    position: fixed; inset: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(4,12,24,.72); backdrop-filter: blur(3px);
+  }
+  #highscore.hidden { display: none; }
+  .hs-card {
+    background: linear-gradient(180deg,#12263f,#0b1a2e);
+    border: 2px solid #1f3d63; border-radius: 18px;
+    padding: 24px 26px; width: min(92vw, 430px); text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  }
+  .hs-card h2 { color: #ffd23f; font-size: 30px; letter-spacing: 1px; }
+  .hs-card .hs-sub { opacity: .8; font-size: 13px; margin: 6px 0 16px; }
+  #hsList {
+    list-style: none; text-align: left; margin: 0 0 16px; padding: 8px 4px;
+    max-height: 210px; overflow: auto;
+    background: rgba(0,0,0,.28); border-radius: 10px;
+  }
+  #hsList li {
+    display: flex; justify-content: space-between; gap: 12px;
+    padding: 5px 12px; font-variant-numeric: tabular-nums;
+  }
+  #hsList li .rank { opacity: .6; margin-right: 8px; }
+  #hsList li .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #hsList li.new { color: #ffd54a; font-weight: 800; }
+  #hsList li.empty { justify-content: center; opacity: .55; }
+  .hs-form { display: flex; gap: 8px; margin-bottom: 10px; }
+  #hsName {
+    flex: 1; font: inherit; padding: 11px 12px; border-radius: 10px;
+    border: 1px solid #2a4a70; background: #0a1728; color: #fff; min-width: 0;
+  }
+  .hs-card button {
+    font: inherit; font-weight: 800; padding: 11px 16px; border: none;
+    border-radius: 10px; cursor: pointer;
+  }
+  #hsSave { background: linear-gradient(180deg,#ff6b6b,#e63946); color: #fff; }
+  #hsClose { background: rgba(255,255,255,.12); color: #fff; margin-top: 4px; width: 100%; }
 </style>
 
 <div id="hud">
@@ -159,13 +227,27 @@
 <div id="stage">
   <canvas id="game"></canvas>
   <div id="victory"><span>VICTORY</span></div>
+  <div id="milestone"><span></span></div>
   <div id="intro">
     <h1><span class="four">NOR</span> — Row for Glory</h1>
     <p>Ola the Norwegian striker missed the pitch and ended up at sea.
        <b>Click / tap</b> to row him to the right. Smash through every foreign flag in his way —
        the first takes <b>10</b> strokes, the next <b>20</b>, then <b>30</b>… </p>
     <button id="startBtn">🚣 Start rowing</button>
-    <p class="hint"><b>Martin Ødegaard</b> beats the drum in the top-right corner. Row <b>on his beat</b> to build Team Flow and smash flags faster. Hold for a heavy stroke; alternate left/right for sync.</p>
+    <p class="hint"><b>Martin Ødegaard</b> drums the stroke in the top-right corner: two hits, then a rolling <b>“ROW!”</b>. Click on the roll to row — nail the timing to build Team Flow and smash flags faster. Hold for a heavy stroke.</p>
+  </div>
+</div>
+
+<div id="highscore" class="hidden">
+  <div class="hs-card">
+    <h2>VM-VINNERE:</h2>
+    <div class="hs-sub">🏆 VI HAR VUNNET VM! Skriv inn navnet ditt:</div>
+    <ol id="hsList"></ol>
+    <div class="hs-form">
+      <input id="hsName" type="text" maxlength="16" placeholder="Navn" autocomplete="off" />
+      <button id="hsSave">Lagre</button>
+    </div>
+    <button id="hsClose">Fortsett å ro</button>
   </div>
 </div>
 
@@ -179,6 +261,12 @@
   const victoryEl = document.getElementById('victory');
   const introEl = document.getElementById('intro');
   const startBtn = document.getElementById('startBtn');
+  const milestoneEl = document.getElementById('milestone');
+  const highscoreEl = document.getElementById('highscore');
+  const hsListEl = document.getElementById('hsList');
+  const hsNameEl = document.getElementById('hsName');
+  const hsSaveEl = document.getElementById('hsSave');
+  const hsCloseEl = document.getElementById('hsClose');
 
   let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
   function resize() {
@@ -216,18 +304,52 @@
     drift: 0,
     audioCtx: null,
     audioGain: null,
-    // Ødegaard's drum / beat-sync
-    drumStartAt: 0,   // performance.now() when the beat clock started
-    beatCount: 0,     // how many beats have fired
-    drumHit: 0,       // drum strike animation 1 -> 0
-    beatFlash: 0,     // "in sync" feedback flash on the boat
+    // Ødegaard's drum / beat-sync (driven by media/row.mp3)
+    drumBuffer: null,        // decoded row.mp3 played via Web Audio (preferred path)
+    drumSource: null,        // looping AudioBufferSourceNode
+    drumSourceStartedAt: 0,  // audioCtx time the loop started (phase anchor)
+    drumFetch: null,         // null | 'loading' | 'ready' | 'failed'
+    drumAudio: null,         // <audio> fallback (used only if fetch/decode fails, e.g. file://)
+    drumStartAt: 0,          // performance.now() fallback clock if no audio can play
+    beatCount: 0,            // fallback beat counter
+    drumHit: 0,           // drum strike animation 1 -> 0 (lead-in hits)
+    rollCue: 0,           // intensity of the "row!" roll — the cue to click (0..1)
+    usingAudioDrum: false,
+    beatFlash: 0,         // "in sync" feedback flash on the boat
+    // hull health + falling balls
+    hp: 100,
+    maxHp: 100,
+    balls: [],
+    lastBallAt: 0,
+    hurtFlash: 0,         // red damage vignette 1 -> 0
+    // tournament milestones
+    nextMilestone: 0,
+    won: false,
+    songAudio: null,
   };
+
+  // Row-count milestones through the World Cup.
+  const MILESTONES = [
+    { rows: 100,  text: 'Videre fra gruppespill!' },
+    { rows: 250,  text: 'Vunnet 16-delsfinale!' },
+    { rows: 750,  text: 'Vunnet 8-delsfinale!' },
+    { rows: 1250, text: 'Vunnet semifinale!' },
+    { rows: 2000, text: 'VI HAR VUNNET VM!', final: true },
+  ];
+  const HS_KEY = 'rowVMWinners';
 
   const BOAT_X = () => Math.min(180, W * 0.28);   // player screen x
   const FLAG_HIT_ZONE = 70;                       // px in front of boat where flag blocks
   const SPACING = 700;                            // world px between flags
-  const DRUM_PERIOD = 760;                        // ms between Ødegaard's drum beats (ideal cadence)
-  const BEAT_WINDOW = 150;                         // ms tolerance around a beat for an in-sync stroke
+  const BALL_NAMES = ['Messi', 'Ronaldo', "M'bappé", 'Kane', 'Dembele', 'Vinicius'];
+  const BALL_INTERVAL = 2000;                     // ms between falling balls
+  const BALL_DAMAGE = 5;                          // % hull health lost per ball hit
+  // row.mp3 is a ~1.4s loop: two lead-in hits, then a "row" roll that cues the stroke.
+  const DRUM_HITS = [0.06, 0.35];   // seconds into the loop where the two drum hits land
+  const DRUM_ROLL = 0.78;           // seconds into the loop: peak of the "row!" roll (the stroke cue)
+  const ROLL_WINDOW = 240;          // ms tolerance around the roll for an in-sync stroke
+  const DRUM_PERIOD = 760;          // ms fallback cadence if the audio can't play
+  const BEAT_WINDOW = 150;          // ms fallback timing window
 
   // ---- Country flag drawing recipes ----
   const FLAGS = [
@@ -284,7 +406,10 @@
   }
 
   function initAudio() {
-    if (state.audioCtx) return;
+    if (state.audioCtx) {
+      if (state.audioCtx.state === 'suspended') state.audioCtx.resume().catch(() => {});
+      return;
+    }
     try {
       state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       state.audioGain = state.audioCtx.createGain();
@@ -294,6 +419,78 @@
       state.audioCtx = null;
       state.audioGain = null;
     }
+  }
+
+  // Fetch + decode row.mp3 into an AudioBuffer (once). Fetch fails on file://,
+  // in which case we fall back to an <audio> element.
+  function loadDrumBuffer() {
+    if (state.drumFetch || !state.audioCtx) return;
+    state.drumFetch = 'loading';
+    fetch('media/row.mp3')
+      .then(r => { if (!r.ok) throw new Error('http ' + r.status); return r.arrayBuffer(); })
+      .then(buf => state.audioCtx.decodeAudioData(buf))
+      .then(audioBuf => {
+        state.drumBuffer = audioBuf;
+        state.drumFetch = 'ready';
+        if (state.running) startDrumAudio(true);
+      })
+      .catch(() => {
+        state.drumFetch = 'failed';               // e.g. file:// blocks fetch -> use <audio>
+        if (state.running) startDrumAudio(true);
+      });
+  }
+
+  // Start the looping drum via Web Audio (same context as the working synth).
+  function startDrumLoop(restart) {
+    if (!state.audioCtx || !state.drumBuffer) return;
+    if (state.drumSource && !restart) return;     // already looping
+    if (state.drumSource) { try { state.drumSource.stop(); } catch (_e) {} state.drumSource = null; }
+    const src = state.audioCtx.createBufferSource();
+    src.buffer = state.drumBuffer;
+    src.loop = true;
+    const g = state.audioCtx.createGain();
+    g.gain.value = 0.3;                            // drum level
+    src.connect(g); g.connect(state.audioCtx.destination);
+    const at = state.audioCtx.currentTime + 0.03;
+    src.start(at);
+    state.drumSource = src;
+    state.drumSourceStartedAt = at;
+  }
+
+  // Kick off / recover drum playback. Called on the Start click and on every row
+  // input, so a blocked autoplay is retried until a user gesture lets it through.
+  function startDrumAudio(restart) {
+    initAudio();
+    loadDrumBuffer();
+    if (state.drumBuffer) {                        // preferred: Web Audio buffer loop
+      if (!state.drumSource || restart) startDrumLoop(restart);
+      return;
+    }
+    if (state.drumFetch === 'failed') {            // fallback: <audio> element (file://)
+      if (!state.drumAudio) {
+        state.drumAudio = new Audio('media/row.mp3');
+        state.drumAudio.loop = true;
+        state.drumAudio.volume = 0.07;
+      }
+      const a = state.drumAudio;
+      if (restart) { try { a.currentTime = 0; } catch (_e) {} }
+      if (a.paused) { const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); }
+    }
+    // else: decode still in flight -> synth fallback covers the gap; buffer starts when ready
+  }
+
+  // Current {pos, dur} (seconds) of the looping drum track, or null if none is playing.
+  function drumClock() {
+    const c = state.audioCtx, b = state.drumBuffer;
+    if (c && b && state.drumSource) {
+      const D = b.duration;
+      return { pos: ((c.currentTime - state.drumSourceStartedAt) % D + D) % D, dur: D };
+    }
+    const a = state.drumAudio;
+    if (a && !a.paused && a.duration && isFinite(a.duration)) {
+      return { pos: a.currentTime % a.duration, dur: a.duration };
+    }
+    return null;
   }
 
   function playStrokeAudio(quality, heavy) {
@@ -340,20 +537,113 @@
     osc.start(now); osc.stop(now + 0.32);
   }
 
-  function onBeat() {
-    state.drumHit = 1;
-    playDrumAudio();
-  }
-
-  // ms distance to the nearest drum beat (Infinity before the drum starts)
-  function beatOffset(now) {
+  // ms distance to the moment the player is meant to row (the "row" roll).
+  function beatOffset() {
+    const c = drumClock();
+    if (c) {
+      const d = Math.abs(c.pos - DRUM_ROLL);
+      return Math.min(d, c.dur - d) * 1000;
+    }
     if (!state.drumStartAt) return Infinity;
-    const p = ((now - state.drumStartAt) % DRUM_PERIOD + DRUM_PERIOD) % DRUM_PERIOD;
+    const p = ((performance.now() - state.drumStartAt) % DRUM_PERIOD + DRUM_PERIOD) % DRUM_PERIOD;
     return Math.min(p, DRUM_PERIOD - p);
   }
 
   function updateMomentumBar() {
     momFillEl.style.width = state.momentum.toFixed(1) + '%';
+  }
+
+  // ---- Tournament milestones + VM high scores ----
+  function checkMilestones() {
+    while (state.nextMilestone < MILESTONES.length && state.rows >= MILESTONES[state.nextMilestone].rows) {
+      const m = MILESTONES[state.nextMilestone];
+      state.nextMilestone++;
+      showMilestone(m.text, !!m.final);
+    }
+  }
+
+  function showMilestone(text, final) {
+    milestoneEl.querySelector('span').textContent = text;
+    milestoneEl.classList.toggle('final', final);
+    milestoneEl.classList.remove('show');
+    void milestoneEl.offsetWidth;            // restart the animation
+    milestoneEl.classList.add('show');
+    state.cameraShake = Math.min(16, state.cameraShake + (final ? 12 : 6));
+    for (let i = 0; i < (final ? 90 : 30); i++) {
+      state.particles.push({
+        x: BOAT_X() + state.drift * 0.45, y: waterY() - 60,
+        vx: (Math.random() - 0.5) * (final ? 16 : 10), vy: -Math.random() * 10 - 3,
+        life: 1, size: 3 + Math.random() * 5,
+        col: pick(['#ffd23f', '#ff5a5a', '#ffffff', '#00b4d8', '#ef476f'])
+      });
+    }
+    if (final) winVM();
+  }
+
+  function winVM() {
+    if (state.won) return;
+    state.won = true;
+    state.balls = [];                        // stop the barrage during the celebration
+    if (state.drumSource) { try { state.drumSource.stop(); } catch (_e) {} state.drumSource = null; }
+    if (state.drumAudio) { try { state.drumAudio.pause(); } catch (_e) {} }
+    playVictorySong();
+    openHighscore();
+  }
+
+  function playVictorySong() {
+    try {
+      if (!state.songAudio) {
+        state.songAudio = new Audio('media/alt-for-norge.mp3');
+        state.songAudio.volume = 0.9;
+      }
+      state.songAudio.currentTime = 0;
+      const p = state.songAudio.play();
+      if (p && p.catch) p.catch(() => {});
+    } catch (_e) {}
+  }
+
+  function loadScores() {
+    try { return JSON.parse(localStorage.getItem(HS_KEY)) || []; }
+    catch (_e) { return state._scores || []; }
+  }
+  function saveScores(list) {
+    state._scores = list;
+    try { localStorage.setItem(HS_KEY, JSON.stringify(list)); } catch (_e) {}
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+  function renderScores(highlightTs) {
+    const list = loadScores().slice().sort((a, b) => b.rows - a.rows).slice(0, 10);
+    hsListEl.innerHTML = '';
+    if (!list.length) {
+      const li = document.createElement('li');
+      li.className = 'empty';
+      li.textContent = 'Ingen vinnere ennå — bli den første!';
+      hsListEl.appendChild(li);
+      return;
+    }
+    list.forEach((e, i) => {
+      const li = document.createElement('li');
+      if (highlightTs && e.ts === highlightTs) li.className = 'new';
+      li.innerHTML = '<span class="nm"><span class="rank">' + (i + 1) + '.</span>' +
+        escapeHtml(e.name) + '</span><span>' + (e.rows | 0) + ' tak</span>';
+      hsListEl.appendChild(li);
+    });
+  }
+  function openHighscore() {
+    renderScores();
+    highscoreEl.classList.remove('hidden');
+    setTimeout(() => { try { hsNameEl.focus(); } catch (_e) {} }, 30);
+  }
+  function submitScore() {
+    const name = (hsNameEl.value || '').trim().slice(0, 16) || 'Anonym';
+    const entry = { name, rows: state.rows, ts: Date.now() };
+    const list = loadScores();
+    list.push(entry);
+    saveScores(list);
+    renderScores(entry.ts);
+    hsNameEl.value = '';
   }
 
   function row({ chargeRatio = 0, side = 'L' } = {}) {
@@ -372,9 +662,10 @@
     const chargeMult = heavy ? (1.2 + chargeRatio * 0.9) : 1;
     const quality = timingScore * 0.45 + rhythmScore * 0.35 + syncScore * 0.2;
 
-    // How closely this stroke landed on Ødegaard's drum beat (1 = dead on).
-    const beatSync = clamp(1 - beatOffset(now) / BEAT_WINDOW, 0, 1);
-    const beatMult = 1 + beatSync * 0.9;   // in-sync strokes hit harder / drive faster
+    // How closely this stroke landed on Ødegaard's "row" roll (1 = dead on).
+    const beatWin = state.usingAudioDrum ? ROLL_WINDOW : BEAT_WINDOW;
+    const beatSync = clamp(1 - beatOffset() / beatWin, 0, 1);
+    const beatMult = 1 + beatSync * 0.9;   // strokes on the roll hit harder / drive faster
 
     state.lastStrokeAt = now;
     state.prevInterval = state.prevInterval * 0.65 + interval * 0.35;
@@ -386,6 +677,7 @@
     rowCountEl.classList.remove('pop');
     void rowCountEl.offsetWidth;
     rowCountEl.classList.add('pop');
+    checkMilestones();
 
     state.stroke = 1;              // trigger oar sweep
     state.rhythmPulse = Math.max(state.rhythmPulse, 0.4 + quality * 0.7 + beatSync * 0.8);
@@ -484,6 +776,123 @@
   // ---- Layout helpers ----
   function waterY() { return H * 0.62; }
 
+  // ---- Falling footballer balls ----
+  // A ball's screen x from its fixed world position (so rowing scrolls it past the boat).
+  function ballScreenX(b) { return b.worldX - state.worldX + BOAT_X(); }
+
+  function spawnBall() {
+    const screenX = 40 + Math.random() * Math.max(1, W / 2 - 40);   // aims at the left half
+    state.balls.push({
+      // anchored in world space: as the player rows, the ball drifts left and can be dodged
+      worldX: screenX - BOAT_X() + state.worldX,
+      y: -30,
+      vy: 1.4 + Math.random() * 1.4,
+      r: 13,
+      rot: Math.random() * 7,
+      vrot: (Math.random() - 0.5) * 0.3,
+      name: pick(BALL_NAMES),
+      dead: false,
+    });
+  }
+
+  function damageBoat(pct) {
+    state.hp = clamp(state.hp - pct, 0, state.maxHp);
+    state.hurtFlash = 1;
+    state.cameraShake = Math.min(14, state.cameraShake + 6);
+  }
+
+  function updateBalls() {
+    const bx = BOAT_X() + (Number.isFinite(state.drift) ? state.drift * 0.45 : 0);
+    const wy = waterY();
+    for (const b of state.balls) {
+      b.vy += 0.28;                 // gravity
+      b.y += b.vy; b.rot += b.vrot;
+      const sx = ballScreenX(b);
+      // did it land on the boat?
+      if (!b.dead &&
+          sx > bx - 72 && sx < bx + 82 &&
+          b.y + b.r > wy - 74 && b.y - b.r < wy + 8) {
+        b.dead = true;
+        damageBoat(BALL_DAMAGE);
+        for (let i = 0; i < 12; i++) {
+          state.particles.push({
+            x: sx, y: b.y, vx: (Math.random() - 0.5) * 7, vy: -Math.random() * 5 - 1,
+            life: 0.9, size: 2 + Math.random() * 3, col: pick(['#fff', '#ff5a5a', '#ffd23f'])
+          });
+        }
+      }
+      // otherwise splash into the sea and vanish
+      if (!b.dead && b.y - b.r > wy + 4) {
+        b.dead = true;
+        state.splashes.push({ x: sx, y: wy + 6, life: 0.9 });
+      }
+    }
+    state.balls = state.balls.filter(b => !b.dead && b.y < H + 80 && ballScreenX(b) > -80);
+  }
+
+  function pentagon(cx, cy, r, rot) {
+    ctx.beginPath();
+    for (let i = 0; i < 5; i++) {
+      const a = rot + i * Math.PI * 2 / 5 - Math.PI / 2;
+      const px = cx + Math.cos(a) * r, py = cy + Math.sin(a) * r;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+
+  function drawBalls() {
+    for (const b of state.balls) {
+      const sx = ballScreenX(b);
+      if (sx < -40 || sx > W + 40) continue;   // off-screen
+      ctx.save();
+      ctx.translate(sx, b.y);
+      // ball body (spins)
+      ctx.save();
+      ctx.rotate(b.rot);
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(0, 0, b.r, 0, 7); ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,.3)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.fillStyle = '#151515';
+      pentagon(0, 0, b.r * 0.42, 0);
+      ctx.strokeStyle = '#151515'; ctx.lineWidth = 1.6;
+      for (let i = 0; i < 5; i++) {
+        const a = i * Math.PI * 2 / 5 - Math.PI / 2;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * b.r * 0.42, Math.sin(a) * b.r * 0.42);
+        ctx.lineTo(Math.cos(a) * b.r, Math.sin(a) * b.r);
+        ctx.stroke();
+      }
+      ctx.restore();
+      // name tag (stays upright)
+      ctx.font = 'bold 11px Trebuchet MS, sans-serif';
+      const tw = ctx.measureText(b.name).width + 12;
+      const ty = -b.r - 17, th = 15;
+      ctx.fillStyle = 'rgba(10,20,35,.86)';
+      roundRectPath(ctx, -tw / 2, ty, tw, th, 5); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(b.name, 0, ty + th / 2 + 0.5);
+      ctx.textBaseline = 'alphabetic';
+      ctx.restore();
+    }
+  }
+
+  function drawBoatHealth() {
+    const bx = BOAT_X() + (Number.isFinite(state.drift) ? state.drift * 0.45 : 0);
+    const pct = clamp(state.hp / state.maxHp, 0, 1);
+    const bw = 76, bh = 8, y = waterY() - 102;
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 10px Trebuchet MS, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    ctx.fillText('HULL', bx, y - 4);
+    ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.fillRect(bx - bw / 2 - 2, y - 2, bw + 4, bh + 4);
+    ctx.fillStyle = '#3a3a3a'; ctx.fillRect(bx - bw / 2, y, bw, bh);
+    ctx.fillStyle = pct > 0.5 ? '#4caf50' : pct > 0.25 ? '#ffb300' : '#ef4444';
+    ctx.fillRect(bx - bw / 2, y, bw * pct, bh);
+    ctx.restore();
+  }
+
   // ---- Update ----
   function update() {
     state.t++;
@@ -492,14 +901,38 @@
     state.rhythmPulse *= 0.88;
     state.drift = Number.isFinite(state.drift) ? state.drift * 0.9 : 0;
 
-    // Ødegaard keeps a steady beat; fire onBeat when we cross a beat boundary.
-    const nowMs = performance.now();
-    if (state.drumStartAt) {
-      const beats = Math.floor((nowMs - state.drumStartAt) / DRUM_PERIOD);
-      if (beats > state.beatCount) { state.beatCount = beats; onBeat(); }
+    // Ødegaard's drum: strike the two hits and flare the "row" roll, locked to row.mp3.
+    const dc = drumClock();
+    if (dc) {
+      const D = dc.dur, pos = dc.pos;
+      let strike = 0;
+      for (const ht of DRUM_HITS) {
+        let dt = pos - ht; if (dt < 0) dt += D;         // time since this hit last sounded
+        strike = Math.max(strike, clamp(1 - dt / 0.16, 0, 1));
+      }
+      state.drumHit = strike;
+      let dRoll = Math.abs(pos - DRUM_ROLL);
+      dRoll = Math.min(dRoll, D - dRoll);
+      state.rollCue = clamp(1 - dRoll / (ROLL_WINDOW / 1000 + 0.1), 0, 1);
+      state.usingAudioDrum = true;
+    } else {
+      state.usingAudioDrum = false;
+      if (state.drumStartAt) {
+        const beats = Math.floor((performance.now() - state.drumStartAt) / DRUM_PERIOD);
+        if (beats > state.beatCount) { state.beatCount = beats; state.drumHit = 1; state.rollCue = 1; playDrumAudio(); }
+      }
+      state.drumHit *= 0.8;
+      state.rollCue *= 0.9;
     }
-    state.drumHit *= 0.8;
     state.beatFlash *= 0.9;
+
+    // Falling footballer balls: one every BALL_INTERVAL ms (paused after we win the WC).
+    if (!state.won && performance.now() - state.lastBallAt >= BALL_INTERVAL) {
+      state.lastBallAt = performance.now();
+      spawnBall();
+    }
+    updateBalls();
+    state.hurtFlash *= 0.9;
 
     for (const f of state.flags) {
       if (f.dead) continue;
@@ -583,6 +1016,9 @@
 
     drawBoat();
 
+    drawBalls();
+    drawBoatHealth();
+
     // particles
     for (const p of state.particles) {
       ctx.globalAlpha = Math.max(0,p.life); ctx.fillStyle = p.col;
@@ -604,6 +1040,22 @@
       ctx.fill();
     }
 
+    // "ROW!" command flashes over the boat while Ødegaard rolls the drum
+    if (state.rollCue > 0.2) {
+      const rc = state.rollCue;
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, rc);
+      ctx.textAlign = 'center';
+      ctx.translate(BOAT_X() + state.drift * 0.45, waterY() - 150);
+      ctx.scale(1 + rc * 0.15, 1 + rc * 0.15);
+      ctx.font = 'bold 30px Trebuchet MS, sans-serif';
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(120,55,0,.6)';
+      ctx.strokeText('ROW!', 0, 0);
+      ctx.fillStyle = '#ffd23f';
+      ctx.fillText('ROW!', 0, 0);
+      ctx.restore();
+    }
+
     // "in sync" cue floating above the boat when rowing on the beat
     if (state.beatFlash > 0.15) {
       ctx.save();
@@ -618,6 +1070,14 @@
     }
 
     ctx.restore();
+
+    // red damage vignette when the boat is hit
+    if (state.hurtFlash > 0.02) {
+      const hg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.3, W / 2, H / 2, Math.max(W, H) * 0.72);
+      hg.addColorStop(0, 'rgba(200,16,40,0)');
+      hg.addColorStop(1, 'rgba(200,16,40,' + (state.hurtFlash * 0.5) + ')');
+      ctx.fillStyle = hg; ctx.fillRect(0, 0, W, H);
+    }
 
     drawDrummer();
   }
@@ -944,6 +1404,7 @@
     if (x0 < 6) return;   // no room on very narrow screens
 
     const beat = clamp(state.drumHit, 0, 1);   // 1 just struck -> 0
+    const roll = clamp(state.rollCue, 0, 1);    // building "row!" roll
 
     ctx.save();
     roundRectPath(ctx, x0, y0, pw, ph, 14);
@@ -960,7 +1421,7 @@
 
     // spotlight glow pulses with the beat
     const glow = ctx.createRadialGradient(cx, groundY - 62, 6, cx, groundY - 62, 92);
-    glow.addColorStop(0, 'rgba(255,220,130,' + (0.12 + beat * 0.33) + ')');
+    glow.addColorStop(0, 'rgba(255,220,130,' + (0.12 + Math.max(beat, roll) * 0.33) + ')');
     glow.addColorStop(1, 'rgba(255,220,130,0)');
     ctx.fillStyle = glow; ctx.fillRect(x0, y0, pw, ph);
 
@@ -979,7 +1440,7 @@
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 15px Trebuchet MS, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('8', 0, -49);                    // Ødegaard's number
+    ctx.fillText('10', 0, -49);                   // Ødegaard's number
 
     // neck + head
     ctx.fillStyle = '#f2c9a0';
@@ -1031,7 +1492,9 @@
     }
 
     // ---- arms + drumsticks (in front of drum) ----
-    const tipY = -58 + beat * 22;                 // raised between beats, down on the hit
+    // Slam on the two hits; hover low and tremble during the "row" roll.
+    const tremor = roll > 0.1 ? Math.sin(state.t * 0.9) * 4 * roll : 0;
+    const tipY = -58 + beat * 22 + roll * 20 + tremor;
     ctx.strokeStyle = '#f2c9a0'; ctx.lineWidth = 4; ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(-15, -70); ctx.lineTo(-16, tipY + 6);
@@ -1058,7 +1521,7 @@
     ctx.fillText('ØDEGAARD', x0 + 10, y0 + 17);
     ctx.font = '10px Trebuchet MS, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,.6)';
-    ctx.fillText('row on the beat', x0 + 10, y0 + 30);
+    ctx.fillText('row on the roll', x0 + 10, y0 + 30);
 
     ctx.restore();
   }
@@ -1074,6 +1537,7 @@
   function beginPress(side) {
     if (!state.running || state.pressing) return;
     initAudio();
+    startDrumAudio(false);   // recover playback if the Start-click autoplay was blocked
     state.pressing = true;
     state.pressStartedAt = performance.now();
     state.pressSide = normalizeSide(side);
@@ -1111,6 +1575,7 @@
 
   window.addEventListener('keydown', (e) => {
     if (!state.running || e.repeat) return;
+    if (!highscoreEl.classList.contains('hidden')) return;   // typing a high-score name
     if (e.code === 'KeyA' || e.code === 'ArrowLeft' || e.code === 'Space') {
       e.preventDefault();
       beginPress('L');
@@ -1123,6 +1588,7 @@
 
   window.addEventListener('keyup', (e) => {
     if (!state.running) return;
+    if (!highscoreEl.classList.contains('hidden')) return;   // typing a high-score name
     if (
       e.code === 'KeyA' || e.code === 'ArrowLeft' || e.code === 'Space' ||
       e.code === 'KeyD' || e.code === 'ArrowRight' || e.code === 'Enter'
@@ -1136,11 +1602,32 @@
     e.stopPropagation();
     introEl.classList.add('hidden');
     state.running = true;
+    // Ødegaard's drum cadence comes from media/row.mp3, looped.
+    startDrumAudio(true);
     state.drumStartAt = performance.now();
     state.beatCount = 0;
+    state.hp = state.maxHp;
+    state.balls = [];
+    state.hurtFlash = 0;
+    state.lastBallAt = performance.now();
+    state.nextMilestone = 0;
+    state.won = false;
+    milestoneEl.classList.remove('show', 'final');
+    highscoreEl.classList.add('hidden');
+    if (state.songAudio) { try { state.songAudio.pause(); } catch (_e) {} }
     updateMomentumBar();
     initAudio();
   });
+
+  // High-score window controls
+  hsSaveEl.addEventListener('click', submitScore);
+  hsCloseEl.addEventListener('click', () => highscoreEl.classList.add('hidden'));
+  hsNameEl.addEventListener('keydown', (e) => {
+    e.stopPropagation();                       // keep row keys from firing while typing
+    if (e.key === 'Enter') { e.preventDefault(); submitScore(); }
+  });
+  hsNameEl.addEventListener('keyup', (e) => e.stopPropagation());
+  highscoreEl.addEventListener('pointerdown', (e) => e.stopPropagation());
 
   updateMomentumBar();
   frame();
