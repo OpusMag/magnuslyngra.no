@@ -1,0 +1,1148 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Row for Norway</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+    background: #0a1a2f;
+    color: #fff;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* ---- Top bar ---- */
+  #hud {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 18px;
+    background: linear-gradient(180deg, #12263f, #0d1c30);
+    border-bottom: 2px solid #1f3d63;
+    box-shadow: 0 2px 12px rgba(0,0,0,.4);
+    z-index: 5;
+  }
+  #hud .brand { font-weight: bold; letter-spacing: .5px; }
+  #hud .brand small { opacity: .6; font-weight: normal; display:block; font-size: 11px; margin-top:2px;}
+  #hud .brand b { color:#ff5a5a; }
+  #rowbox {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 6px 16px;
+    border-radius: 10px;
+  }
+  #hudRight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #mombox {
+    min-width: 150px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 6px 12px;
+    border-radius: 10px;
+  }
+  #mombox .lbl {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    opacity: .75;
+    margin-bottom: 5px;
+    display: block;
+  }
+  #momTrack {
+    height: 9px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.32);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  #momFill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #2dd4bf, #facc15, #ef4444);
+    transition: width .14s linear;
+    box-shadow: 0 0 10px rgba(250, 204, 21, .45);
+  }
+  #rowbox .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 2px; opacity: .7; }
+  #rowcount {
+    font-size: 30px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #ffd54a;
+    text-shadow: 0 0 12px rgba(255,213,74,.5);
+    transition: transform .06s ease-out;
+  }
+  #rowcount.pop { transform: scale(1.25); }
+
+  /* ---- Canvas stage ---- */
+  #stage { position: relative; flex: 1 1 auto; cursor: pointer; }
+  canvas { display: block; width: 100%; height: 100%; }
+
+  /* ---- Victory overlay ---- */
+  #victory {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none; opacity: 0;
+  }
+  #victory span {
+    font-size: 14vw;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 0 0 30px #ffcf33, 0 6px 0 #b8860b, 0 0 80px #ff9500;
+    transform: scale(.2) rotate(-8deg);
+    background: linear-gradient(180deg,#fff 30%, #ffd23f);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,.4));
+  }
+  #victory.show { animation: vic 1.9s cubic-bezier(.2,.8,.2,1) forwards; }
+  #victory.show span { animation: vicText 1.9s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes vic { 0%{opacity:0} 12%{opacity:1} 78%{opacity:1} 100%{opacity:0} }
+  @keyframes vicText {
+    0%   { transform: scale(.2) rotate(-8deg); }
+    18%  { transform: scale(1.15) rotate(3deg); }
+    30%  { transform: scale(1) rotate(0deg); }
+    72%  { transform: scale(1.05) rotate(0deg); }
+    100% { transform: scale(2.4) rotate(0deg); opacity:0; }
+  }
+
+  /* ---- Start / instructions ---- */
+  #intro {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; gap: 14px;
+    background: rgba(4,12,24,.55);
+    backdrop-filter: blur(2px);
+    z-index: 4;
+  }
+  #intro h1 { font-size: clamp(28px, 6vw, 64px); }
+  #intro h1 .four { color:#ff5a5a; }
+  #intro p { max-width: 520px; line-height: 1.5; opacity: .9; padding: 0 20px; }
+  #intro .hint { font-size: 14px; opacity:.75; }
+  #intro button {
+    margin-top: 6px;
+    font: inherit; font-weight: 800; font-size: 18px;
+    padding: 14px 34px; border: none; border-radius: 40px; cursor: pointer;
+    background: linear-gradient(180deg,#ff6b6b,#e63946); color:#fff;
+    box-shadow: 0 6px 0 #a41f2b, 0 10px 20px rgba(0,0,0,.4);
+    transition: transform .05s;
+  }
+  #intro button:active { transform: translateY(4px); box-shadow: 0 2px 0 #a41f2b; }
+  #intro.hidden { display: none; }
+</style>
+
+<div id="hud">
+  <div class="brand"><span class="four">NOR</span> · Rows for Norway <small>Norway is rowing through every world cup opponent 🇳🇴🚣</small></div>
+  <div id="hudRight">
+    <div id="rowbox"><span class="lbl">Rows</span><span id="rowcount">0</span></div>
+    <div id="mombox">
+      <span class="lbl">Team Flow</span>
+      <div id="momTrack"><div id="momFill"></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="stage">
+  <canvas id="game"></canvas>
+  <div id="victory"><span>VICTORY</span></div>
+  <div id="intro">
+    <h1><span class="four">NOR</span> — Row for Glory</h1>
+    <p>Ola the Norwegian striker missed the pitch and ended up at sea.
+       <b>Click / tap</b> to row him to the right. Smash through every foreign flag in his way —
+       the first takes <b>10</b> strokes, the next <b>20</b>, then <b>30</b>… </p>
+    <button id="startBtn">🚣 Start rowing</button>
+    <p class="hint"><b>Martin Ødegaard</b> beats the drum in the top-right corner. Row <b>on his beat</b> to build Team Flow and smash flags faster. Hold for a heavy stroke; alternate left/right for sync.</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('game');
+  const ctx = cv.getContext('2d');
+  const stage = document.getElementById('stage');
+  const rowCountEl = document.getElementById('rowcount');
+  const momFillEl = document.getElementById('momFill');
+  const victoryEl = document.getElementById('victory');
+  const introEl = document.getElementById('intro');
+  const startBtn = document.getElementById('startBtn');
+
+  let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    W = stage.clientWidth; H = stage.clientHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // ---- Game state ----
+  const state = {
+    running: false,
+    rows: 0,
+    worldX: 0,        // how far the world has scrolled (px)
+    speed: 0,         // current forward speed of the world
+    t: 0,             // time (frames) for animation
+    stroke: 0,        // oar stroke animation progress 0..1
+    boatBob: 0,
+    flagIndex: 0,     // which flag number we're on (0-based)
+    flags: [],
+    particles: [],
+    splashes: [],
+    momentum: 24,
+    lastStrokeAt: 0,
+    prevInterval: 760,
+    timingWindowMs: 140,
+    expectedSide: 'L',
+    lastSide: 'R',
+    pressing: false,
+    pressStartedAt: 0,
+    pressSide: 'L',
+    rhythmPulse: 0,
+    cameraShake: 0,
+    drift: 0,
+    audioCtx: null,
+    audioGain: null,
+    // Ødegaard's drum / beat-sync
+    drumStartAt: 0,   // performance.now() when the beat clock started
+    beatCount: 0,     // how many beats have fired
+    drumHit: 0,       // drum strike animation 1 -> 0
+    beatFlash: 0,     // "in sync" feedback flash on the boat
+  };
+
+  const BOAT_X = () => Math.min(180, W * 0.28);   // player screen x
+  const FLAG_HIT_ZONE = 70;                       // px in front of boat where flag blocks
+  const SPACING = 700;                            // world px between flags
+  const DRUM_PERIOD = 760;                        // ms between Ødegaard's drum beats (ideal cadence)
+  const BEAT_WINDOW = 150;                         // ms tolerance around a beat for an in-sync stroke
+
+  // ---- Country flag drawing recipes ----
+  const FLAGS = [
+    { name:'Sweden',      draw:(g,w,h)=>{ g.fillStyle='#006aa7';g.fillRect(0,0,w,h); cross(g,w,h,'#fecc00'); } },
+    { name:'Denmark',     draw:(g,w,h)=>{ g.fillStyle='#c8102e';g.fillRect(0,0,w,h); cross(g,w,h,'#fff'); } },
+    { name:'Germany',     draw:(g,w,h)=>{ bands(g,w,h,['#000','#dd0000','#ffce00'],false); } },
+    { name:'France',      draw:(g,w,h)=>{ bands(g,w,h,['#0055a4','#fff','#ef4135'],true); } },
+    { name:'Italy',       draw:(g,w,h)=>{ bands(g,w,h,['#008c45','#fff','#cd212a'],true); } },
+    { name:'Netherlands', draw:(g,w,h)=>{ bands(g,w,h,['#ae1c28','#fff','#21468b'],false); } },
+    { name:'Spain',       draw:(g,w,h)=>{ g.fillStyle='#aa151b';g.fillRect(0,0,w,h); g.fillStyle='#f1bf00';g.fillRect(0,h*0.25,w,h*0.5); } },
+    { name:'Brazil',      draw:(g,w,h)=>{ g.fillStyle='#009c3b';g.fillRect(0,0,w,h);
+        g.fillStyle='#ffdf00'; g.beginPath(); g.moveTo(w/2,h*0.12); g.lineTo(w*0.9,h/2); g.lineTo(w/2,h*0.88); g.lineTo(w*0.1,h/2); g.closePath(); g.fill();
+        g.fillStyle='#002776'; g.beginPath(); g.arc(w/2,h/2,h*0.2,0,7); g.fill(); } },
+    { name:'England',     draw:(g,w,h)=>{ g.fillStyle='#fff';g.fillRect(0,0,w,h); cross(g,w,h,'#ce1124'); } },
+    { name:'Argentina',   draw:(g,w,h)=>{ bands(g,w,h,['#75aadb','#fff','#75aadb'],false);
+        g.fillStyle='#f6b40e'; g.beginPath(); g.arc(w/2,h/2,h*0.14,0,7); g.fill(); } },
+  ];
+  function bands(g,w,h,cols,vertical){
+    const n=cols.length;
+    for(let i=0;i<n;i++){ g.fillStyle=cols[i];
+      if(vertical) g.fillRect(i*w/n,0,w/n+1,h); else g.fillRect(0,i*h/n,w,h/n+1); }
+  }
+  function cross(g,w,h,col){
+    g.fillStyle=col;
+    const cx=w*0.32, tw=Math.max(4,h*0.16);
+    g.fillRect(cx-tw/2,0,tw,h);
+    g.fillRect(0,h/2-tw/2,w,tw);
+  }
+
+  function makeFlag(index) {
+    const number = index + 1;
+    const need = number * 10;
+    const recipe = FLAGS[index % FLAGS.length];
+    return {
+      number, need, hp: need, max: need,
+      worldX: (index + 1) * SPACING,   // absolute world position
+      recipe,
+      shake: 0,
+      wave: Math.random() * 6,
+      stance: 'neutral',
+      dead: false,
+    };
+  }
+  // pre-seed a few flags
+  for (let i = 0; i < 12; i++) state.flags.push(makeFlag(i));
+
+  // ---- Input: rowing ----
+  function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+  }
+
+  function normalizeSide(side) {
+    return side === 'R' ? 'R' : 'L';
+  }
+
+  function initAudio() {
+    if (state.audioCtx) return;
+    try {
+      state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      state.audioGain = state.audioCtx.createGain();
+      state.audioGain.gain.value = 0.16;
+      state.audioGain.connect(state.audioCtx.destination);
+    } catch (_e) {
+      state.audioCtx = null;
+      state.audioGain = null;
+    }
+  }
+
+  function playStrokeAudio(quality, heavy) {
+    if (!state.audioCtx || !state.audioGain) return;
+    const now = state.audioCtx.currentTime;
+    const hit = state.audioCtx.createOscillator();
+    const hitGain = state.audioCtx.createGain();
+    hit.type = heavy ? 'square' : 'triangle';
+    hit.frequency.value = heavy ? 96 : 132;
+    const amp = 0.12 + quality * 0.16;
+    hitGain.gain.setValueAtTime(amp, now);
+    hitGain.gain.exponentialRampToValueAtTime(0.0001, now + (heavy ? 0.18 : 0.12));
+    hit.connect(hitGain);
+    hitGain.connect(state.audioGain);
+    hit.start(now);
+    hit.stop(now + 0.22);
+
+    // Crowd swell layer reacts to flow and stroke quality.
+    const swell = state.audioCtx.createOscillator();
+    const swellGain = state.audioCtx.createGain();
+    swell.type = 'sine';
+    swell.frequency.value = 180 + state.momentum * 1.5;
+    swellGain.gain.setValueAtTime(0.0001, now);
+    swellGain.gain.linearRampToValueAtTime(0.02 + quality * 0.05, now + 0.05);
+    swellGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.25);
+    swell.connect(swellGain);
+    swellGain.connect(state.audioGain);
+    swell.start(now);
+    swell.stop(now + 0.26);
+  }
+
+  function playDrumAudio() {
+    if (!state.audioCtx || !state.audioGain) return;
+    const now = state.audioCtx.currentTime;
+    const osc = state.audioCtx.createOscillator();
+    const g = state.audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, now);
+    osc.frequency.exponentialRampToValueAtTime(52, now + 0.16);
+    g.gain.setValueAtTime(0.0001, now);
+    g.gain.linearRampToValueAtTime(0.13, now + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+    osc.connect(g); g.connect(state.audioGain);
+    osc.start(now); osc.stop(now + 0.32);
+  }
+
+  function onBeat() {
+    state.drumHit = 1;
+    playDrumAudio();
+  }
+
+  // ms distance to the nearest drum beat (Infinity before the drum starts)
+  function beatOffset(now) {
+    if (!state.drumStartAt) return Infinity;
+    const p = ((now - state.drumStartAt) % DRUM_PERIOD + DRUM_PERIOD) % DRUM_PERIOD;
+    return Math.min(p, DRUM_PERIOD - p);
+  }
+
+  function updateMomentumBar() {
+    momFillEl.style.width = state.momentum.toFixed(1) + '%';
+  }
+
+  function row({ chargeRatio = 0, side = 'L' } = {}) {
+    if (!state.running) return;
+    side = normalizeSide(side);
+
+    const now = performance.now();
+    const interval = state.lastStrokeAt ? (now - state.lastStrokeAt) : state.prevInterval;
+    const timingError = Math.abs(interval - state.prevInterval);
+    const timingScore = clamp(1 - timingError / state.timingWindowMs, 0, 1);
+    const rhythmScore = clamp(1 - Math.abs(interval - 760) / 380, 0, 1);
+    const syncOk = side === state.expectedSide;
+    const syncScore = syncOk ? 1 : 0.45;
+
+    const heavy = chargeRatio >= 0.28;
+    const chargeMult = heavy ? (1.2 + chargeRatio * 0.9) : 1;
+    const quality = timingScore * 0.45 + rhythmScore * 0.35 + syncScore * 0.2;
+
+    // How closely this stroke landed on Ødegaard's drum beat (1 = dead on).
+    const beatSync = clamp(1 - beatOffset(now) / BEAT_WINDOW, 0, 1);
+    const beatMult = 1 + beatSync * 0.9;   // in-sync strokes hit harder / drive faster
+
+    state.lastStrokeAt = now;
+    state.prevInterval = state.prevInterval * 0.65 + interval * 0.35;
+    state.expectedSide = state.expectedSide === 'L' ? 'R' : 'L';
+    state.lastSide = side;
+
+    state.rows++;
+    rowCountEl.textContent = state.rows;
+    rowCountEl.classList.remove('pop');
+    void rowCountEl.offsetWidth;
+    rowCountEl.classList.add('pop');
+
+    state.stroke = 1;              // trigger oar sweep
+    state.rhythmPulse = Math.max(state.rhythmPulse, 0.4 + quality * 0.7 + beatSync * 0.8);
+    state.cameraShake = Math.min(8, state.cameraShake + 1.2 + quality * 2.2 + (heavy ? 1.4 : 0));
+    const splashLife = 0.9 + quality * 0.55 + (heavy ? 0.35 : 0);
+    state.splashes.push({ x: BOAT_X() - 34 + state.drift * 0.35, y: waterY() + 6, life: splashLife });
+
+    if (!syncOk) state.drift += side === 'L' ? -2.4 : 2.4;
+    state.drift = clamp(Number.isFinite(state.drift) ? state.drift : 0, -24, 24);
+
+    // Rowing in time with the drum is what really fills Team Flow.
+    const flowDelta = (quality - 0.44) * 19 + beatSync * 7 + (heavy ? 1.6 : 0) - (syncOk ? 0 : 2.6);
+    state.momentum = clamp(state.momentum + flowDelta, 0, 100);
+    updateMomentumBar();
+    playStrokeAudio(quality, heavy);
+
+    if (beatSync > 0.55) {
+      state.beatFlash = Math.max(state.beatFlash, beatSync);
+      for (let i = 0; i < 6; i++) {
+        state.particles.push({
+          x: BOAT_X() + state.drift * 0.45, y: waterY() - 60,
+          vx: (Math.random() - 0.5) * 5, vy: -Math.random() * 5 - 2,
+          life: 0.9, size: 2 + Math.random() * 3,
+          col: pick(['#ffd23f', '#fff3b0', '#ffb703'])
+        });
+      }
+    }
+
+    const activeFlag = currentFlag();
+    if (activeFlag && flagIsBlocking(activeFlag)) {
+      // strike the flag instead of moving forward
+      const stanceMult = activeFlag.stance === 'open' ? 1.45 : activeFlag.stance === 'brace' ? 0.55 : 1;
+      const damage = (0.75 + quality * 0.95 + state.momentum * 0.012) * chargeMult * stanceMult * beatMult;
+      activeFlag.hp -= damage;
+      activeFlag.shake = 1;
+      for (let i = 0; i < (heavy ? 5 : 2); i++) {
+        state.particles.push({
+          x: flagScreenX(activeFlag), y: waterY() - 120,
+          vx: (Math.random() - 0.5) * 10, vy: -Math.random() * 6 - 1,
+          life: 0.8, size: 2 + Math.random() * 3,
+          col: '#ffffff'
+        });
+      }
+      spawnHitParticles(flagScreenX(activeFlag), waterY() - 120, activeFlag.recipe);
+      if (activeFlag.hp <= 0) destroyFlag(activeFlag);
+    } else {
+      const propel = (2.4 + quality * 3.1 + state.momentum * 0.03) * chargeMult * beatMult;
+      state.speed += propel;          // propel the boat forward
+    }
+  }
+
+  function currentFlag() {
+    return state.flags.find(f => !f.dead);
+  }
+  function flagScreenX(f) { return f.worldX - state.worldX + BOAT_X(); }
+  function flagIsBlocking(f) {
+    const dx = flagScreenX(f) - BOAT_X();
+    return dx <= FLAG_HIT_ZONE && dx > -10;
+  }
+
+  function destroyFlag(f) {
+    f.dead = true;
+    state.flagIndex++;
+    // burst
+    for (let i = 0; i < 60; i++) {
+      state.particles.push({
+        x: flagScreenX(f), y: waterY() - 120,
+        vx: (Math.random()-0.5)*10, vy: -Math.random()*9 - 2,
+        life: 1, size: 3 + Math.random()*5,
+        col: pick(['#ffd23f','#ff5a5a','#ffffff','#00b4d8','#ef476f'])
+      });
+    }
+    playVictory();
+    // keep the pipeline full
+    const maxIdx = state.flags.reduce((m,x)=>Math.max(m,x.number),0);
+    state.flags.push(makeFlag(maxIdx)); // maxIdx is next number-1
+  }
+
+  function playVictory() {
+    victoryEl.classList.remove('show');
+    void victoryEl.offsetWidth;
+    victoryEl.classList.add('show');
+  }
+
+  function spawnHitParticles(x, y, recipe) {
+    for (let i = 0; i < 8; i++) {
+      state.particles.push({
+        x, y, vx:(Math.random()-0.5)*6, vy:-Math.random()*6-1,
+        life:1, size:2+Math.random()*4,
+        col: pick(['#fff','#ffd23f','#ff5a5a'])
+      });
+    }
+  }
+  const pick = a => a[(Math.random()*a.length)|0];
+
+  // ---- Layout helpers ----
+  function waterY() { return H * 0.62; }
+
+  // ---- Update ----
+  function update() {
+    state.t++;
+    state.boatBob = Math.sin(state.t * 0.06) * 4;
+    state.cameraShake *= 0.82;
+    state.rhythmPulse *= 0.88;
+    state.drift = Number.isFinite(state.drift) ? state.drift * 0.9 : 0;
+
+    // Ødegaard keeps a steady beat; fire onBeat when we cross a beat boundary.
+    const nowMs = performance.now();
+    if (state.drumStartAt) {
+      const beats = Math.floor((nowMs - state.drumStartAt) / DRUM_PERIOD);
+      if (beats > state.beatCount) { state.beatCount = beats; onBeat(); }
+    }
+    state.drumHit *= 0.8;
+    state.beatFlash *= 0.9;
+
+    for (const f of state.flags) {
+      if (f.dead) continue;
+      const phase = Math.sin(state.t * 0.045 + f.wave * 2.1);
+      f.stance = phase > 0.26 ? 'open' : phase < -0.18 ? 'brace' : 'neutral';
+    }
+
+    // friction
+    const friction = 0.935 + state.momentum * 0.00035;
+    state.speed *= friction;
+    if (state.speed < 0.02) state.speed = 0;
+
+    // Passive flow decay if cadence fades.
+    if (state.t % 10 === 0 && performance.now() - state.lastStrokeAt > 900) {
+      state.momentum = clamp(state.momentum - 0.9, 0, 100);
+      updateMomentumBar();
+    }
+
+    // don't let boat push past a blocking flag
+    const f = currentFlag();
+    if (f) {
+      const nextX = state.worldX + state.speed;
+      const dxAtNext = (f.worldX - nextX + BOAT_X()) - BOAT_X();
+      if (dxAtNext <= FLAG_HIT_ZONE) {
+        state.worldX = f.worldX - FLAG_HIT_ZONE;   // clamp against flag
+        state.speed = 0;
+      } else {
+        state.worldX = nextX;
+      }
+    } else {
+      state.worldX += state.speed;
+    }
+
+    // stroke anim decay
+    if (state.stroke > 0) state.stroke = Math.max(0, state.stroke - 0.06);
+    if (f) f.shake = Math.max(0, f.shake - 0.08);
+
+    // particles
+    for (const p of state.particles) { p.x+=p.vx; p.y+=p.vy; p.vy+=0.35; p.life-=0.02; }
+    state.particles = state.particles.filter(p => p.life > 0);
+    for (const s of state.splashes) { s.life -= 0.05; }
+    state.splashes = state.splashes.filter(s => s.life > 0);
+  }
+
+  // ---- Render ----
+  function draw() {
+    // camera shake feedback
+    ctx.save();
+    if (state.cameraShake > 0.1) {
+      ctx.translate((Math.random() - 0.5) * state.cameraShake, (Math.random() - 0.5) * state.cameraShake * 0.6);
+    }
+
+    // sky
+    const sky = ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#7ec8e3'); sky.addColorStop(.6,'#bfe6f2'); sky.addColorStop(1,'#eaf7fb');
+    ctx.fillStyle = sky; ctx.fillRect(0,0,W,H);
+
+    // sun
+    ctx.fillStyle = 'rgba(255,224,130,.9)';
+    ctx.beginPath(); ctx.arc(W*0.82, H*0.2, 46, 0, 7); ctx.fill();
+
+    // clouds (parallax slow)
+    drawClouds();
+
+    // water
+    const wy = waterY();
+    const sea = ctx.createLinearGradient(0,wy,0,H);
+    sea.addColorStop(0,'#2a9df4'); sea.addColorStop(1,'#0b5fa5');
+    ctx.fillStyle = sea; ctx.fillRect(0,wy,W,H-wy);
+    drawWaves(wy);
+
+    // flags (behind boat if ahead)
+    for (const f of state.flags) if (!f.dead) drawFlag(f);
+
+    // splashes
+    for (const s of state.splashes) {
+      ctx.globalAlpha = Math.min(1, s.life); ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(s.x, s.y, Math.max(0, 8*(1-s.life)+3), 0, 7); ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    drawBoat();
+
+    // particles
+    for (const p of state.particles) {
+      ctx.globalAlpha = Math.max(0,p.life); ctx.fillStyle = p.col;
+      ctx.fillRect(p.x, p.y, p.size, p.size);
+    }
+    ctx.globalAlpha = 1;
+
+    // pulse around boat on well-timed strokes
+    if (state.rhythmPulse > 0.08) {
+      const gx = BOAT_X() + state.drift * 0.45;
+      const gy = waterY() - 42;
+      const r = 20 + state.rhythmPulse * 28;
+      const grad = ctx.createRadialGradient(gx, gy, 4, gx, gy, r);
+      grad.addColorStop(0, 'rgba(255,255,255,0.34)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(gx, gy, r, 0, 7);
+      ctx.fill();
+    }
+
+    // "in sync" cue floating above the boat when rowing on the beat
+    if (state.beatFlash > 0.15) {
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, state.beatFlash);
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 20px Trebuchet MS, sans-serif';
+      ctx.fillStyle = '#ffe27a';
+      ctx.shadowColor = 'rgba(255,180,40,.9)';
+      ctx.shadowBlur = 12;
+      ctx.fillText('IN SYNC!', BOAT_X() + state.drift * 0.45, waterY() - 118 - state.beatFlash * 10);
+      ctx.restore();
+    }
+
+    ctx.restore();
+
+    drawDrummer();
+  }
+
+  const clouds = [{x:0.1,y:0.15,s:1},{x:0.45,y:0.28,s:.8},{x:0.7,y:0.1,s:1.2},{x:0.9,y:0.32,s:.7}];
+  function drawClouds() {
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    for (const c of clouds) {
+      let x = ((c.x*W - state.worldX*0.05) % (W+200));
+      if (x < -200) x += (W+200);
+      const y = c.y*H, s=c.s;
+      cloud(x,y,s);
+    }
+  }
+  function cloud(x,y,s){
+    ctx.beginPath();
+    ctx.arc(x,y,22*s,0,7); ctx.arc(x+26*s,y+6*s,18*s,0,7);
+    ctx.arc(x-26*s,y+6*s,16*s,0,7); ctx.arc(x,y+10*s,20*s,0,7);
+    ctx.fill();
+  }
+
+  function drawWaves(wy) {
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2;
+    for (let layer=0; layer<3; layer++){
+      ctx.beginPath();
+      const off = state.worldX*(0.5+layer*0.3) ;
+      const yy = wy + 14 + layer*22;
+      for (let x=-20; x<=W+20; x+=14){
+        const y = yy + Math.sin((x+off)*0.05 + state.t*0.05 + layer)*4;
+        if (x===-20) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+  }
+
+  function drawFlag(f) {
+    const x = flagScreenX(f);
+    if (x < -120 || x > W + 160) return;
+    const wy = waterY();
+    const shake = f.shake * (Math.random()-0.5) * 8;
+    const poleX = x + shake;
+    const baseY = wy + 4;
+    const poleTop = baseY - 150;
+
+    // small buoy/raft under the pole
+    ctx.fillStyle = '#5b3a1e';
+    ctx.beginPath(); ctx.ellipse(poleX, baseY+4, 34, 10, 0, 0, 7); ctx.fill();
+
+    // pole
+    ctx.fillStyle = '#d8d8d8';
+    ctx.fillRect(poleX-3, poleTop, 6, 154);
+    ctx.fillStyle = '#ffd23f';
+    ctx.beginPath(); ctx.arc(poleX, poleTop, 5, 0, 7); ctx.fill();
+
+    // cloth (waving) drawn to offscreen then flag recipe
+    const fw = 78, fh = 50;
+    const sway = Math.sin(state.t*0.08 + f.wave) * 5;
+    ctx.save();
+    ctx.translate(poleX+3, poleTop + 6);
+    // draw the country flag via clipped strips for a wave feel
+    const cols = 6;
+    for (let i=0;i<cols;i++){
+      const sx = i*fw/cols;
+      const wob = Math.sin(state.t*0.08 + f.wave + i*0.5) * (4 + i*0.8);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(sx, wob, fw/cols+1, fh);
+      ctx.clip();
+      ctx.translate(0, wob);
+      // render whole flag into this strip window
+      f.recipe.draw(makeStripCtx(ctx), fw, fh);
+      ctx.restore();
+    }
+    ctx.restore();
+
+    // HP bar + remaining count + defensive stance cue
+    const remain = Math.max(0, Math.ceil(f.hp));
+    ctx.save();
+    ctx.translate(poleX, poleTop - 22);
+    // label
+    ctx.textAlign='center';
+    ctx.font = 'bold 15px Trebuchet MS, sans-serif';
+    ctx.fillStyle = '#04233f';
+    ctx.fillText(remain + ' strokes', 0, -8);
+    ctx.font = 'bold 11px Trebuchet MS, sans-serif';
+    if (f.stance === 'open') {
+      ctx.fillStyle = '#0b7a31';
+      ctx.fillText('OPEN', 0, 7);
+    } else if (f.stance === 'brace') {
+      ctx.fillStyle = '#9b1c1c';
+      ctx.fillText('BRACE', 0, 7);
+    } else {
+      ctx.fillStyle = '#4a647f';
+      ctx.fillText('READY', 0, 7);
+    }
+    // bar
+    const bw = 84, bh = 8;
+    ctx.fillStyle = 'rgba(0,0,0,.25)'; ctx.fillRect(-bw/2-2,10,bw+4,bh+4);
+    ctx.fillStyle = '#3a3a3a'; ctx.fillRect(-bw/2,12,bw,bh);
+    const pct = f.hp / f.max;
+    ctx.fillStyle = pct>0.5?'#4caf50':pct>0.25?'#ffb300':'#ef4444';
+    ctx.fillRect(-bw/2, 12, bw*pct, bh);
+    ctx.restore();
+  }
+  // small helper so recipe functions can draw with translated ctx
+  function makeStripCtx(g){ return g; }
+
+  function drawBoat() {
+    const safeDrift = Number.isFinite(state.drift) ? state.drift : 0;
+    const bx = BOAT_X() + safeDrift * 0.45;
+    const wy = waterY();
+    const bob = state.boatBob;
+    const y = wy + bob;
+
+    ctx.save();
+    ctx.translate(bx, y);
+
+    // oar (animated) - behind body
+    const sw = state.stroke; // 1 at catch -> 0 rest
+    const oarAngle = -0.6 + sw * 1.25;
+    ctx.save();
+    ctx.translate(-6, -34);
+    ctx.rotate(oarAngle);
+    ctx.strokeStyle = '#8a5a2b'; ctx.lineWidth = 5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(46,26); ctx.stroke();
+    ctx.fillStyle = '#a86b34';
+    ctx.beginPath(); ctx.ellipse(48,28,9,5,0.6,0,7); ctx.fill();
+    ctx.restore();
+
+    // Viking hull
+    ctx.fillStyle = '#6c3510';
+    ctx.beginPath();
+    ctx.moveTo(-76, -12);
+    ctx.quadraticCurveTo(-86, 18, -30, 24);
+    ctx.lineTo(44, 24);
+    ctx.quadraticCurveTo(90, 20, 74, -16);
+    ctx.quadraticCurveTo(66, -30, 78, -44);
+    ctx.quadraticCurveTo(84, -50, 90, -40);
+    ctx.quadraticCurveTo(80, -26, 84, -16);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#8b4717';
+    ctx.fillRect(-70, -14, 148, 8);
+
+    // dragon head prow
+    ctx.save();
+    ctx.translate(88, -42);
+    ctx.rotate(0.16);
+    ctx.fillStyle = '#8b4717';
+    ctx.beginPath();
+    ctx.moveTo(-8, 6);
+    ctx.quadraticCurveTo(8, -20, 24, -16);
+    ctx.quadraticCurveTo(30, -12, 26, -4);
+    ctx.quadraticCurveTo(34, -10, 40, -2);
+    ctx.quadraticCurveTo(26, 6, 10, 12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#d6b26a';
+    ctx.beginPath();
+    ctx.moveTo(20, -14);
+    ctx.lineTo(30, -26);
+    ctx.lineTo(34, -12);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath();
+    ctx.arc(22, -8, 2.5, 0, 7);
+    ctx.fill();
+    ctx.fillStyle = '#1f1f1f';
+    ctx.beginPath();
+    ctx.arc(22.2, -8, 1.2, 0, 7);
+    ctx.fill();
+    ctx.restore();
+
+    // stern curl
+    ctx.strokeStyle = '#8b4717';
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(-74, -12);
+    ctx.quadraticCurveTo(-88, -30, -74, -46);
+    ctx.stroke();
+
+    // shields along the sides
+    const shieldX = [-52, -28, -4, 20, 44, 68];
+    const shieldCol = ['#c72636', '#f1efe8', '#0e4fa8', '#c72636', '#f1efe8', '#0e4fa8'];
+    for (let i = 0; i < shieldX.length; i++) {
+      ctx.fillStyle = shieldCol[i];
+      ctx.beginPath();
+      ctx.arc(shieldX[i], 7, 7, 0, 7);
+      ctx.fill();
+      ctx.strokeStyle = '#d9b57a';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = '#8b5a2b';
+      ctx.beginPath();
+      ctx.arc(shieldX[i], 7, 1.5, 0, 7);
+      ctx.fill();
+    }
+
+    // mast and sail with Viking style motif
+    ctx.fillStyle = '#704214';
+    ctx.fillRect(6, -92, 6, 80);
+    ctx.strokeStyle = '#704214';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(9, -90);
+    ctx.lineTo(-32, -74);
+    ctx.stroke();
+
+    ctx.save();
+    ctx.translate(9, -88);
+    ctx.rotate(0.02);
+    ctx.fillStyle = '#efe6cf';
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(-54, 16);
+    ctx.lineTo(-54, 62);
+    ctx.lineTo(0, 48);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#c9b48c';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.strokeStyle = '#b1323c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-6, 8);
+    ctx.lineTo(-48, 20);
+    ctx.moveTo(-4, 22);
+    ctx.lineTo(-48, 34);
+    ctx.moveTo(-2, 36);
+    ctx.lineTo(-48, 48);
+    ctx.stroke();
+    ctx.restore();
+
+    // --- Haaland-inspired Norwegian striker ---
+    const lean = sw * 6;
+
+    // legs / shorts
+    ctx.fillStyle = '#f5f5f7';
+    ctx.fillRect(3, -10, 11, 18);
+    ctx.fillStyle = '#13294b';
+    ctx.fillRect(3, -10, 11, 6);
+
+    // jersey (red with blue-white cross style details)
+    ctx.fillStyle = '#c8102e';
+    ctx.beginPath();
+    ctx.moveTo(-7-lean, -50);
+    ctx.lineTo(17-lean, -50);
+    ctx.lineTo(18, -8);
+    ctx.lineTo(-5, -8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#133b7a';
+    ctx.fillRect(2-lean, -50, 5, 42);
+    ctx.fillRect(-7-lean, -33, 25, 5);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(3-lean, -50, 2, 42);
+    ctx.fillRect(-7-lean, -32, 25, 2);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 12px Trebuchet MS';
+    ctx.textAlign = 'center';
+    ctx.fillText('9', 6-lean, -21);
+
+    // arms reaching to oar
+    ctx.strokeStyle = '#f2c9a0'; ctx.lineWidth = 5; ctx.lineCap='round';
+    ctx.beginPath();
+    ctx.moveTo(2-lean, -42);
+    ctx.lineTo(-8 - sw*8, -34 + sw*7);
+    ctx.stroke();
+
+    // head and hair tied back (Haaland-inspired)
+    ctx.fillStyle = '#f2c9a0';
+    ctx.beginPath();
+    ctx.arc(5-lean, -58, 10, 0, 7);
+    ctx.fill();
+
+    ctx.fillStyle = '#e7cb62';
+    ctx.beginPath();
+    ctx.arc(5-lean, -61, 10, Math.PI, 2*Math.PI);
+    ctx.fill();
+    ctx.fillRect(10-lean, -61, 8, 4);
+    ctx.beginPath();
+    ctx.arc(18-lean, -59, 3, 0, 7);
+    ctx.fill();
+
+    // subtle facial definition
+    ctx.strokeStyle = '#c2926b';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(2-lean, -56);
+    ctx.lineTo(8-lean, -56);
+    ctx.moveTo(4-lean, -52);
+    ctx.lineTo(10-lean, -51);
+    ctx.stroke();
+
+    // charge indicator while holding stroke
+    if (state.pressing) {
+      const held = performance.now() - state.pressStartedAt;
+      const c = clamp((held - 60) / 700, 0, 1);
+      ctx.strokeStyle = c > 0.28 ? '#f59e0b' : '#d1d5db';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(4, -74, 12, -Math.PI / 2, -Math.PI / 2 + c * Math.PI * 2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function roundRectPath(g, x, y, w, h, r) {
+    g.beginPath();
+    g.moveTo(x + r, y);
+    g.arcTo(x + w, y, x + w, y + h, r);
+    g.arcTo(x + w, y + h, x, y + h, r);
+    g.arcTo(x, y + h, x, y, r);
+    g.arcTo(x, y, x + w, y, r);
+    g.closePath();
+  }
+
+  // ---- Martin Ødegaard drumming (top-right corner, keeps the beat) ----
+  function drawDrummer() {
+    const pw = 156, ph = 138;
+    const x0 = W - pw - 12, y0 = 12;
+    if (x0 < 6) return;   // no room on very narrow screens
+
+    const beat = clamp(state.drumHit, 0, 1);   // 1 just struck -> 0
+
+    ctx.save();
+    roundRectPath(ctx, x0, y0, pw, ph, 14);
+    ctx.save();
+    ctx.clip();
+
+    // stadium backdrop
+    const bg = ctx.createLinearGradient(0, y0, 0, y0 + ph);
+    bg.addColorStop(0, '#0c2647'); bg.addColorStop(1, '#071426');
+    ctx.fillStyle = bg; ctx.fillRect(x0, y0, pw, ph);
+
+    const cx = x0 + pw / 2;
+    const groundY = y0 + ph - 14;
+
+    // spotlight glow pulses with the beat
+    const glow = ctx.createRadialGradient(cx, groundY - 62, 6, cx, groundY - 62, 92);
+    glow.addColorStop(0, 'rgba(255,220,130,' + (0.12 + beat * 0.33) + ')');
+    glow.addColorStop(1, 'rgba(255,220,130,0)');
+    ctx.fillStyle = glow; ctx.fillRect(x0, y0, pw, ph);
+
+    const bob = beat * 3;                        // whole figure dips on the hit
+    const idle = Math.sin(state.t * 0.05) * 1.5;
+    ctx.translate(cx, groundY + bob + idle);
+
+    // ---- figure (torso + head drawn behind the drum) ----
+    ctx.fillStyle = '#c8102e';                    // Norway red jersey
+    ctx.beginPath();
+    ctx.moveTo(-16, -74); ctx.lineTo(16, -74);
+    ctx.lineTo(20, -30); ctx.lineTo(-20, -30);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#0e3a7a';
+    ctx.fillRect(-16, -74, 32, 4);                // collar
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 15px Trebuchet MS, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('8', 0, -49);                    // Ødegaard's number
+
+    // neck + head
+    ctx.fillStyle = '#f2c9a0';
+    ctx.fillRect(-5, -84, 10, 12);
+    ctx.beginPath(); ctx.arc(0, -92, 11, 0, 7); ctx.fill();
+    // hair — short, side-parted, dark blond
+    ctx.fillStyle = '#8a6a3a';
+    ctx.beginPath(); ctx.arc(0, -94, 11, Math.PI * 1.02, Math.PI * 2.05); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(-11, -94); ctx.quadraticCurveTo(-12, -85, -5, -85);
+    ctx.lineTo(-2, -94); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = '#c2926b'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(3, -92); ctx.lineTo(7, -91); ctx.stroke();
+
+    // ---- marching drum in front of the body ----
+    const drumTopY = -34, drumBotY = -4, drumHalf = 33;
+    const squash = beat * 3;
+    ctx.fillStyle = '#c19a6b';
+    ctx.beginPath();
+    ctx.moveTo(-drumHalf, drumTopY + squash);
+    ctx.lineTo(-drumHalf, drumBotY);
+    ctx.quadraticCurveTo(0, drumBotY + 8, drumHalf, drumBotY);
+    ctx.lineTo(drumHalf, drumTopY + squash);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#c8102e';
+    ctx.fillRect(-drumHalf, drumTopY + squash, drumHalf * 2, 5);
+    ctx.fillRect(-drumHalf, drumBotY - 5, drumHalf * 2, 5);
+    ctx.strokeStyle = '#e8e2d0'; ctx.lineWidth = 1.5;   // tension ropes
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const xx = -drumHalf + (i / 6) * drumHalf * 2;
+      ctx.moveTo(xx, drumTopY + squash + 4);
+      ctx.lineTo(xx + drumHalf / 6, drumBotY - 4);
+    }
+    ctx.stroke();
+    // drum head
+    ctx.fillStyle = '#f2e8cf';
+    ctx.beginPath();
+    ctx.ellipse(0, drumTopY + squash, drumHalf, 11 - squash * 0.2, 0, 0, 7);
+    ctx.fill();
+    ctx.strokeStyle = '#a11627'; ctx.lineWidth = 2; ctx.stroke();
+    if (beat > 0.05) {                            // impact ripple on the head
+      ctx.globalAlpha = beat * 0.85;
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.ellipse(0, drumTopY + squash, drumHalf * (1.12 - beat), 11 * (1.12 - beat), 0, 0, 7);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    // ---- arms + drumsticks (in front of drum) ----
+    const tipY = -58 + beat * 22;                 // raised between beats, down on the hit
+    ctx.strokeStyle = '#f2c9a0'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-15, -70); ctx.lineTo(-16, tipY + 6);
+    ctx.moveTo(15, -70); ctx.lineTo(16, tipY + 6);
+    ctx.stroke();
+    ctx.strokeStyle = '#e8d3a0'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-16, tipY + 6); ctx.lineTo(-8, tipY - 6);
+    ctx.moveTo(16, tipY + 6); ctx.lineTo(8, tipY - 6);
+    ctx.stroke();
+    ctx.fillStyle = '#f3e4bf';
+    ctx.beginPath();
+    ctx.arc(-8, tipY - 6, 2.5, 0, 7); ctx.arc(8, tipY - 6, 2.5, 0, 7);
+    ctx.fill();
+
+    ctx.restore();   // end clip
+
+    // panel frame + label
+    roundRectPath(ctx, x0, y0, pw, ph, 14);
+    ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.9)';
+    ctx.font = 'bold 12px Trebuchet MS, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('ØDEGAARD', x0 + 10, y0 + 17);
+    ctx.font = '10px Trebuchet MS, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,.6)';
+    ctx.fillText('row on the beat', x0 + 10, y0 + 30);
+
+    ctx.restore();
+  }
+
+  // ---- Loop ----
+  function frame() {
+    if (state.running) update();
+    draw();
+    requestAnimationFrame(frame);
+  }
+
+  // ---- Wire up input ----
+  function beginPress(side) {
+    if (!state.running || state.pressing) return;
+    initAudio();
+    state.pressing = true;
+    state.pressStartedAt = performance.now();
+    state.pressSide = normalizeSide(side);
+  }
+
+  function endPress() {
+    if (!state.running || !state.pressing) return;
+    const held = performance.now() - state.pressStartedAt;
+    state.pressing = false;
+    const chargeRatio = clamp((held - 60) / 700, 0, 1);
+    row({ chargeRatio, side: state.pressSide });
+  }
+
+  function sideFromPointerEvent(e) {
+    const rect = stage.getBoundingClientRect();
+    if (!rect.width) return state.expectedSide;
+    const x = Number.isFinite(e.clientX) ? e.clientX - rect.left : rect.width * 0.5;
+    return x < rect.width * 0.5 ? 'L' : 'R';
+  }
+
+  stage.addEventListener('pointerdown', (e) => {
+    if (!state.running) return;
+    e.preventDefault();
+    beginPress(sideFromPointerEvent(e));
+  });
+  stage.addEventListener('pointerup', (e) => {
+    if (!state.running) return;
+    e.preventDefault();
+    endPress();
+  });
+  stage.addEventListener('pointercancel', endPress);
+  stage.addEventListener('pointerleave', () => {
+    if (state.pressing) endPress();
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (!state.running || e.repeat) return;
+    if (e.code === 'KeyA' || e.code === 'ArrowLeft' || e.code === 'Space') {
+      e.preventDefault();
+      beginPress('L');
+    }
+    if (e.code === 'KeyD' || e.code === 'ArrowRight' || e.code === 'Enter') {
+      e.preventDefault();
+      beginPress('R');
+    }
+  });
+
+  window.addEventListener('keyup', (e) => {
+    if (!state.running) return;
+    if (
+      e.code === 'KeyA' || e.code === 'ArrowLeft' || e.code === 'Space' ||
+      e.code === 'KeyD' || e.code === 'ArrowRight' || e.code === 'Enter'
+    ) {
+      e.preventDefault();
+      endPress();
+    }
+  });
+
+  startBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    introEl.classList.add('hidden');
+    state.running = true;
+    state.drumStartAt = performance.now();
+    state.beatCount = 0;
+    updateMomentumBar();
+    initAudio();
+  });
+
+  updateMomentumBar();
+  frame();
+})();
+</script>
