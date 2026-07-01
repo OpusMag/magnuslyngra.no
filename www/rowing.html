@@ -46,6 +46,18 @@
     align-items: center;
     gap: 10px;
   }
+  #stopRunBtn {
+    font: inherit;
+    font-weight: 800;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: linear-gradient(180deg,#1f3658,#12263f);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  #stopRunBtn.hidden { display: none; }
   #mombox {
     min-width: 150px;
     background: rgba(255,255,255,.06);
@@ -210,7 +222,23 @@
     border-radius: 10px; cursor: pointer;
   }
   #hsSave { background: linear-gradient(180deg,#ff6b6b,#e63946); color: #fff; }
-  #hsClose { background: rgba(255,255,255,.12); color: #fff; margin-top: 4px; width: 100%; }
+  #hsContinue,
+  #hsBackIntro {
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    margin-top: 4px;
+    width: 100%;
+  }
+  #hsContinue[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+  }
+  #hsMsg {
+    font-size: 13px;
+    margin: 8px 0 12px;
+    opacity: .85;
+    min-height: 18px;
+  }
 </style>
 
 <div id="hud">
@@ -221,6 +249,7 @@
       <span class="lbl">Team Flow</span>
       <div id="momTrack"><div id="momFill"></div></div>
     </div>
+    <button id="stopRunBtn" class="hidden">Stop rowing</button>
   </div>
 </div>
 
@@ -240,14 +269,16 @@
 
 <div id="highscore" class="hidden">
   <div class="hs-card">
-    <h2>VM-VINNERE:</h2>
-    <div class="hs-sub">🏆 VI HAR VUNNET VM! Skriv inn navnet ditt:</div>
+    <h2 id="hsTitle">VM-VINNERE:</h2>
+    <div id="hsSub" class="hs-sub">🏆 VI HAR VUNNET VM! Skriv inn navnet ditt:</div>
     <ol id="hsList"></ol>
+    <div id="hsMsg"></div>
     <div class="hs-form">
       <input id="hsName" type="text" maxlength="16" placeholder="Navn" autocomplete="off" />
       <button id="hsSave">Lagre</button>
     </div>
-    <button id="hsClose">Fortsett å ro</button>
+    <button id="hsContinue">Fortsett å ro</button>
+    <button id="hsBackIntro">Til startskjermen</button>
   </div>
 </div>
 
@@ -264,9 +295,14 @@
   const milestoneEl = document.getElementById('milestone');
   const highscoreEl = document.getElementById('highscore');
   const hsListEl = document.getElementById('hsList');
+  const hsTitleEl = document.getElementById('hsTitle');
+  const hsSubEl = document.getElementById('hsSub');
+  const hsMsgEl = document.getElementById('hsMsg');
   const hsNameEl = document.getElementById('hsName');
   const hsSaveEl = document.getElementById('hsSave');
-  const hsCloseEl = document.getElementById('hsClose');
+  const hsContinueEl = document.getElementById('hsContinue');
+  const hsBackIntroEl = document.getElementById('hsBackIntro');
+  const stopRunBtnEl = document.getElementById('stopRunBtn');
 
   let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
   function resize() {
@@ -326,6 +362,11 @@
     nextMilestone: 0,
     won: false,
     songAudio: null,
+    endlessMode: false,
+    hsMode: 'winner',
+    pendingScoreRows: 0,
+    pendingScoreCanSave: false,
+    pendingScoreSaved: false,
   };
 
   // Row-count milestones through the World Cup.
@@ -393,8 +434,12 @@
       dead: false,
     };
   }
+  function seedFlags() {
+    state.flags = [];
+    for (let i = 0; i < 12; i++) state.flags.push(makeFlag(i));
+  }
   // pre-seed a few flags
-  for (let i = 0; i < 12; i++) state.flags.push(makeFlag(i));
+  seedFlags();
 
   // ---- Input: rowing ----
   function clamp(v, min, max) {
@@ -587,7 +632,7 @@
     if (state.drumSource) { try { state.drumSource.stop(); } catch (_e) {} state.drumSource = null; }
     if (state.drumAudio) { try { state.drumAudio.pause(); } catch (_e) {} }
     playVictorySong();
-    openHighscore();
+    openWinnerHighscore();
   }
 
   function playVictorySong() {
@@ -613,8 +658,16 @@
   function escapeHtml(s) {
     return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   }
+  function topScores(limit = 10) {
+    return loadScores().slice().sort((a, b) => b.rows - a.rows).slice(0, limit);
+  }
+  function scoreQualifiesForTop10(rows) {
+    const top = topScores(10);
+    if (top.length < 10) return true;
+    return rows >= top[top.length - 1].rows;
+  }
   function renderScores(highlightTs) {
-    const list = loadScores().slice().sort((a, b) => b.rows - a.rows).slice(0, 10);
+    const list = topScores(10);
     hsListEl.innerHTML = '';
     if (!list.length) {
       const li = document.createElement('li');
@@ -636,14 +689,168 @@
     highscoreEl.classList.remove('hidden');
     setTimeout(() => { try { hsNameEl.focus(); } catch (_e) {} }, 30);
   }
+  function openWinnerHighscore() {
+    state.hsMode = 'winner';
+    state.pendingScoreRows = state.rows;
+    state.pendingScoreCanSave = true;
+    state.pendingScoreSaved = false;
+    hsTitleEl.textContent = 'VM-VINNERE:';
+    hsSubEl.textContent = '🏆 VI HAR VUNNET VM! Skriv inn navnet ditt:';
+    hsMsgEl.textContent = 'Lagre navnet ditt, deretter kan du fortsette i endless mode.';
+    hsNameEl.classList.remove('hidden');
+    hsSaveEl.classList.remove('hidden');
+    hsContinueEl.classList.remove('hidden');
+    hsContinueEl.disabled = true;
+    hsBackIntroEl.classList.remove('hidden');
+    openHighscore();
+  }
+
+  function openFinalHighscore() {
+    state.hsMode = 'final';
+    state.pendingScoreRows = state.rows;
+    state.pendingScoreSaved = false;
+    state.pendingScoreCanSave = scoreQualifiesForTop10(state.pendingScoreRows);
+    hsTitleEl.textContent = 'TOPP 10 ROW COUNTS';
+    hsSubEl.textContent = 'Run avsluttet. Her er topp 10 high scores:';
+    hsContinueEl.classList.add('hidden');
+    hsBackIntroEl.classList.remove('hidden');
+    hsBackIntroEl.textContent = 'Til startskjermen';
+
+    if (state.pendingScoreCanSave) {
+      hsMsgEl.textContent = 'Du er i topp 10! Skriv inn navn og lagre scoren din.';
+      hsNameEl.classList.remove('hidden');
+      hsSaveEl.classList.remove('hidden');
+      hsSaveEl.disabled = false;
+    } else {
+      hsMsgEl.textContent = 'Sorry, you did not make it to the top 10 high scores.';
+      hsNameEl.classList.add('hidden');
+      hsSaveEl.classList.add('hidden');
+    }
+    openHighscore();
+  }
+
+  function goToIntroScreen() {
+    state.running = false;
+    resetRunState();
+    introEl.classList.remove('hidden');
+  }
+
+  function startEndlessMode() {
+    if (!state.pendingScoreSaved && state.hsMode === 'winner') return;
+    highscoreEl.classList.add('hidden');
+    introEl.classList.add('hidden');
+    resetRunState();
+    state.rows = 2000;
+    rowCountEl.textContent = '2000';
+    state.endlessMode = true;
+    state.running = true;
+    state.nextMilestone = MILESTONES.length;
+    stopRunBtnEl.classList.remove('hidden');
+    startDrumAudio(true);
+    state.drumStartAt = performance.now();
+  }
+
+  function stopEndlessRun() {
+    if (!state.endlessMode || !state.running) return;
+    state.running = false;
+    state.pressing = false;
+    if (state.drumSource) { try { state.drumSource.stop(); } catch (_e) {} state.drumSource = null; }
+    if (state.drumAudio) { try { state.drumAudio.pause(); } catch (_e) {} }
+    openFinalHighscore();
+  }
+
   function submitScore() {
+    if (!state.pendingScoreCanSave || state.pendingScoreSaved) return;
     const name = (hsNameEl.value || '').trim().slice(0, 16) || 'Anonym';
-    const entry = { name, rows: state.rows, ts: Date.now() };
+    const entry = { name, rows: state.pendingScoreRows, ts: Date.now() };
     const list = loadScores();
     list.push(entry);
     saveScores(list);
     renderScores(entry.ts);
+    state.pendingScoreSaved = true;
+    if (state.hsMode === 'winner') {
+      hsMsgEl.textContent = 'Score lagret. Du kan fortsette i endless mode.';
+      hsContinueEl.disabled = false;
+    } else {
+      hsMsgEl.textContent = 'Score lagret.';
+      hsSaveEl.disabled = true;
+    }
     hsNameEl.value = '';
+  }
+
+  function resetRunState() {
+    state.rows = 0;
+    state.worldX = 0;
+    state.speed = 0;
+    state.t = 0;
+    state.stroke = 0;
+    state.boatBob = 0;
+    state.flagIndex = 0;
+    state.particles = [];
+    state.splashes = [];
+    state.momentum = 24;
+    state.lastStrokeAt = 0;
+    state.prevInterval = 760;
+    state.expectedSide = 'L';
+    state.lastSide = 'R';
+    state.pressing = false;
+    state.pressStartedAt = 0;
+    state.pressSide = 'L';
+    state.rhythmPulse = 0;
+    state.cameraShake = 0;
+    state.drift = 0;
+    state.hp = state.maxHp;
+    state.balls = [];
+    state.lastBallAt = performance.now();
+    state.hurtFlash = 0;
+    state.nextMilestone = 0;
+    state.won = false;
+    state.endlessMode = false;
+    state.hsMode = 'winner';
+    state.pendingScoreRows = 0;
+    state.pendingScoreCanSave = false;
+    state.pendingScoreSaved = false;
+    state.drumHit = 0;
+    state.rollCue = 0;
+    state.usingAudioDrum = false;
+    state.beatFlash = 0;
+    state.beatCount = 0;
+    state.drumStartAt = 0;
+
+    if (state.drumSource) {
+      try { state.drumSource.stop(); } catch (_e) {}
+      state.drumSource = null;
+    }
+    if (state.drumAudio) {
+      try { state.drumAudio.pause(); state.drumAudio.currentTime = 0; } catch (_e) {}
+    }
+    if (state.songAudio) {
+      try { state.songAudio.pause(); state.songAudio.currentTime = 0; } catch (_e) {}
+    }
+
+    milestoneEl.classList.remove('show', 'final');
+    victoryEl.classList.remove('show');
+    highscoreEl.classList.add('hidden');
+    hsContinueEl.classList.remove('hidden');
+    hsContinueEl.disabled = false;
+    hsBackIntroEl.classList.remove('hidden');
+    hsBackIntroEl.textContent = 'Til startskjermen';
+    hsSaveEl.classList.remove('hidden');
+    hsSaveEl.disabled = false;
+    hsNameEl.classList.remove('hidden');
+    hsMsgEl.textContent = '';
+    stopRunBtnEl.classList.add('hidden');
+    seedFlags();
+    rowCountEl.textContent = '0';
+    updateMomentumBar();
+  }
+
+  function endRunBySinking() {
+    if (!state.running) return;
+    state.running = false;
+    state.pressing = false;
+    resetRunState();
+    introEl.classList.remove('hidden');
   }
 
   function row({ chargeRatio = 0, side = 'L' } = {}) {
@@ -796,9 +1003,11 @@
   }
 
   function damageBoat(pct) {
+    if (!state.running || state.won) return;
     state.hp = clamp(state.hp - pct, 0, state.maxHp);
     state.hurtFlash = 1;
     state.cameraShake = Math.min(14, state.cameraShake + 6);
+    if (state.hp <= 0) endRunBySinking();
   }
 
   function updateBalls() {
@@ -1600,36 +1809,28 @@
 
   startBtn.addEventListener('click', (e) => {
     e.stopPropagation();
+    resetRunState();
     introEl.classList.add('hidden');
     state.running = true;
     // Ødegaard's drum cadence comes from media/row.mp3, looped.
     startDrumAudio(true);
     state.drumStartAt = performance.now();
-    state.beatCount = 0;
-    state.hp = state.maxHp;
-    state.balls = [];
-    state.hurtFlash = 0;
-    state.lastBallAt = performance.now();
-    state.nextMilestone = 0;
-    state.won = false;
-    milestoneEl.classList.remove('show', 'final');
-    highscoreEl.classList.add('hidden');
-    if (state.songAudio) { try { state.songAudio.pause(); } catch (_e) {} }
-    updateMomentumBar();
     initAudio();
   });
 
   // High-score window controls
   hsSaveEl.addEventListener('click', submitScore);
-  hsCloseEl.addEventListener('click', () => highscoreEl.classList.add('hidden'));
+  hsContinueEl.addEventListener('click', startEndlessMode);
+  hsBackIntroEl.addEventListener('click', goToIntroScreen);
   hsNameEl.addEventListener('keydown', (e) => {
     e.stopPropagation();                       // keep row keys from firing while typing
     if (e.key === 'Enter') { e.preventDefault(); submitScore(); }
   });
   hsNameEl.addEventListener('keyup', (e) => e.stopPropagation());
   highscoreEl.addEventListener('pointerdown', (e) => e.stopPropagation());
+  stopRunBtnEl.addEventListener('click', stopEndlessRun);
 
-  updateMomentumBar();
+  resetRunState();
   frame();
 })();
 </script>
