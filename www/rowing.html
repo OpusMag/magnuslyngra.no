@@ -275,7 +275,7 @@
   <div id="milestone"><span></span></div>
   <div id="intro">
     <h1><span class="four">NOR</span> — Row for Glory</h1>
-    <p>Ola the Norwegian striker missed the pitch and ended up at sea.
+    <p>Erling the Norwegian striker missed the pitch and ended up at sea.
        <b>Click / tap</b> to row him to the right. Smash through every foreign flag in his way —
        the first takes <b>10</b> strokes, the next <b>20</b>, then <b>30</b>… </p>
     <button id="startBtn">🚣 Start rowing</button>
@@ -286,7 +286,7 @@
 <div id="highscore" class="hidden">
   <div class="hs-card">
     <h2 id="hsTitle">VM-VINNERE:</h2>
-    <div id="hsSub" class="hs-sub">🏆 VI HAR VUNNET VM! Skriv inn navnet ditt:</div>
+    <div id="hsSub" class="hs-sub">🏆 DU HAR VUNNET VM! Skriv inn navnet ditt:</div>
     <ol id="hsList"></ol>
     <div id="hsMsg"></div>
     <div class="hs-form">
@@ -388,17 +388,18 @@
 
   // Row-count milestones through the World Cup.
   const MILESTONES = [
-    { rows: 250,  text: 'Videre fra gruppespill!' },
-    { rows: 500,  text: 'Vunnet 16-delsfinale!' },
-    { rows: 750,  text: 'Vunnet 8-delsfinale!' },
-    { rows: 1000, text: 'Vunnet semifinale!' },
-    { rows: 1500, text: 'VI HAR VUNNET VM!', final: true },
+    { rows: 100,  text: 'Videre fra gruppespill!' },
+    { rows: 200,  text: 'Vunnet 16-delsfinale!' },
+    { rows: 400,  text: 'Vunnet 8-delsfinale!' },
+    { rows: 600,  text: 'Vunnet semifinale!' },
+    { rows: 1000, text: 'DU HAR VUNNET VM!', final: true },
   ];
   const HS_KEY = 'rowVMWinners';
 
   const BOAT_X = () => Math.min(180, W * 0.28);   // player screen x
   const FLAG_HIT_ZONE = 70;                       // px in front of boat where flag blocks
   const SPACING = 700;                            // world px between flags
+  const FLAG_HP_TOTAL = 1500;
   const BALL_NAMES = ['Messi', 'Ronaldo', "M'bappé", 'Kane', 'Dembele', 'Vinicius'];
   const BALL_INTERVAL = 2000;                     // ms between falling balls
   const BALL_DAMAGE = 5;                          // % hull health lost per ball hit
@@ -409,40 +410,116 @@
   const DRUM_PERIOD = 760;          // ms fallback cadence if the audio can't play
   const BEAT_WINDOW = 150;          // ms fallback timing window
 
-  // ---- Country flag drawing recipes ----
-  const FLAGS = [
-    { name:'Sweden',      draw:(g,w,h)=>{ g.fillStyle='#006aa7';g.fillRect(0,0,w,h); cross(g,w,h,'#fecc00'); } },
-    { name:'Denmark',     draw:(g,w,h)=>{ g.fillStyle='#c8102e';g.fillRect(0,0,w,h); cross(g,w,h,'#fff'); } },
-    { name:'Germany',     draw:(g,w,h)=>{ bands(g,w,h,['#000','#dd0000','#ffce00'],false); } },
-    { name:'France',      draw:(g,w,h)=>{ bands(g,w,h,['#0055a4','#fff','#ef4135'],true); } },
-    { name:'Italy',       draw:(g,w,h)=>{ bands(g,w,h,['#008c45','#fff','#cd212a'],true); } },
-    { name:'Netherlands', draw:(g,w,h)=>{ bands(g,w,h,['#ae1c28','#fff','#21468b'],false); } },
-    { name:'Spain',       draw:(g,w,h)=>{ g.fillStyle='#aa151b';g.fillRect(0,0,w,h); g.fillStyle='#f1bf00';g.fillRect(0,h*0.25,w,h*0.5); } },
-    { name:'Brazil',      draw:(g,w,h)=>{ g.fillStyle='#009c3b';g.fillRect(0,0,w,h);
-        g.fillStyle='#ffdf00'; g.beginPath(); g.moveTo(w/2,h*0.12); g.lineTo(w*0.9,h/2); g.lineTo(w/2,h*0.88); g.lineTo(w*0.1,h/2); g.closePath(); g.fill();
-        g.fillStyle='#002776'; g.beginPath(); g.arc(w/2,h/2,h*0.2,0,7); g.fill(); } },
-    { name:'England',     draw:(g,w,h)=>{ g.fillStyle='#fff';g.fillRect(0,0,w,h); cross(g,w,h,'#ce1124'); } },
-    { name:'Argentina',   draw:(g,w,h)=>{ bands(g,w,h,['#75aadb','#fff','#75aadb'],false);
-        g.fillStyle='#f6b40e'; g.beginPath(); g.arc(w/2,h/2,h*0.14,0,7); g.fill(); } },
+  // ---- 2026 World Cup team flags ----
+  const WORLD_CUP_TEAMS = [
+    { name: 'Mexico', code: 'mx' },
+    { name: 'South Africa', code: 'za' },
+    { name: 'South Korea', code: 'kr' },
+    { name: 'Czech Republic', code: 'cz' },
+    { name: 'Switzerland', code: 'ch' },
+    { name: 'Canada', code: 'ca' },
+    { name: 'Bosnia and Herzegovina', code: 'ba' },
+    { name: 'Qatar', code: 'qa' },
+    { name: 'Brazil', code: 'br' },
+    { name: 'Morocco', code: 'ma' },
+    { name: 'Scotland', code: 'gb-sct' },
+    { name: 'Haiti', code: 'ht' },
+    { name: 'United States', code: 'us' },
+    { name: 'Australia', code: 'au' },
+    { name: 'Paraguay', code: 'py' },
+    { name: 'Turkey', code: 'tr' },
+    { name: 'Germany', code: 'de' },
+    { name: 'Ivory Coast', code: 'ci' },
+    { name: 'Ecuador', code: 'ec' },
+    { name: 'Curacao', code: 'cw' },
+    { name: 'Netherlands', code: 'nl' },
+    { name: 'Japan', code: 'jp' },
+    { name: 'Sweden', code: 'se' },
+    { name: 'Tunisia', code: 'tn' },
+    { name: 'Belgium', code: 'be' },
+    { name: 'Egypt', code: 'eg' },
+    { name: 'Iran', code: 'ir' },
+    { name: 'New Zealand', code: 'nz' },
+    { name: 'Spain', code: 'es' },
+    { name: 'Cape Verde', code: 'cv' },
+    { name: 'Uruguay', code: 'uy' },
+    { name: 'Saudi Arabia', code: 'sa' },
+    { name: 'France', code: 'fr' },
+    { name: 'Norway', code: 'no' },
+    { name: 'Senegal', code: 'sn' },
+    { name: 'Iraq', code: 'iq' },
+    { name: 'Argentina', code: 'ar' },
+    { name: 'Austria', code: 'at' },
+    { name: 'Algeria', code: 'dz' },
+    { name: 'Jordan', code: 'jo' },
+    { name: 'Colombia', code: 'co' },
+    { name: 'Portugal', code: 'pt' },
+    { name: 'DR Congo', code: 'cd' },
+    { name: 'Uzbekistan', code: 'uz' },
+    { name: 'England', code: 'gb-eng' },
+    { name: 'Croatia', code: 'hr' },
+    { name: 'Ghana', code: 'gh' },
+    { name: 'Panama', code: 'pa' },
   ];
-  function bands(g,w,h,cols,vertical){
-    const n=cols.length;
-    for(let i=0;i<n;i++){ g.fillStyle=cols[i];
-      if(vertical) g.fillRect(i*w/n,0,w/n+1,h); else g.fillRect(0,i*h/n,w,h/n+1); }
-  }
-  function cross(g,w,h,col){
-    g.fillStyle=col;
-    const cx=w*0.32, tw=Math.max(4,h*0.16);
-    g.fillRect(cx-tw/2,0,tw,h);
-    g.fillRect(0,h/2-tw/2,w,tw);
+  const FLAG_IMG = new Map();
+
+  function getFlagImage(code) {
+    const key = String(code || '').toLowerCase();
+    if (!key) return null;
+    if (FLAG_IMG.has(key)) return FLAG_IMG.get(key);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = 'https://flagcdn.com/w160/' + key + '.png';
+    FLAG_IMG.set(key, img);
+    return img;
   }
 
+  function drawFallbackFlag(g, w, h, teamName) {
+    g.fillStyle = '#1f3d63';
+    g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#ffd23f';
+    g.lineWidth = 2;
+    g.strokeRect(1, 1, w - 2, h - 2);
+    g.fillStyle = '#fff';
+    g.textAlign = 'center';
+    g.font = 'bold 11px Trebuchet MS, sans-serif';
+    g.fillText((teamName || '?').slice(0, 12), w / 2, h / 2 + 4);
+  }
+
+  function drawTeamFlag(g, w, h, team) {
+    const img = getFlagImage(team.code);
+    if (img && img.complete && img.naturalWidth > 0) {
+      g.drawImage(img, 0, 0, w, h);
+      return;
+    }
+    drawFallbackFlag(g, w, h, team.name);
+  }
+
+  function buildFlagHpSequence(total, count) {
+    const hp = [];
+    const weightSum = (count * (count + 1)) / 2;
+    for (let i = 0; i < count; i++) {
+      const w = i + 1;
+      hp.push(Math.max(1, Math.floor((total * w) / weightSum)));
+    }
+    let remainder = total - hp.reduce((a, b) => a + b, 0);
+    for (let i = count - 1; i >= 0 && remainder > 0; i--, remainder--) hp[i] += 1;
+    return hp;
+  }
+
+  const FLAG_HP_SEQUENCE = buildFlagHpSequence(FLAG_HP_TOTAL, WORLD_CUP_TEAMS.length);
+
   function makeFlag(index) {
-    const number = index + 1;
-    const need = number * 10;
-    const recipe = FLAGS[index % FLAGS.length];
+    const cycleIndex = index % WORLD_CUP_TEAMS.length;
+    const team = WORLD_CUP_TEAMS[cycleIndex];
+    const need = FLAG_HP_SEQUENCE[cycleIndex];
+    const recipe = {
+      name: team.name,
+      code: team.code,
+      draw: (g, w, h) => drawTeamFlag(g, w, h, team),
+    };
     return {
-      number, need, hp: need, max: need,
+      number: index + 1, need, hp: need, max: need,
       worldX: (index + 1) * SPACING,   // absolute world position
       recipe,
       shake: 0,
@@ -712,7 +789,7 @@
     state.pendingScoreCanSave = true;
     state.pendingScoreSaved = false;
     hsTitleEl.textContent = 'VM-VINNERE:';
-    hsSubEl.textContent = '🏆 VI HAR VUNNET VM! Skriv inn navnet ditt:';
+    hsSubEl.textContent = '🏆 DU HAR VUNNET VM! Skriv inn navnet ditt:';
     hsMsgEl.textContent = 'Lagre navnet ditt, deretter kan du fortsette i endless mode.';
     hsNameEl.classList.remove('hidden');
     hsSaveEl.classList.remove('hidden');
@@ -757,8 +834,8 @@
     highscoreEl.classList.add('hidden');
     introEl.classList.add('hidden');
     resetRunState();
-    state.rows = 1500;
-    rowCountEl.textContent = '1500';
+    state.rows = 1000;
+    rowCountEl.textContent = '1000';
     state.endlessMode = true;
     state.running = true;
     state.nextMilestone = MILESTONES.length;
@@ -898,8 +975,11 @@
     state.expectedSide = state.expectedSide === 'L' ? 'R' : 'L';
     state.lastSide = side;
 
-    state.rows++;
-    if (!syncOk) state.rows = Math.max(0, state.rows - 2);
+    if (syncOk) {
+      state.rows += 2;
+    } else {
+      state.rows = Math.max(0, state.rows - 1);
+    }
     rowCountEl.textContent = state.rows;
     rowCountEl.classList.remove('pop');
     void rowCountEl.offsetWidth;
