@@ -58,6 +58,21 @@
     border: 1px solid rgba(255,255,255,.2);
   }
   #stopRunBtn.hidden { display: none; }
+  #modeTag {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff7d6;
+    background: linear-gradient(180deg,#7a1020,#4a0b15);
+    border: 1px solid rgba(255,255,255,.24);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 4px 14px rgba(0,0,0,.35);
+  }
+  #modeTag.hidden { display: none; }
   #mombox {
     min-width: 150px;
     background: rgba(255,255,255,.06);
@@ -249,6 +264,7 @@
       <span class="lbl">Team Flow</span>
       <div id="momTrack"><div id="momFill"></div></div>
     </div>
+    <div id="modeTag" class="hidden">Endless mode</div>
     <button id="stopRunBtn" class="hidden">Stop rowing</button>
   </div>
 </div>
@@ -303,6 +319,7 @@
   const hsContinueEl = document.getElementById('hsContinue');
   const hsBackIntroEl = document.getElementById('hsBackIntro');
   const stopRunBtnEl = document.getElementById('stopRunBtn');
+  const modeTagEl = document.getElementById('modeTag');
 
   let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
   function resize() {
@@ -371,11 +388,11 @@
 
   // Row-count milestones through the World Cup.
   const MILESTONES = [
-    { rows: 100,  text: 'Videre fra gruppespill!' },
-    { rows: 250,  text: 'Vunnet 16-delsfinale!' },
+    { rows: 250,  text: 'Videre fra gruppespill!' },
+    { rows: 500,  text: 'Vunnet 16-delsfinale!' },
     { rows: 750,  text: 'Vunnet 8-delsfinale!' },
-    { rows: 1250, text: 'Vunnet semifinale!' },
-    { rows: 2000, text: 'VI HAR VUNNET VM!', final: true },
+    { rows: 1000, text: 'Vunnet semifinale!' },
+    { rows: 1500, text: 'VI HAR VUNNET VM!', final: true },
   ];
   const HS_KEY = 'rowVMWinners';
 
@@ -740,11 +757,12 @@
     highscoreEl.classList.add('hidden');
     introEl.classList.add('hidden');
     resetRunState();
-    state.rows = 2000;
-    rowCountEl.textContent = '2000';
+    state.rows = 1500;
+    rowCountEl.textContent = '1500';
     state.endlessMode = true;
     state.running = true;
     state.nextMilestone = MILESTONES.length;
+    modeTagEl.classList.remove('hidden');
     stopRunBtnEl.classList.remove('hidden');
     startDrumAudio(true);
     state.drumStartAt = performance.now();
@@ -839,6 +857,7 @@
     hsSaveEl.disabled = false;
     hsNameEl.classList.remove('hidden');
     hsMsgEl.textContent = '';
+    modeTagEl.classList.add('hidden');
     stopRunBtnEl.classList.add('hidden');
     seedFlags();
     rowCountEl.textContent = '0';
@@ -880,6 +899,7 @@
     state.lastSide = side;
 
     state.rows++;
+    if (!syncOk) state.rows = Math.max(0, state.rows - 2);
     rowCountEl.textContent = state.rows;
     rowCountEl.classList.remove('pop');
     void rowCountEl.offsetWidth;
