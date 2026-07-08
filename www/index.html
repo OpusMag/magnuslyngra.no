@@ -74,9 +74,13 @@
             
                 let isDragging = false;
                 let startX = 0;
+                let startY = 0;
                 let speedIncreased = false;
                 let speedTimeout;
                 let tabOpened = false;
+                let lastSpeedBoostAt = 0;
+
+                const SPEED_BOOST_COOLDOWN_MS = 450;
             
                 function calculateRadius() {
                   const screenWidth = window.innerWidth;
@@ -87,14 +91,14 @@
                   }
                 }
             
-                function initializeTagCloud(initSpeed = 'normal', maxSpeed = 'normal') {
+                function initializeTagCloud(initSpeed = 'normal', maxSpeed = 'normal', direction = 135) {
                   const radius = calculateRadius();
                   TagCloud('.content6', myTags, {
                     radius: radius,
                     fontSize: [14, 24],
                     maxSpeed: maxSpeed,
                     initSpeed: initSpeed,
-                    direction: 135,
+                    direction: direction,
                     keep: true, // Allow user to interact with the cloud with their cursor for puzzle
                     afterUpdate: function() {
                       // Get the current angle of the first tag in order to calculate movement for puzzle
@@ -114,28 +118,57 @@
                   initializeTagCloud();
                 });
             
-                // Check for mouse interaction with the cloud to activate easter egg
-                document.querySelector('.content6').addEventListener('mousedown', function (event) {
+                // Pointer events support both desktop and touch interaction.
+                const cloud = document.querySelector('.content6');
+
+                cloud.addEventListener('pointerdown', function (event) {
                   isDragging = true;
                   startX = event.clientX;
+                  startY = event.clientY;
+                  cloud.setPointerCapture(event.pointerId);
                   console.log('Drag started');
                 });
-            
-                document.addEventListener('mousemove', function (event) {
-                  if (isDragging && !speedIncreased) {
-                    const currentX = event.clientX;
-                    const deltaX = currentX - startX;
-                    if (deltaX > 0) {
-                      speedIncreased = true;
-                      console.log('Increasing speed by a factor of three');
-                      document.querySelector('.content6').innerHTML = '';
-                      initializeTagCloud('fast', 'fast');
-                    }
-                    startX = currentX;
+
+                cloud.addEventListener('pointermove', function (event) {
+                  if (!isDragging) {
+                    return;
                   }
+
+                  const currentX = event.clientX;
+                  const currentY = event.clientY;
+                  const deltaX = currentX - startX;
+                  const deltaY = currentY - startY;
+                  const dragDistance = Math.hypot(deltaX, deltaY);
+
+                  // Mirror pointer motion so TagCloud responds on touch like desktop mouse movement.
+                  document.dispatchEvent(new MouseEvent('mousemove', {
+                    clientX: currentX,
+                    clientY: currentY,
+                    bubbles: true
+                  }));
+
+                  if (dragDistance > 10) {
+                    const now = Date.now();
+                    if (now - lastSpeedBoostAt < SPEED_BOOST_COOLDOWN_MS) {
+                      startX = currentX;
+                      startY = currentY;
+                      return;
+                    }
+
+                    lastSpeedBoostAt = now;
+                    speedIncreased = true;
+                    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                    const direction = (angle + 360) % 360;
+                    console.log('Increasing speed by a factor of three');
+                    cloud.innerHTML = '';
+                    initializeTagCloud('fast', 'fast', direction);
+                  }
+
+                  startX = currentX;
+                  startY = currentY;
                 });
-            
-                document.addEventListener('mouseup', function () {
+
+                cloud.addEventListener('pointerup', function () {
                   if (isDragging && speedIncreased && !tabOpened) {
                     console.log('Drag ended, setting timeout to open tab');
                     speedTimeout = setTimeout(function() {
@@ -144,6 +177,10 @@
                       tabOpened = true;
                     }, 5000);
                   }
+                  isDragging = false;
+                });
+
+                cloud.addEventListener('pointercancel', function () {
                   isDragging = false;
                 });
               });

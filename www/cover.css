@@ -648,6 +648,9 @@ p {
   height: fit-content;
   width: fit-content;
   z-index: 1000;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Mobile responsiveness */
