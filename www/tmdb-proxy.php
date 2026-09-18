@@ -42,6 +42,49 @@ const DEFAULT_LANGUAGE = 'nb-NO';
 const FALLBACK_LANGUAGE = 'en-US';
 
 const ALLOWED_TYPES = ['movie', 'tv'];
+
+/**
+ * TMDB has no Norwegian genre translations - /genre/{type}/list returns
+ * "name": null for every nb/no variant - so the labels are supplied here and
+ * the English name is used for anything TMDB adds later.
+ */
+const GENRE_LABELS_NB = [
+    12 => 'Eventyr',
+    14 => 'Fantasy',
+    16 => 'Animasjon',
+    18 => 'Drama',
+    27 => 'Skrekk',
+    28 => 'Action',
+    35 => 'Komedie',
+    36 => 'Historie',
+    37 => 'Western',
+    53 => 'Thriller',
+    80 => 'Krim',
+    99 => 'Dokumentar',
+    878 => 'Science fiction',
+    9648 => 'Mysterium',
+    10402 => 'Musikk',
+    10749 => 'Romantikk',
+    10751 => 'Familie',
+    10752 => 'Krig',
+    10759 => 'Action og eventyr',
+    10762 => 'Barn',
+    10763 => 'Nyheter',
+    10764 => 'Reality',
+    10765 => 'Sci-fi og fantasy',
+    10766 => 'Såpeopera',
+    10767 => 'Talkshow',
+    10768 => 'Krig og politikk',
+    10770 => 'TV-film',
+];
+
+function genreLabel(int $id, ?string $fallback): ?string {
+    if (array_key_exists($id, GENRE_LABELS_NB)) {
+        return GENRE_LABELS_NB[$id];
+    }
+    $fallback = trim((string) $fallback);
+    return $fallback === '' ? null : $fallback;
+}
 const ALLOWED_SORTS = [
     'popularity.desc',
     'vote_average.desc',
@@ -364,8 +407,22 @@ function actionProviders(): void {
 
 function actionGenres(): void {
     $type = paramType();
-    $data = tmdbGet('/genre/' . $type . '/list', ['language' => DEFAULT_LANGUAGE], CACHE_TTL_META);
-    ok(['genres' => $data['genres'] ?? []]);
+    // Requested in English on purpose: the Norwegian response has null names.
+    $data = tmdbGet('/genre/' . $type . '/list', ['language' => FALLBACK_LANGUAGE], CACHE_TTL_META);
+
+    $genres = [];
+    foreach ($data['genres'] ?? [] as $genre) {
+        $name = genreLabel((int) $genre['id'], $genre['name'] ?? null);
+        if ($name !== null) {
+            $genres[] = ['id' => $genre['id'], 'name' => $name];
+        }
+    }
+    // Case-insensitive so "Thriller" and "TV-film" sort as a reader expects.
+    usort($genres, function ($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
+
+    ok(['genres' => $genres]);
 }
 
 function actionDiscover(): void {
@@ -487,7 +544,10 @@ function actionDetail(): void {
 
     $genres = [];
     foreach ($data['genres'] ?? [] as $genre) {
-        $genres[] = $genre['name'];
+        $name = genreLabel((int) $genre['id'], $genre['name'] ?? null);
+        if ($name !== null) {
+            $genres[] = $name;
+        }
     }
 
     $imdbId = $data['external_ids']['imdb_id'] ?? ($data['imdb_id'] ?? '');
