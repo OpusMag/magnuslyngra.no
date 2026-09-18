@@ -7,9 +7,6 @@ switch ($request) {
     case '/ommeg' :
         require __DIR__ . '/ommeg.html';
         break;
-    case '/cv' :
-        require __DIR__ . '/cv.html';
-        break;
     case '/kontakt' :
         require __DIR__ . '/kontakt.html';
         break;

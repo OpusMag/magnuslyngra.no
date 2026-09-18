@@ -1,0 +1,1822 @@
+<!doctype html>
+<html lang="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="filmfinner - trekk en tilfeldig film eller serie fra strømmetjenesten din" />
+    <meta name="author" content="Magnus Lyngra" />
+    <title>filmfinner</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="/favicon_io/site.webmanifest">
+    <link rel="preconnect" href="https://image.tmdb.org">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preload" href="cover.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="cover.css"></noscript>
+    <style>
+      .roulette-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1rem 7rem;
+      }
+
+      .roulette-intro {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+
+      .roulette-intro h1 {
+        font-family: var(--font-family-header, sans-serif);
+        font-size: clamp(2rem, 6vw, 3.25rem);
+        margin-bottom: 0.5rem;
+      }
+
+      .roulette-intro p {
+        color: rgba(255, 255, 255, 0.75);
+        max-width: 38rem;
+        margin: 0 auto;
+      }
+
+      /* ---------------------------------------------------------- steps */
+
+      .step {
+        background: rgba(18, 20, 26, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 14px;
+        padding: 1.25rem 1.4rem;
+        margin-bottom: 1rem;
+        backdrop-filter: blur(6px);
+        transition: opacity 0.3s, border-color 0.3s;
+      }
+
+      .step.is-locked {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      .step.is-done {
+        border-color: rgba(128, 181, 238, 0.45);
+      }
+
+      /* A search overrides the filters below it, so they are visibly out of
+         play rather than silently ignored. */
+      .step.is-suspended {
+        opacity: 0.35;
+        pointer-events: none;
+      }
+
+      .search-note {
+        margin: 0.7rem 0 0;
+        color: var(--primary-color, #80b5ee);
+        font-size: 0.88rem;
+      }
+
+      .step-header {
+        display: flex;
+        align-items: baseline;
+        gap: 0.7rem;
+        margin-bottom: 0.9rem;
+        flex-wrap: wrap;
+      }
+
+      .step-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.7rem;
+        height: 1.7rem;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        background: rgba(128, 181, 238, 0.16);
+        color: var(--primary-color, #80b5ee);
+        font-size: 0.9rem;
+        font-weight: 700;
+        align-self: center;
+      }
+
+      .step.is-done .step-number {
+        background: var(--primary-color, #80b5ee);
+        color: #10131a;
+      }
+
+      .step-title {
+        font-family: var(--font-family-header, sans-serif);
+        font-size: 1.25rem;
+        margin: 0;
+      }
+
+      .step-hint {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.85rem;
+        margin-left: auto;
+      }
+
+      /* ---------------------------------------------------------- inputs */
+
+      .roulette-select {
+        width: 100%;
+        max-width: 22rem;
+        padding: 0.6rem 0.75rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: #1b1e26;
+        color: #fff;
+        font-size: 1rem;
+      }
+
+      .roulette-select:focus-visible,
+      .chip:focus-visible,
+      .spin-button:focus-visible,
+      .link-button:focus-visible,
+      .toggle-more:focus-visible {
+        outline: 2px solid var(--primary-color, #80b5ee);
+        outline-offset: 2px;
+      }
+
+      .chip-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        font-size: 0.92rem;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s, transform 0.1s;
+      }
+
+      .chip:hover {
+        background: rgba(128, 181, 238, 0.14);
+        border-color: rgba(128, 181, 238, 0.5);
+      }
+
+      .chip:active {
+        transform: scale(0.97);
+      }
+
+      .chip[aria-pressed="true"],
+      .chip.is-selected {
+        background: var(--primary-color, #80b5ee);
+        border-color: var(--primary-color, #80b5ee);
+        color: #10131a;
+        font-weight: 600;
+      }
+
+      .chip img {
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        object-fit: cover;
+      }
+
+      .chip-grid.is-collapsed .chip.is-extra {
+        display: none;
+      }
+
+      .toggle-more {
+        margin-top: 0.7rem;
+        background: none;
+        border: none;
+        color: var(--primary-color, #80b5ee);
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0;
+        text-decoration: underline;
+      }
+
+      /* ---------------------------------------------------------- sliders */
+
+      .score-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+
+      .score-field {
+        flex: 1 1 14rem;
+      }
+
+      .score-field label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 0.4rem;
+      }
+
+      .score-field output {
+        color: var(--primary-color, #80b5ee);
+        font-weight: 700;
+      }
+
+      .score-field input[type="range"] {
+        width: 100%;
+        accent-color: var(--primary-color, #80b5ee);
+      }
+
+      /* ----------------------------------------------------------- action */
+
+      .spin-panel {
+        text-align: center;
+        margin-top: 2rem;
+      }
+
+      .pool-count {
+        color: rgba(255, 255, 255, 0.75);
+        min-height: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .pool-count strong {
+        color: var(--primary-color, #80b5ee);
+      }
+
+      .spin-button {
+        font-family: var(--font-family-header, sans-serif);
+        font-size: 1.5rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0.85rem 3rem;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, #80b5ee, #4d8fd6);
+        color: #0d1017;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(77, 143, 214, 0.35);
+        transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+      }
+
+      .spin-button:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 36px rgba(77, 143, 214, 0.45);
+      }
+
+      .spin-button:disabled {
+        filter: grayscale(0.8);
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+      }
+
+      /* ------------------------------------------------------------- reel */
+
+      .reel-stage {
+        display: none;
+        margin: 2rem auto 0;
+        max-width: 30rem;
+        position: relative;
+        height: 318px;
+        overflow: hidden;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(12, 14, 19, 0.85);
+        -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+        mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+      }
+
+      .reel-stage.is-visible {
+        display: block;
+      }
+
+      .reel-strip {
+        will-change: transform;
+      }
+
+      .reel-item {
+        height: 106px;
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        padding: 0 1rem;
+        box-sizing: border-box;
+      }
+
+      .reel-item img,
+      .reel-item .poster-fallback {
+        width: 60px;
+        height: 90px;
+        border-radius: 6px;
+        object-fit: cover;
+        flex: 0 0 auto;
+        background: #222732;
+      }
+
+      .reel-item span {
+        font-family: var(--font-family-header, sans-serif);
+        font-size: 1.05rem;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .reel-marker {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 106px;
+        height: 106px;
+        border-top: 2px solid rgba(128, 181, 238, 0.8);
+        border-bottom: 2px solid rgba(128, 181, 238, 0.8);
+        pointer-events: none;
+      }
+
+      /* ----------------------------------------------------------- result */
+
+      .result-card {
+        display: none;
+        margin: 2rem auto 0;
+        max-width: 46rem;
+        text-align: left;
+        background: rgba(18, 20, 26, 0.85);
+        border: 1px solid rgba(128, 181, 238, 0.35);
+        border-radius: 16px;
+        padding: 1.5rem;
+        gap: 1.5rem;
+        animation: result-in 0.45s ease-out;
+      }
+
+      .result-card.is-visible {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      @keyframes result-in {
+        from { opacity: 0; transform: translateY(14px); }
+        to { opacity: 1; transform: none; }
+      }
+
+      .result-poster {
+        flex: 0 0 180px;
+        max-width: 180px;
+      }
+
+      .result-poster img,
+      .result-poster .poster-fallback {
+        width: 100%;
+        border-radius: 10px;
+        display: block;
+        background: #222732;
+        aspect-ratio: 2 / 3;
+      }
+
+      .result-body {
+        flex: 1 1 18rem;
+      }
+
+      .result-body h2 {
+        font-family: var(--font-family-header, sans-serif);
+        margin: 0 0 0.3rem;
+        font-size: 1.7rem;
+      }
+
+      .result-meta {
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.92rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .result-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .badge {
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 0.82rem;
+      }
+
+      .badge.score {
+        background: rgba(128, 181, 238, 0.2);
+        color: var(--primary-color, #80b5ee);
+        font-weight: 700;
+      }
+
+      .result-overview {
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .result-overview.is-english::after {
+        content: " (beskrivelsen finnes ikke på norsk)";
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 0.85rem;
+      }
+
+      .result-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+
+      .link-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: none;
+        color: #fff;
+        font-family: inherit;
+        font-size: 0.92rem;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s, border-color 0.2s;
+      }
+
+      .link-button:hover {
+        background: rgba(128, 181, 238, 0.15);
+        border-color: var(--primary-color, #80b5ee);
+        color: #fff;
+      }
+
+      .result-streaming {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .result-streaming img {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+      }
+
+      /* ----------------------------------------------------------- browse */
+
+      .action-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+
+      .browse-panel {
+        display: none;
+        margin: 2rem auto 0;
+        max-width: 46rem;
+        text-align: left;
+      }
+
+      .browse-panel.is-visible {
+        display: block;
+      }
+
+      .browse-heading {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.9rem;
+      }
+
+      .browse-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .browse-item {
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 10px;
+        background: rgba(18, 20, 26, 0.72);
+        overflow: hidden;
+      }
+
+      .browse-item.is-open {
+        border-color: rgba(128, 181, 238, 0.45);
+      }
+
+      .browse-row {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        width: 100%;
+        padding: 0.55rem 0.8rem;
+        background: none;
+        border: none;
+        color: inherit;
+        font-family: inherit;
+        font-size: 1rem;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .browse-row:hover {
+        background: rgba(128, 181, 238, 0.12);
+      }
+
+      .browse-row:focus-visible {
+        outline: 2px solid var(--primary-color, #80b5ee);
+        outline-offset: -2px;
+      }
+
+      .browse-row img,
+      .browse-row .poster-fallback {
+        width: 46px;
+        height: 69px;
+        border-radius: 5px;
+        object-fit: cover;
+        background: #222732;
+        flex: 0 0 auto;
+      }
+
+      .browse-text {
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .browse-title {
+        font-family: var(--font-family-header, sans-serif);
+        font-size: 1.05rem;
+        display: block;
+      }
+
+      .browse-year {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.85rem;
+      }
+
+      .browse-score {
+        flex: 0 0 auto;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        background: rgba(128, 181, 238, 0.18);
+        color: var(--primary-color, #80b5ee);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .browse-chevron {
+        flex: 0 0 auto;
+        color: rgba(255, 255, 255, 0.4);
+        transition: transform 0.2s;
+      }
+
+      .browse-item.is-open .browse-chevron {
+        transform: rotate(180deg);
+      }
+
+      .browse-detail {
+        display: none;
+        padding: 0 0.9rem 1rem 4.4rem;
+      }
+
+      .browse-item.is-open .browse-detail {
+        display: block;
+      }
+
+      .browse-detail p {
+        line-height: 1.55;
+        margin: 0 0 0.8rem;
+      }
+
+      .browse-more {
+        display: block;
+        margin: 1rem auto 0;
+      }
+
+      @media (max-width: 600px) {
+        .browse-detail { padding-left: 0.9rem; }
+      }
+
+      /* ---------------------------------------------------------- feedback */
+
+      .roulette-message {
+        display: none;
+        margin: 1.5rem auto 0;
+        max-width: 40rem;
+        padding: 0.9rem 1.1rem;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 140, 140, 0.4);
+        background: rgba(120, 40, 40, 0.25);
+        color: #ffd9d9;
+      }
+
+      .roulette-message.is-visible {
+        display: block;
+      }
+
+      .loading-text {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.9rem;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @media (max-width: 600px) {
+        .step { padding: 1rem; }
+        .spin-button { font-size: 1.25rem; padding: 0.75rem 2rem; width: 100%; }
+        .result-poster { flex: 0 0 120px; max-width: 120px; margin: 0 auto; }
+        /* Keep the hint on its own line instead of squeezing beside the title. */
+        .step-hint { flex-basis: 100%; margin-left: 0; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reel-strip { transition: none !important; }
+        .result-card { animation: none; }
+      }
+    </style>
+  </head>
+  <body class="body">
+    <header class="masthead">
+      <nav class="nav nav-masthead">
+        <a class="nav-link" href="index.html">Hjem</a>
+        <a class="nav-link" href="ommeg.html">Om meg</a>
+        <a class="nav-link" href="kontakt.html">Kontakt</a>
+        <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+        <a class="nav-link" href="blogg.html">Blogg</a>
+        <a class="nav-link" href="musikk.html">Musikk</a>
+        <a class="nav-link active" href="filmfinner.html">Filmfinner</a>
+      </nav>
+
+      <nav class="nav-mobile nav-masthead-mobile">
+        <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+          <i class="fa fa-bars" aria-hidden="true"></i>
+        </button>
+        <div class="collapse" id="navbarNav">
+          <a class="nav-link" href="index.html">Hjem</a>
+          <a class="nav-link" href="ommeg.html">Om meg</a>
+          <a class="nav-link" href="kontakt.html">Kontakt</a>
+          <a class="nav-link" href="prosjekter.html">Prosjekter</a>
+          <a class="nav-link" href="blogg.html">Blogg</a>
+          <a class="nav-link" href="musikk.html">Musikk</a>
+          <a class="nav-link active" href="filmfinner.html">Filmfinner</a>
+        </div>
+      </nav>
+    </header>
+
+    <main role="main" class="roulette-container">
+      <div class="roulette-intro">
+        <h1>Filmfinner</h1>
+        <p>Slutt å scrolle. Velg land, strømmetjeneste og humør &ndash; så trekker rouletten en tilfeldig film eller serie for deg.</p>
+      </div>
+
+      <div class="roulette-message" id="globalError" role="alert"></div>
+
+      <!-- 1: land -->
+      <section class="step" id="step-country">
+        <div class="step-header">
+          <span class="step-number">1</span>
+          <h2 class="step-title">Hvilket land er du i?</h2>
+          <span class="step-hint">Bestemmer hvilke tjenester og titler som er tilgjengelige</span>
+        </div>
+        <label class="sr-only" for="countrySelect">Land</label>
+        <select class="roulette-select" id="countrySelect" disabled>
+          <option value="">Laster land …</option>
+        </select>
+      </section>
+
+      <!-- 2: strømmetjeneste -->
+      <section class="step is-locked" id="step-providers">
+        <div class="step-header">
+          <span class="step-number">2</span>
+          <h2 class="step-title">Hvilke strømmetjenester har du?</h2>
+          <span class="step-hint">Velg én eller flere</span>
+        </div>
+        <div class="chip-grid is-collapsed" id="providerGrid" role="group" aria-label="Strømmetjenester">
+          <p class="loading-text">Velg land først.</p>
+        </div>
+        <button class="toggle-more" id="providerToggle" type="button" hidden>Vis alle tjenester</button>
+      </section>
+
+      <!-- 3: søk -->
+      <section class="step is-locked" id="step-search">
+        <div class="step-header">
+          <span class="step-number">3</span>
+          <h2 class="step-title">Søk etter en tittel</h2>
+          <span class="step-hint">Valgfritt – søker i alt du kan strømme</span>
+        </div>
+        <label class="sr-only" for="searchInput">Søk etter film eller serie</label>
+        <input type="search" class="roulette-select" id="searchInput"
+               placeholder="F.eks. «Harry Potter» eller «Star Wars»"
+               autocomplete="off" maxlength="120">
+        <p class="search-note" id="searchNote" hidden>
+          Søket overstyrer valgene under. Tøm søkefeltet for å bruke dem igjen.
+        </p>
+      </section>
+
+      <!-- 4: film eller serie -->
+      <section class="step is-locked" id="step-type">
+        <div class="step-header">
+          <span class="step-number">4</span>
+          <h2 class="step-title">Film eller serie?</h2>
+        </div>
+        <div class="chip-grid" id="typeGrid" role="group" aria-label="Film eller serie">
+          <button class="chip" type="button" data-type="movie" aria-pressed="false">
+            <i class="fa-solid fa-film" aria-hidden="true"></i> Film
+          </button>
+          <button class="chip" type="button" data-type="tv" aria-pressed="false">
+            <i class="fa-solid fa-tv" aria-hidden="true"></i> TV-serie
+          </button>
+        </div>
+      </section>
+
+      <!-- 5: sjanger -->
+      <section class="step is-locked" id="step-genre">
+        <div class="step-header">
+          <span class="step-number">5</span>
+          <h2 class="step-title">Sjanger</h2>
+          <span class="step-hint">Ingen valgt = alle sjangre</span>
+        </div>
+        <div class="chip-grid" id="genreGrid" role="group" aria-label="Sjangre">
+          <p class="loading-text">Velg film eller serie først.</p>
+        </div>
+      </section>
+
+      <!-- 6: språk -->
+      <section class="step is-locked" id="step-language">
+        <div class="step-header">
+          <span class="step-number">6</span>
+          <h2 class="step-title">Språk</h2>
+          <span class="step-hint">Originalspråket til filmen eller serien</span>
+        </div>
+        <label class="sr-only" for="languageSelect">Språk</label>
+        <select class="roulette-select" id="languageSelect">
+          <option value="">Alle språk</option>
+        </select>
+      </section>
+
+      <!-- 7: score -->
+      <section class="step is-locked" id="step-score">
+        <div class="step-header">
+          <span class="step-number">7</span>
+          <h2 class="step-title">Terningkast</h2>
+          <span class="step-hint">Publikumsscore fra TMDB, 0&ndash;10</span>
+        </div>
+        <div class="score-row">
+          <div class="score-field">
+            <label for="scoreMin">Minimum score <output id="scoreMinOut">6.0</output></label>
+            <input type="range" id="scoreMin" min="0" max="10" step="0.1" value="6">
+          </div>
+          <div class="score-field">
+            <label for="scoreMax">Maksimum score <output id="scoreMaxOut">10.0</output></label>
+            <input type="range" id="scoreMax" min="0" max="10" step="0.1" value="10">
+          </div>
+        </div>
+      </section>
+
+
+      <div class="spin-panel">
+        <p class="pool-count" id="poolCount"></p>
+        <button class="spin-button" id="spinButton" type="button" disabled>Spinn</button>
+
+        <div class="reel-stage" id="reelStage" aria-hidden="true">
+          <div class="reel-strip" id="reelStrip"></div>
+          <div class="reel-marker"></div>
+        </div>
+
+        <div class="action-row">
+          <button class="link-button" id="browseButton" type="button" aria-expanded="false" aria-controls="browsePanel" disabled>
+            <i class="fa-solid fa-list" aria-hidden="true"></i> Se hele utvalget
+          </button>
+        </div>
+
+        <div class="result-card" id="resultCard" aria-live="polite"></div>
+
+        <section class="browse-panel" id="browsePanel" aria-label="Hele utvalget">
+          <div class="browse-heading" id="browseHeading"></div>
+          <div class="browse-list" id="browseList"></div>
+          <button class="link-button browse-more" id="browseMore" type="button" hidden>Vis flere</button>
+        </section>
+      </div>
+    </main>
+
+    <footer class="mastfoot">
+      <div class="footer-button-container">
+        <a href="https://github.com/OpusMag" class="footer-button">
+          <i class="fa-brands fa-github"></i>
+          <span class="sr-only">GitHub</span>
+        </a>
+        <a href="https://www.linkedin.com/in/magnuslyngra/" class="footer-button">
+          <i class="fab fa-linkedin"></i>
+          <span class="sr-only">LinkedIn</span>
+        </a>
+        <a href="https://soundcloud.com/opusmag" class="footer-button">
+          <i class="fa-brands fa-soundcloud"></i>
+          <span class="sr-only">SoundCloud</span>
+        </a>
+      </div>
+    </footer>
+
+    <script>
+      class NavigationManager {
+        constructor() {
+          this.elements = this.getElements();
+        }
+
+        getElements() {
+          return {
+            toggler: document.querySelector('.navbar-toggler'),
+            icon: document.querySelector('.navbar-toggler i'),
+            collapse: document.querySelector('#navbarNav'),
+            header: document.querySelector('.masthead')
+          };
+        }
+
+        init() {
+          if (!this.elements.toggler) {
+            console.warn('Navigation toggler not found');
+            return;
+          }
+
+          this.elements.toggler.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.toggleNavigation();
+          });
+        }
+
+        toggleNavigation() {
+          const { icon, collapse, toggler } = this.elements;
+
+          try {
+            if (icon) {
+              icon.classList.toggle('fa-bars');
+              icon.classList.toggle('fa-times');
+            }
+            if (collapse) {
+              collapse.classList.toggle('show');
+            }
+            if (toggler) {
+              toggler.classList.toggle('toggled');
+            }
+          } catch (error) {
+            console.error('Error toggling navigation:', error);
+          }
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        new NavigationManager().init();
+      });
+    </script>
+
+    <script>
+    (function () {
+      'use strict';
+
+      const PROXY = 'tmdb-proxy.php';
+      const IMG = 'https://image.tmdb.org/t/p/';
+      const STORAGE_KEY = 'filmfinner.filters';
+      const REEL_ITEM_HEIGHT = 106;
+      const REEL_LENGTH = 26;
+
+      const state = {
+        country: '',
+        providers: [],
+        type: '',
+        genres: [],
+        language: '',
+        search: '',
+        scoreMin: 6,
+        scoreMax: 10,
+        pool: null,          // { total, pages } for the current filter set
+        spinning: false,
+        browse: {
+          open: false,
+          page: 0,           // last page fetched; 0 means nothing yet
+          items: [],
+          loading: false,
+          details: {}        // id -> detail payload, fetched on first expand
+        }
+      };
+
+      const el = {
+        error: document.getElementById('globalError'),
+        countrySelect: document.getElementById('countrySelect'),
+        providerGrid: document.getElementById('providerGrid'),
+        providerToggle: document.getElementById('providerToggle'),
+        typeGrid: document.getElementById('typeGrid'),
+        genreGrid: document.getElementById('genreGrid'),
+        languageSelect: document.getElementById('languageSelect'),
+        searchInput: document.getElementById('searchInput'),
+        searchNote: document.getElementById('searchNote'),
+        scoreMin: document.getElementById('scoreMin'),
+        scoreMax: document.getElementById('scoreMax'),
+        scoreMinOut: document.getElementById('scoreMinOut'),
+        scoreMaxOut: document.getElementById('scoreMaxOut'),
+        poolCount: document.getElementById('poolCount'),
+        spinButton: document.getElementById('spinButton'),
+        reelStage: document.getElementById('reelStage'),
+        reelStrip: document.getElementById('reelStrip'),
+        resultCard: document.getElementById('resultCard'),
+        browseButton: document.getElementById('browseButton'),
+        browsePanel: document.getElementById('browsePanel'),
+        browseHeading: document.getElementById('browseHeading'),
+        browseList: document.getElementById('browseList'),
+        browseMore: document.getElementById('browseMore'),
+        steps: {
+          providers: document.getElementById('step-providers'),
+          type: document.getElementById('step-type'),
+          genre: document.getElementById('step-genre'),
+          language: document.getElementById('step-language'),
+          search: document.getElementById('step-search'),
+          score: document.getElementById('step-score'),
+          country: document.getElementById('step-country')
+        }
+      };
+
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ------------------------------------------------------------ utils */
+
+      function api(params) {
+        const query = new URLSearchParams(params).toString();
+        return fetch(PROXY + '?' + query, { headers: { Accept: 'application/json' } })
+          .then(async (response) => {
+            let data = null;
+            try {
+              data = await response.json();
+            } catch (e) {
+              throw new Error('Serveren svarte med noe uventet.');
+            }
+            if (!response.ok || data.error) {
+              throw new Error(data.error || 'Noe gikk galt (' + response.status + ').');
+            }
+            return data;
+          });
+      }
+
+      function showError(message) {
+        el.error.textContent = message;
+        el.error.classList.add('is-visible');
+      }
+
+      function clearError() {
+        el.error.classList.remove('is-visible');
+      }
+
+      function randomInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+
+      function shuffle(list) {
+        const copy = list.slice();
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = randomInt(i + 1);
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function debounce(fn, wait) {
+        let timer;
+        return function () {
+          clearTimeout(timer);
+          timer = setTimeout(fn, wait);
+        };
+      }
+
+      function posterMarkup(path, size, alt) {
+        if (!path) {
+          return '<div class="poster-fallback" role="img" aria-label="Ingen plakat"></div>';
+        }
+        const img = document.createElement('img');
+        img.src = IMG + size + path;
+        img.alt = alt || '';
+        img.loading = 'lazy';
+        return img.outerHTML;
+      }
+
+      function escapeHtml(value) {
+        const div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
+      }
+
+      function saveFilters() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            country: state.country,
+            providers: state.providers,
+            type: state.type,
+            genres: state.genres,
+            language: state.language,
+            scoreMin: state.scoreMin,
+            scoreMax: state.scoreMax
+          }));
+        } catch (e) {
+          /* private mode: just skip persistence */
+        }
+      }
+
+      function loadFilters() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      /* ------------------------------------------------------------ steps */
+
+      function setStepState(step, unlocked, done, suspended) {
+        step.classList.toggle('is-locked', !unlocked);
+        step.classList.toggle('is-done', !!done && !suspended);
+        step.classList.toggle('is-suspended', !!suspended);
+      }
+
+      function refreshSteps() {
+        const hasCountry = !!state.country;
+        const hasProviders = state.providers.length > 0;
+        const hasType = !!state.type;
+
+        // Searching is its own mode: it needs a country and a service, and
+        // overrides everything below it.
+        const searching = !!state.search;
+
+        setStepState(el.steps.country, true, hasCountry);
+        setStepState(el.steps.providers, hasCountry, hasProviders);
+        setStepState(el.steps.search, hasProviders, searching);
+        setStepState(el.steps.type, hasProviders, hasType, searching);
+        setStepState(el.steps.genre, hasType, state.genres.length > 0, searching);
+        setStepState(el.steps.language, hasType, !!state.language, searching);
+        setStepState(el.steps.score, hasType, hasType, searching);
+        el.searchNote.hidden = !searching;
+
+        const emptyPool = state.pool !== null && state.pool.total === 0;
+        // A search does not need a type chosen; it covers films and series.
+        const ready = hasCountry && hasProviders && (searching || hasType);
+        el.spinButton.disabled = !ready || state.spinning || emptyPool;
+        el.browseButton.disabled = !ready || emptyPool;
+        setBrowseLabel();
+      }
+
+      /* ------------------------------------------------------------- load */
+
+      function loadRegions() {
+        return api({ action: 'regions' }).then((data) => {
+          const saved = loadFilters();
+          // Norway by default; a country the visitor picked themselves wins.
+          const preferred = saved.country || 'NO';
+
+          el.countrySelect.innerHTML = '<option value="">Velg land …</option>';
+          data.regions.forEach((region) => {
+            const option = document.createElement('option');
+            option.value = region.code;
+            option.textContent = region.name;
+            el.countrySelect.appendChild(option);
+          });
+          el.countrySelect.disabled = false;
+
+          const match = data.regions.some((r) => r.code === preferred);
+          if (match) {
+            el.countrySelect.value = preferred;
+            state.country = preferred;
+            return loadProviders(saved.providers || []);
+          }
+          refreshSteps();
+        });
+      }
+
+      function loadProviders(preselect) {
+        el.providerGrid.innerHTML = '<p class="loading-text">Henter strømmetjenester …</p>';
+        el.providerToggle.hidden = true;
+        state.providers = [];
+
+        // TMDB lists providers per media type; movie coverage is the broader list.
+        return api({ action: 'providers', type: 'movie', region: state.country })
+          .then((data) => {
+            el.providerGrid.innerHTML = '';
+            if (!data.providers.length) {
+              el.providerGrid.innerHTML = '<p class="loading-text">Ingen strømmetjenester registrert for dette landet.</p>';
+              refreshSteps();
+              return;
+            }
+
+            // The proxy decides which services show without expanding.
+            data.providers.forEach((provider) => {
+              const chip = document.createElement('button');
+              chip.type = 'button';
+              chip.className = 'chip' + (provider.pinned ? '' : ' is-extra');
+              chip.dataset.providerId = provider.id;
+              chip.setAttribute('aria-pressed', 'false');
+              chip.innerHTML = (provider.logo
+                ? '<img src="' + IMG + 'w45' + provider.logo + '" alt="" loading="lazy">'
+                : '') + escapeHtml(provider.name);
+              chip.addEventListener('click', () => toggleProvider(chip, provider.id));
+              el.providerGrid.appendChild(chip);
+            });
+
+            el.providerGrid.classList.add('is-collapsed');
+            const hiddenCount = data.providers.filter((p) => !p.pinned).length;
+            el.providerToggle.hidden = hiddenCount === 0;
+            el.providerToggle.textContent = 'Vis alle ' + data.providers.length + ' tjenester';
+
+            (preselect || []).forEach((id) => {
+              const chip = el.providerGrid.querySelector('[data-provider-id="' + id + '"]');
+              if (chip) {
+                toggleProvider(chip, id, true);
+                if (chip.classList.contains('is-extra')) {
+                  el.providerGrid.classList.remove('is-collapsed');
+                }
+              }
+            });
+
+            refreshSteps();
+          });
+      }
+
+      function toggleProvider(chip, id, forceOn) {
+        const numericId = Number(id);
+        const isOn = forceOn === true ? false : state.providers.includes(numericId);
+
+        if (isOn) {
+          state.providers = state.providers.filter((p) => p !== numericId);
+          chip.setAttribute('aria-pressed', 'false');
+        } else {
+          if (!state.providers.includes(numericId)) {
+            state.providers.push(numericId);
+          }
+          chip.setAttribute('aria-pressed', 'true');
+        }
+
+        invalidatePool();
+        refreshSteps();
+        saveFilters();
+        updatePoolCount();
+      }
+
+      function loadGenres(preselect) {
+        el.genreGrid.innerHTML = '<p class="loading-text">Henter sjangre …</p>';
+        state.genres = [];
+
+        return api({ action: 'genres', type: state.type }).then((data) => {
+          el.genreGrid.innerHTML = '';
+          data.genres.forEach((genre) => {
+            const chip = document.createElement('button');
+            chip.type = 'button';
+            chip.className = 'chip';
+            chip.dataset.genreId = genre.id;
+            chip.setAttribute('aria-pressed', 'false');
+            chip.textContent = genre.name;
+            chip.addEventListener('click', () => toggleGenre(chip, genre.id));
+            el.genreGrid.appendChild(chip);
+          });
+
+          (preselect || []).forEach((id) => {
+            const chip = el.genreGrid.querySelector('[data-genre-id="' + id + '"]');
+            if (chip) {
+              toggleGenre(chip, id, true);
+            }
+          });
+
+          refreshSteps();
+        });
+      }
+
+      function toggleGenre(chip, id, forceOn) {
+        const numericId = Number(id);
+        const isOn = forceOn === true ? false : state.genres.includes(numericId);
+
+        if (isOn) {
+          state.genres = state.genres.filter((g) => g !== numericId);
+          chip.setAttribute('aria-pressed', 'false');
+        } else {
+          if (!state.genres.includes(numericId)) {
+            state.genres.push(numericId);
+          }
+          chip.setAttribute('aria-pressed', 'true');
+        }
+
+        invalidatePool();
+        refreshSteps();
+        saveFilters();
+        updatePoolCount();
+      }
+
+      function loadLanguages(preselect) {
+        return api({ action: 'languages' }).then((data) => {
+          const build = (list) => list.map((language) =>
+            '<option value="' + language.code + '">' + escapeHtml(language.name) + '</option>'
+          ).join('');
+
+          el.languageSelect.innerHTML =
+            '<option value="">Alle språk</option>'
+            + '<optgroup label="Vanlige">' + build(data.common) + '</optgroup>'
+            + '<optgroup label="Alle språk">' + build(data.languages) + '</optgroup>';
+
+          if (preselect) {
+            el.languageSelect.value = preselect;
+            // An unknown code leaves the select blank rather than silently
+            // filtering on nothing.
+            state.language = el.languageSelect.value;
+          }
+          refreshSteps();
+        });
+      }
+
+      /* -------------------------------------------------------- pool size */
+
+      // One pool, two sources: /discover normally, /search when a title is
+      // typed, since TMDB's search takes none of the other filters.
+      function poolParams(page) {
+        if (state.search) {
+          // Only what decides whether you can watch it at all.
+          return {
+            action: 'search',
+            region: state.country,
+            providers: state.providers.join('|'),
+            query: state.search,
+            page: page || 1
+          };
+        }
+        return {
+          action: 'discover',
+          type: state.type,
+          region: state.country,
+          providers: state.providers.join('|'),
+          genres: state.genres.join(','),
+          original_language: state.language,
+          score_min: state.scoreMin,
+          score_max: state.scoreMax,
+          page: page || 1
+        };
+      }
+
+      // A search spans both kinds, so it cannot be called films or series.
+      function poolNoun() {
+        if (state.search) {
+          return 'titler';
+        }
+        return state.type === 'movie' ? 'filmer' : 'serier';
+      }
+
+      function invalidatePool() {
+        state.pool = null;
+        resetBrowse();
+      }
+
+      // The listing belongs to one set of filters, so it is thrown away
+      // whenever they change rather than mixing titles from two pools.
+      function resetBrowse() {
+        state.browse.page = 0;
+        state.browse.items = [];
+        state.browse.loading = false;
+        el.browseList.innerHTML = '';
+        el.browseHeading.textContent = '';
+        el.browseMore.hidden = true;
+        if (state.browse.open) {
+          state.browse.open = false;
+          el.browsePanel.classList.remove('is-visible');
+          el.browseButton.setAttribute('aria-expanded', 'false');
+          setBrowseLabel();
+        }
+      }
+
+      function filtersReady() {
+        return !!(state.country && state.providers.length && (state.search || state.type));
+      }
+
+      const updatePoolCount = debounce(function () {
+        if (!filtersReady()) {
+          el.poolCount.textContent = '';
+          return;
+        }
+
+        el.poolCount.textContent = 'Teller opp puljen …';
+        api(poolParams(1))
+          .then((data) => {
+            state.pool = { total: data.total_results, pages: data.total_pages };
+            clearError();
+            if (!data.total_results) {
+              el.poolCount.innerHTML = '<strong>Ingen treff</strong> &ndash; prøv å løsne på filtrene.';
+            } else {
+              const noun = poolNoun();
+              el.poolCount.innerHTML = '<strong>' + data.total_results + '</strong> ' + noun + ' i puljen';
+            }
+            refreshSteps();
+          })
+          .catch((error) => {
+            el.poolCount.textContent = '';
+            showError(error.message);
+          });
+      }, 350);
+
+      /* ----------------------------------------------------------- browse */
+
+      function setBrowseLabel() {
+        const total = state.pool ? state.pool.total : 0;
+        const count = total ? ' (' + total + ')' : '';
+        el.browseButton.innerHTML = state.browse.open
+          ? '<i class="fa-solid fa-xmark" aria-hidden="true"></i> Skjul utvalget'
+          : '<i class="fa-solid fa-list" aria-hidden="true"></i> Se hele utvalget' + count;
+      }
+
+      function browseItemMarkup(item) {
+        return '<div class="browse-item" data-id="' + item.id
+          + '" data-type="' + escapeHtml(item.type) + '">'
+          + '<button class="browse-row" type="button" aria-expanded="false">'
+          + posterMarkup(item.poster, 'w92', '')
+          + '<span class="browse-text">'
+          + '<span class="browse-title">' + escapeHtml(item.title) + '</span>'
+          + '<span class="browse-year">' + escapeHtml(item.year || 'Ukjent år') + '</span>'
+          + '</span>'
+          + '<span class="browse-score">' + item.score.toFixed(1) + '</span>'
+          + '<i class="fa-solid fa-chevron-down browse-chevron" aria-hidden="true"></i>'
+          + '</button>'
+          + '<div class="browse-detail"><p class="loading-text">Henter beskrivelse …</p></div>'
+          + '</div>';
+      }
+
+      function renderBrowseDetail(container, detail) {
+        const badges = [];
+        if (detail.imdb_rating) {
+          badges.push('<span class="badge score">IMDb ' + escapeHtml(detail.imdb_rating) + '</span>');
+        }
+        (detail.genres || []).forEach((genre) => {
+          badges.push('<span class="badge">' + escapeHtml(genre) + '</span>');
+        });
+        if (detail.type === 'movie' && detail.runtime) {
+          badges.push('<span class="badge">' + detail.runtime + ' min</span>');
+        }
+        if (detail.type === 'tv' && detail.seasons) {
+          badges.push('<span class="badge">' + detail.seasons
+            + (detail.seasons === 1 ? ' sesong' : ' sesonger') + '</span>');
+        }
+
+        const imdbLink = detail.imdb_id
+          ? '<a class="link-button" href="https://www.imdb.com/title/' + escapeHtml(detail.imdb_id)
+            + '/" target="_blank" rel="noopener">IMDb <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+          : '';
+
+        container.innerHTML =
+          (badges.length ? '<div class="result-badges">' + badges.join('') + '</div>' : '')
+          + '<p class="' + (detail.overview_language === 'en' ? 'result-overview is-english' : '') + '">'
+          + (detail.overview ? escapeHtml(detail.overview) : 'Ingen beskrivelse tilgjengelig.')
+          + '</p>'
+          + '<div class="result-links">' + imdbLink
+          + '<a class="link-button" href="https://www.themoviedb.org/' + detail.type + '/' + detail.id
+          + '" target="_blank" rel="noopener">TMDB <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+          + '</div>';
+      }
+
+      function toggleBrowseItem(item) {
+        const id = Number(item.dataset.id);
+        const row = item.querySelector('.browse-row');
+        const detail = item.querySelector('.browse-detail');
+        const opening = !item.classList.contains('is-open');
+
+        item.classList.toggle('is-open', opening);
+        row.setAttribute('aria-expanded', String(opening));
+        if (!opening) {
+          return;
+        }
+
+        const cached = state.browse.details[id];
+        if (cached) {
+          renderBrowseDetail(detail, cached);
+          return;
+        }
+
+        api({
+          action: 'detail',
+          type: item.dataset.type || state.type,
+          id: id,
+          region: state.country
+        })
+          .then((payload) => {
+            state.browse.details[id] = payload;
+            renderBrowseDetail(detail, payload);
+          })
+          .catch((error) => {
+            detail.innerHTML = '<p class="loading-text">'
+              + escapeHtml(error.message) + '</p>';
+          });
+      }
+
+      function updateBrowseHeading() {
+        const total = state.pool ? state.pool.total : 0;
+        const noun = poolNoun();
+        el.browseHeading.textContent = 'Viser ' + state.browse.items.length
+          + ' av ' + total + ' ' + noun + ' – trykk på en tittel for beskrivelsen';
+      }
+
+      function loadBrowsePage() {
+        if (state.browse.loading) {
+          return Promise.resolve();
+        }
+        state.browse.loading = true;
+        el.browseMore.disabled = true;
+        el.browseMore.textContent = 'Henter …';
+
+        const next = state.browse.page + 1;
+        return api(poolParams(next))
+          .then((data) => {
+            // Opening the list before the pool counter has come back would
+            // otherwise leave the heading claiming "av 0".
+            if (!state.pool) {
+              state.pool = { total: data.total_results, pages: data.total_pages };
+              setBrowseLabel();
+            }
+            state.browse.page = next;
+            state.browse.items = state.browse.items.concat(data.results);
+            el.browseList.insertAdjacentHTML('beforeend', data.results.map(browseItemMarkup).join(''));
+            updateBrowseHeading();
+
+            // TMDB serves at most 500 pages, so a very large pool runs out
+            // before every title is reachable.
+            const pages = state.pool ? state.pool.pages : data.total_pages;
+            el.browseMore.hidden = next >= pages || data.results.length === 0;
+          })
+          .catch((error) => {
+            showError(error.message);
+            el.browseMore.hidden = true;
+          })
+          .then(() => {
+            state.browse.loading = false;
+            el.browseMore.disabled = false;
+            el.browseMore.textContent = 'Vis flere';
+          });
+      }
+
+      function toggleBrowse() {
+        state.browse.open = !state.browse.open;
+        el.browsePanel.classList.toggle('is-visible', state.browse.open);
+        el.browseButton.setAttribute('aria-expanded', String(state.browse.open));
+        setBrowseLabel();
+
+        if (!state.browse.open) {
+          return;
+        }
+        const first = state.browse.items.length
+          ? Promise.resolve()
+          : loadBrowsePage();
+        first.then(() => {
+          el.browsePanel.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+        });
+      }
+
+      /* ------------------------------------------------------------- spin */
+
+      function fetchRandomPage() {
+        const ensurePool = state.pool
+          ? Promise.resolve(state.pool)
+          : api(poolParams(1)).then((data) => {
+              state.pool = { total: data.total_results, pages: data.total_pages };
+              return state.pool;
+            });
+
+        return ensurePool.then((pool) => {
+          if (!pool.total || !pool.pages) {
+            throw new Error('Ingen titler passer filtrene dine. Prøv en bredere sjanger eller lavere score.');
+          }
+          const page = 1 + randomInt(pool.pages);
+          return api(poolParams(page)).then((data) => {
+            if (data.results.length) {
+              return data.results;
+            }
+            // Rare: a page at the tail of the result set came back empty.
+            return api(poolParams(1)).then((first) => first.results);
+          });
+        });
+      }
+
+      function buildReel(candidates, winner) {
+        const strip = [];
+        // Two slots are kept free after the winner so the reel window never
+        // shows a gap under the title it landed on.
+        const before = REEL_LENGTH - 3;
+        while (strip.length < before && candidates.length) {
+          shuffle(candidates).forEach((item) => {
+            if (strip.length < before) {
+              strip.push(item);
+            }
+          });
+        }
+
+        const winnerIndex = strip.length;
+        strip.push(winner);
+        shuffle(candidates).slice(0, 2).forEach((item) => strip.push(item));
+
+        el.reelStrip.innerHTML = strip.map((item) =>
+          '<div class="reel-item">'
+          + posterMarkup(item.poster, 'w92', '')
+          + '<span>' + escapeHtml(item.title) + '</span>'
+          + '</div>'
+        ).join('');
+
+        return winnerIndex;
+      }
+
+      function animateReel(winnerIndex) {
+        return new Promise((resolve) => {
+          const stage = el.reelStage;
+          const strip = el.reelStrip;
+
+          stage.classList.add('is-visible');
+          strip.style.transition = 'none';
+          strip.style.transform = 'translateY(0)';
+          // Force layout so the reset transform is applied before the transition.
+          void strip.offsetHeight;
+
+          // The marker sits on the second slot, so the winner stops there.
+          const offset = (winnerIndex - 1) * REEL_ITEM_HEIGHT;
+          const duration = reducedMotion ? 300 : 4200;
+
+          strip.style.transition = 'transform ' + duration + 'ms cubic-bezier(0.12, 0.7, 0.18, 1)';
+          strip.style.transform = 'translateY(-' + offset + 'px)';
+
+          let settled = false;
+          const finish = () => {
+            if (settled) {
+              return;
+            }
+            settled = true;
+            strip.removeEventListener('transitionend', finish);
+            resolve();
+          };
+
+          strip.addEventListener('transitionend', finish);
+          // Safety net in case transitionend never fires (background tab, etc).
+          setTimeout(finish, duration + 400);
+        });
+      }
+
+      function renderResult(detail) {
+        const isMovie = detail.type === 'movie';
+        const meta = [];
+        if (detail.year) {
+          meta.push(detail.year);
+        }
+        meta.push(isMovie ? 'Film' : 'TV-serie');
+        if (isMovie && detail.runtime) {
+          meta.push(detail.runtime + ' min');
+        }
+        if (!isMovie && detail.seasons) {
+          meta.push(detail.seasons + (detail.seasons === 1 ? ' sesong' : ' sesonger'));
+        }
+        if (detail.original_title && detail.original_title !== detail.title) {
+          meta.push('originaltittel: ' + detail.original_title);
+        }
+
+        const badges = [];
+        if (detail.imdb_rating) {
+          badges.push('<span class="badge score">IMDb ' + escapeHtml(detail.imdb_rating) + '</span>');
+        }
+        badges.push('<span class="badge score">TMDB ' + detail.score.toFixed(1)
+          + ' <span style="opacity:0.7;font-weight:400">(' + detail.votes + ' stemmer)</span></span>');
+        (detail.genres || []).forEach((genre) => {
+          badges.push('<span class="badge">' + escapeHtml(genre) + '</span>');
+        });
+
+        const services = (detail.streaming || []);
+        const streaming = services.length
+          ? '<div class="result-streaming"><span>Strømmes på:</span>'
+            + services.map((service) => service.logo
+                ? '<img src="' + IMG + 'w45' + service.logo + '" alt="' + escapeHtml(service.name)
+                  + '" title="' + escapeHtml(service.name) + '" loading="lazy">'
+                : '<span class="badge">' + escapeHtml(service.name) + '</span>'
+              ).join('')
+            + '</div>'
+          : '';
+
+        const imdbLink = detail.imdb_id
+          ? '<a class="link-button" href="https://www.imdb.com/title/' + escapeHtml(detail.imdb_id)
+            + '/" target="_blank" rel="noopener">IMDb <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+          : '';
+
+        const overview = detail.overview
+          ? escapeHtml(detail.overview)
+          : 'Ingen beskrivelse tilgjengelig.';
+
+        el.resultCard.innerHTML =
+          '<div class="result-poster">' + posterMarkup(detail.poster, 'w342', 'Plakat for ' + detail.title) + '</div>'
+          + '<div class="result-body">'
+          + '<h2>' + escapeHtml(detail.title) + '</h2>'
+          + '<p class="result-meta">' + escapeHtml(meta.join(' · ')) + '</p>'
+          + '<div class="result-badges">' + badges.join('') + '</div>'
+          + '<p class="result-overview' + (detail.overview_language === 'en' ? ' is-english' : '') + '">'
+          + overview + '</p>'
+          + '<div class="result-links">' + imdbLink
+          + '<a class="link-button" href="https://www.themoviedb.org/' + detail.type + '/' + detail.id
+          + '" target="_blank" rel="noopener">TMDB <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+          + '</div>'
+          + streaming
+          + '</div>';
+
+        el.resultCard.classList.add('is-visible');
+      }
+
+      function spin() {
+        if (state.spinning || !filtersReady()) {
+          return;
+        }
+
+        state.spinning = true;
+        clearError();
+        el.resultCard.classList.remove('is-visible');
+        el.spinButton.disabled = true;
+        el.spinButton.textContent = 'Spinner …';
+
+        fetchRandomPage()
+          .then((candidates) => {
+            if (!candidates.length) {
+              throw new Error('Ingen titler passer filtrene dine. Prøv en bredere sjanger eller lavere score.');
+            }
+            const winner = candidates[randomInt(candidates.length)];
+            const winnerIndex = buildReel(candidates, winner);
+
+            // Fetch the details while the reel is still spinning.
+            const details = api({
+              action: 'detail',
+              type: winner.type,
+              id: winner.id,
+              region: state.country
+            });
+
+            return Promise.all([animateReel(winnerIndex), details]).then((results) => results[1]);
+          })
+          .then((detail) => {
+            renderResult(detail);
+          })
+          .catch((error) => {
+            el.reelStage.classList.remove('is-visible');
+            showError(error.message);
+          })
+          .then(() => {
+            state.spinning = false;
+            el.spinButton.textContent = 'Spinn igjen';
+            refreshSteps();
+          });
+      }
+
+      /* ----------------------------------------------------------- events */
+
+      el.countrySelect.addEventListener('change', () => {
+        state.country = el.countrySelect.value;
+        invalidatePool();
+        saveFilters();
+        el.poolCount.textContent = '';
+        if (!state.country) {
+          el.providerGrid.innerHTML = '<p class="loading-text">Velg land først.</p>';
+          refreshSteps();
+          return;
+        }
+        loadProviders([]).then(updatePoolCount).catch((error) => showError(error.message));
+      });
+
+      el.providerToggle.addEventListener('click', () => {
+        const collapsed = el.providerGrid.classList.toggle('is-collapsed');
+        el.providerToggle.textContent = collapsed
+          ? 'Vis alle tjenester'
+          : 'Vis færre tjenester';
+      });
+
+      el.typeGrid.querySelectorAll('[data-type]').forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const saved = loadFilters();
+          const keepGenres = saved.type === chip.dataset.type ? saved.genres : [];
+
+          state.type = chip.dataset.type;
+          el.typeGrid.querySelectorAll('[data-type]').forEach((other) => {
+            other.setAttribute('aria-pressed', String(other === chip));
+          });
+
+          invalidatePool();
+          saveFilters();
+          refreshSteps();
+          loadGenres(keepGenres)
+            .then(updatePoolCount)
+            .catch((error) => showError(error.message));
+        });
+      });
+
+      function syncScores(changed) {
+        let min = parseFloat(el.scoreMin.value);
+        let max = parseFloat(el.scoreMax.value);
+
+        if (min > max) {
+          if (changed === 'min') {
+            max = min;
+            el.scoreMax.value = max;
+          } else {
+            min = max;
+            el.scoreMin.value = min;
+          }
+        }
+
+        state.scoreMin = min;
+        state.scoreMax = max;
+        el.scoreMinOut.textContent = min.toFixed(1);
+        el.scoreMaxOut.textContent = max.toFixed(1);
+
+        invalidatePool();
+        saveFilters();
+        updatePoolCount();
+      }
+
+      el.languageSelect.addEventListener('change', () => {
+        state.language = el.languageSelect.value;
+        invalidatePool();
+        saveFilters();
+        refreshSteps();
+        updatePoolCount();
+      });
+
+      const applySearch = debounce(function () {
+        // Under two characters TMDB rejects the query, so treat it as no
+        // search at all rather than surfacing an error mid-typing.
+        const value = el.searchInput.value.trim();
+        const next = value.length >= 2 ? value : '';
+        if (next === state.search) {
+          return;
+        }
+        state.search = next;
+        invalidatePool();
+        refreshSteps();
+        updatePoolCount();
+      }, 450);
+
+      el.searchInput.addEventListener('input', applySearch);
+      el.searchInput.addEventListener('search', applySearch);
+
+      el.scoreMin.addEventListener('input', () => syncScores('min'));
+      el.scoreMax.addEventListener('input', () => syncScores('max'));
+      el.spinButton.addEventListener('click', spin);
+      el.browseButton.addEventListener('click', toggleBrowse);
+      el.browseMore.addEventListener('click', loadBrowsePage);
+
+      // One listener for the whole list: rows come and go as pages load.
+      el.browseList.addEventListener('click', (event) => {
+        const row = event.target.closest('.browse-row');
+        if (row) {
+          toggleBrowseItem(row.parentElement);
+        }
+      });
+
+      /* ------------------------------------------------------------- init */
+
+      function init() {
+        const saved = loadFilters();
+        if (typeof saved.scoreMin === 'number') {
+          el.scoreMin.value = saved.scoreMin;
+        }
+        if (typeof saved.scoreMax === 'number') {
+          el.scoreMax.value = saved.scoreMax;
+        }
+        state.scoreMin = parseFloat(el.scoreMin.value);
+        state.scoreMax = parseFloat(el.scoreMax.value);
+        el.scoreMinOut.textContent = state.scoreMin.toFixed(1);
+        el.scoreMaxOut.textContent = state.scoreMax.toFixed(1);
+
+        loadLanguages(saved.language).catch(() => {
+          /* the picker just stays on "Alle språk" */
+        });
+
+        loadRegions()
+          .then(() => {
+            if (saved.type && state.providers.length) {
+              const chip = el.typeGrid.querySelector('[data-type="' + saved.type + '"]');
+              if (chip) {
+                state.type = saved.type;
+                chip.setAttribute('aria-pressed', 'true');
+                refreshSteps();
+                return loadGenres(saved.genres || []).then(updatePoolCount);
+              }
+            }
+            refreshSteps();
+          })
+          .catch((error) => {
+            showError(error.message + ' filmfinner trenger en TMDB-nøkkel i tmdb-config.php på serveren.');
+          });
+      }
+
+      init();
+    })();
+    </script>
+  </body>
+</html>
