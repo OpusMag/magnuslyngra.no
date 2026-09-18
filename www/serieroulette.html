@@ -668,7 +668,7 @@
 
     <main role="main" class="roulette-container">
       <div class="roulette-intro">
-        <h1>serieroulette</h1>
+        <h1>Serieroulette</h1>
         <p>Slutt å scrolle. Velg land, strømmetjeneste og humør &ndash; så trekker rouletten en tilfeldig film eller serie for deg.</p>
       </div>
 
@@ -1038,9 +1038,8 @@
       function loadRegions() {
         return api({ action: 'regions' }).then((data) => {
           const saved = loadFilters();
-          const preferred = saved.country
-            || (navigator.language || '').split('-')[1]
-            || 'NO';
+          // Norway by default; a country the visitor picked themselves wins.
+          const preferred = saved.country || 'NO';
 
           el.countrySelect.innerHTML = '<option value="">Velg land …</option>';
           data.regions.forEach((region) => {
