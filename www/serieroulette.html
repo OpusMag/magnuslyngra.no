@@ -451,6 +451,145 @@
         border-radius: 6px;
       }
 
+      /* ----------------------------------------------------------- browse */
+
+      .action-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+      }
+
+      .browse-panel {
+        display: none;
+        margin: 2rem auto 0;
+        max-width: 46rem;
+        text-align: left;
+      }
+
+      .browse-panel.is-visible {
+        display: block;
+      }
+
+      .browse-heading {
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.9rem;
+      }
+
+      .browse-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+
+      .browse-item {
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 10px;
+        background: rgba(18, 20, 26, 0.72);
+        overflow: hidden;
+      }
+
+      .browse-item.is-open {
+        border-color: rgba(128, 181, 238, 0.45);
+      }
+
+      .browse-row {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        width: 100%;
+        padding: 0.55rem 0.8rem;
+        background: none;
+        border: none;
+        color: inherit;
+        font-family: inherit;
+        font-size: 1rem;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .browse-row:hover {
+        background: rgba(128, 181, 238, 0.12);
+      }
+
+      .browse-row:focus-visible {
+        outline: 2px solid var(--primary-color, #80b5ee);
+        outline-offset: -2px;
+      }
+
+      .browse-row img,
+      .browse-row .poster-fallback {
+        width: 46px;
+        height: 69px;
+        border-radius: 5px;
+        object-fit: cover;
+        background: #222732;
+        flex: 0 0 auto;
+      }
+
+      .browse-text {
+        min-width: 0;
+        flex: 1 1 auto;
+      }
+
+      .browse-title {
+        font-family: var(--font-family-header, sans-serif);
+        font-size: 1.05rem;
+        display: block;
+      }
+
+      .browse-year {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.85rem;
+      }
+
+      .browse-score {
+        flex: 0 0 auto;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        background: rgba(128, 181, 238, 0.18);
+        color: var(--primary-color, #80b5ee);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .browse-chevron {
+        flex: 0 0 auto;
+        color: rgba(255, 255, 255, 0.4);
+        transition: transform 0.2s;
+      }
+
+      .browse-item.is-open .browse-chevron {
+        transform: rotate(180deg);
+      }
+
+      .browse-detail {
+        display: none;
+        padding: 0 0.9rem 1rem 4.4rem;
+      }
+
+      .browse-item.is-open .browse-detail {
+        display: block;
+      }
+
+      .browse-detail p {
+        line-height: 1.55;
+        margin: 0 0 0.8rem;
+      }
+
+      .browse-more {
+        display: block;
+        margin: 1rem auto 0;
+      }
+
+      @media (max-width: 600px) {
+        .browse-detail { padding-left: 0.9rem; }
+      }
+
       /* ---------------------------------------------------------- feedback */
 
       .roulette-message {
@@ -630,7 +769,19 @@
           <div class="reel-marker"></div>
         </div>
 
+        <div class="action-row">
+          <button class="link-button" id="browseButton" type="button" aria-expanded="false" aria-controls="browsePanel" disabled>
+            <i class="fa-solid fa-list" aria-hidden="true"></i> Se hele utvalget
+          </button>
+        </div>
+
         <div class="result-card" id="resultCard" aria-live="polite"></div>
+
+        <section class="browse-panel" id="browsePanel" aria-label="Hele utvalget">
+          <div class="browse-heading" id="browseHeading"></div>
+          <div class="browse-list" id="browseList"></div>
+          <button class="link-button browse-more" id="browseMore" type="button" hidden>Vis flere</button>
+        </section>
       </div>
     </main>
 
@@ -722,7 +873,14 @@
         scoreMin: 6,
         scoreMax: 10,
         pool: null,          // { total, pages } for the current filter set
-        spinning: false
+        spinning: false,
+        browse: {
+          open: false,
+          page: 0,           // last page fetched; 0 means nothing yet
+          items: [],
+          loading: false,
+          details: {}        // id -> detail payload, fetched on first expand
+        }
       };
 
       const el = {
@@ -742,6 +900,11 @@
         reelStage: document.getElementById('reelStage'),
         reelStrip: document.getElementById('reelStrip'),
         resultCard: document.getElementById('resultCard'),
+        browseButton: document.getElementById('browseButton'),
+        browsePanel: document.getElementById('browsePanel'),
+        browseHeading: document.getElementById('browseHeading'),
+        browseList: document.getElementById('browseList'),
+        browseMore: document.getElementById('browseMore'),
         steps: {
           providers: document.getElementById('step-providers'),
           type: document.getElementById('step-type'),
@@ -864,9 +1027,10 @@
         setStepState(el.steps.score, hasType, hasType);
 
         const emptyPool = state.pool !== null && state.pool.total === 0;
-        el.spinButton.disabled = !(hasCountry && hasProviders && hasType)
-          || state.spinning
-          || emptyPool;
+        const ready = hasCountry && hasProviders && hasType;
+        el.spinButton.disabled = !ready || state.spinning || emptyPool;
+        el.browseButton.disabled = !ready || emptyPool;
+        setBrowseLabel();
       }
 
       /* ------------------------------------------------------------- load */
@@ -1052,6 +1216,24 @@
 
       function invalidatePool() {
         state.pool = null;
+        resetBrowse();
+      }
+
+      // The listing belongs to one set of filters, so it is thrown away
+      // whenever they change rather than mixing titles from two pools.
+      function resetBrowse() {
+        state.browse.page = 0;
+        state.browse.items = [];
+        state.browse.loading = false;
+        el.browseList.innerHTML = '';
+        el.browseHeading.textContent = '';
+        el.browseMore.hidden = true;
+        if (state.browse.open) {
+          state.browse.open = false;
+          el.browsePanel.classList.remove('is-visible');
+          el.browseButton.setAttribute('aria-expanded', 'false');
+          setBrowseLabel();
+        }
       }
 
       function filtersReady() {
@@ -1082,6 +1264,154 @@
             showError(error.message);
           });
       }, 350);
+
+      /* ----------------------------------------------------------- browse */
+
+      function setBrowseLabel() {
+        const total = state.pool ? state.pool.total : 0;
+        const count = total ? ' (' + total + ')' : '';
+        el.browseButton.innerHTML = state.browse.open
+          ? '<i class="fa-solid fa-xmark" aria-hidden="true"></i> Skjul utvalget'
+          : '<i class="fa-solid fa-list" aria-hidden="true"></i> Se hele utvalget' + count;
+      }
+
+      function browseItemMarkup(item) {
+        return '<div class="browse-item" data-id="' + item.id + '">'
+          + '<button class="browse-row" type="button" aria-expanded="false">'
+          + posterMarkup(item.poster, 'w92', '')
+          + '<span class="browse-text">'
+          + '<span class="browse-title">' + escapeHtml(item.title) + '</span>'
+          + '<span class="browse-year">' + escapeHtml(item.year || 'Ukjent år') + '</span>'
+          + '</span>'
+          + '<span class="browse-score">' + item.score.toFixed(1) + '</span>'
+          + '<i class="fa-solid fa-chevron-down browse-chevron" aria-hidden="true"></i>'
+          + '</button>'
+          + '<div class="browse-detail"><p class="loading-text">Henter beskrivelse …</p></div>'
+          + '</div>';
+      }
+
+      function renderBrowseDetail(container, detail) {
+        const badges = [];
+        if (detail.imdb_rating) {
+          badges.push('<span class="badge score">IMDb ' + escapeHtml(detail.imdb_rating) + '</span>');
+        }
+        (detail.genres || []).forEach((genre) => {
+          badges.push('<span class="badge">' + escapeHtml(genre) + '</span>');
+        });
+        if (detail.type === 'movie' && detail.runtime) {
+          badges.push('<span class="badge">' + detail.runtime + ' min</span>');
+        }
+        if (detail.type === 'tv' && detail.seasons) {
+          badges.push('<span class="badge">' + detail.seasons
+            + (detail.seasons === 1 ? ' sesong' : ' sesonger') + '</span>');
+        }
+
+        const imdbLink = detail.imdb_id
+          ? '<a class="link-button" href="https://www.imdb.com/title/' + escapeHtml(detail.imdb_id)
+            + '/" target="_blank" rel="noopener">IMDb <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+          : '';
+
+        container.innerHTML =
+          (badges.length ? '<div class="result-badges">' + badges.join('') + '</div>' : '')
+          + '<p class="' + (detail.overview_language === 'en' ? 'result-overview is-english' : '') + '">'
+          + (detail.overview ? escapeHtml(detail.overview) : 'Ingen beskrivelse tilgjengelig.')
+          + '</p>'
+          + '<div class="result-links">' + imdbLink
+          + '<a class="link-button" href="https://www.themoviedb.org/' + detail.type + '/' + detail.id
+          + '" target="_blank" rel="noopener">TMDB <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>'
+          + '</div>';
+      }
+
+      function toggleBrowseItem(item) {
+        const id = Number(item.dataset.id);
+        const row = item.querySelector('.browse-row');
+        const detail = item.querySelector('.browse-detail');
+        const opening = !item.classList.contains('is-open');
+
+        item.classList.toggle('is-open', opening);
+        row.setAttribute('aria-expanded', String(opening));
+        if (!opening) {
+          return;
+        }
+
+        const cached = state.browse.details[id];
+        if (cached) {
+          renderBrowseDetail(detail, cached);
+          return;
+        }
+
+        api({ action: 'detail', type: state.type, id: id, region: state.country })
+          .then((payload) => {
+            state.browse.details[id] = payload;
+            renderBrowseDetail(detail, payload);
+          })
+          .catch((error) => {
+            detail.innerHTML = '<p class="loading-text">'
+              + escapeHtml(error.message) + '</p>';
+          });
+      }
+
+      function updateBrowseHeading() {
+        const total = state.pool ? state.pool.total : 0;
+        const noun = state.type === 'movie' ? 'filmer' : 'serier';
+        el.browseHeading.textContent = 'Viser ' + state.browse.items.length
+          + ' av ' + total + ' ' + noun + ' – trykk på en tittel for beskrivelsen';
+      }
+
+      function loadBrowsePage() {
+        if (state.browse.loading) {
+          return Promise.resolve();
+        }
+        state.browse.loading = true;
+        el.browseMore.disabled = true;
+        el.browseMore.textContent = 'Henter …';
+
+        const next = state.browse.page + 1;
+        return api(discoverParams(next))
+          .then((data) => {
+            // Opening the list before the pool counter has come back would
+            // otherwise leave the heading claiming "av 0".
+            if (!state.pool) {
+              state.pool = { total: data.total_results, pages: data.total_pages };
+              setBrowseLabel();
+            }
+            state.browse.page = next;
+            state.browse.items = state.browse.items.concat(data.results);
+            el.browseList.insertAdjacentHTML('beforeend', data.results.map(browseItemMarkup).join(''));
+            updateBrowseHeading();
+
+            // TMDB serves at most 500 pages, so a very large pool runs out
+            // before every title is reachable.
+            const pages = state.pool ? state.pool.pages : data.total_pages;
+            el.browseMore.hidden = next >= pages || data.results.length === 0;
+          })
+          .catch((error) => {
+            showError(error.message);
+            el.browseMore.hidden = true;
+          })
+          .then(() => {
+            state.browse.loading = false;
+            el.browseMore.disabled = false;
+            el.browseMore.textContent = 'Vis flere';
+          });
+      }
+
+      function toggleBrowse() {
+        state.browse.open = !state.browse.open;
+        el.browsePanel.classList.toggle('is-visible', state.browse.open);
+        el.browseButton.setAttribute('aria-expanded', String(state.browse.open));
+        setBrowseLabel();
+
+        if (!state.browse.open) {
+          return;
+        }
+        const first = state.browse.items.length
+          ? Promise.resolve()
+          : loadBrowsePage();
+        first.then(() => {
+          el.browsePanel.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'nearest' });
+        });
+      }
 
       /* ------------------------------------------------------------- spin */
 
@@ -1353,6 +1683,16 @@
       el.scoreMin.addEventListener('input', () => syncScores('min'));
       el.scoreMax.addEventListener('input', () => syncScores('max'));
       el.spinButton.addEventListener('click', spin);
+      el.browseButton.addEventListener('click', toggleBrowse);
+      el.browseMore.addEventListener('click', loadBrowsePage);
+
+      // One listener for the whole list: rows come and go as pages load.
+      el.browseList.addEventListener('click', (event) => {
+        const row = event.target.closest('.browse-row');
+        if (row) {
+          toggleBrowseItem(row.parentElement);
+        }
+      });
 
       /* ------------------------------------------------------------- init */
 
