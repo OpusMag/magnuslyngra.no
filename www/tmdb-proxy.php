@@ -1,6 +1,6 @@
 <?php
 /**
- * TMDB proxy for serieroulette.
+ * TMDB proxy for filmfinner.
  * Keeps the API key server side and exposes only the handful of
  * read-only lookups the roulette page needs.
  *
@@ -33,7 +33,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 // Kept outside the web root: the host serves this directory with nginx, which
 // ignores .htaccess, so anything cached next to the script would be public.
-define('CACHE_DIR', sys_get_temp_dir() . '/serieroulette-cache');
+define('CACHE_DIR', sys_get_temp_dir() . '/filmfinner-cache');
 const CACHE_TTL_META = 86400;   // regions/providers/genres change rarely
 const CACHE_TTL_LIST = 3600;    // discover/detail
 const RATE_LIMIT_REQUESTS = 120;
@@ -226,7 +226,7 @@ function checkRateLimit(): void {
 
     // Hashed, never stored raw: the counter works the same and a leaked cache
     // file reveals no visitor addresses.
-    $ip = substr(hash('sha256', clientIP() . '|serieroulette'), 0, 32);
+    $ip = substr(hash('sha256', clientIP() . '|filmfinner'), 0, 32);
     if (isset($limits[$ip])) {
         if ($limits[$ip]['count'] >= RATE_LIMIT_REQUESTS) {
             fail(429, 'For mange forespørsler, vent et øyeblikk');
@@ -277,7 +277,7 @@ function httpGetJson(string $url, array $headers = [], bool $soft = false) {
             CURLOPT_CONNECTTIMEOUT => 6,
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_USERAGENT => 'magnuslyngra.no-serieroulette/1.0',
+            CURLOPT_USERAGENT => 'magnuslyngra.no-filmfinner/1.0',
         ]);
         $body = curl_exec($ch);
         $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -285,7 +285,7 @@ function httpGetJson(string $url, array $headers = [], bool $soft = false) {
         curl_close($ch);
 
         if ($body === false) {
-            error_log('[serieroulette] cURL feilet: ' . $error);
+            error_log('[filmfinner] cURL feilet: ' . $error);
             if ($soft) {
                 return null;
             }
@@ -325,7 +325,7 @@ function httpGetJson(string $url, array $headers = [], bool $soft = false) {
 
     if ($status >= 400) {
         $detail = $decoded['status_message'] ?? 'ukjent feil';
-        error_log('[serieroulette] HTTP ' . $status . ': ' . $detail);
+        error_log('[filmfinner] HTTP ' . $status . ': ' . $detail);
         if ($soft) {
             return null;
         }

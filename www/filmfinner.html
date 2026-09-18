@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="serieroulette - trekk en tilfeldig film eller serie fra strømmetjenesten din" />
+    <meta name="description" content="filmfinner - trekk en tilfeldig film eller serie fra strømmetjenesten din" />
     <meta name="author" content="Magnus Lyngra" />
-    <title>serieroulette</title>
+    <title>filmfinner</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png">
@@ -660,7 +660,7 @@
         <a class="nav-link" href="prosjekter.html">Prosjekter</a>
         <a class="nav-link" href="blogg.html">Blogg</a>
         <a class="nav-link" href="musikk.html">Musikk</a>
-        <a class="nav-link active" href="serieroulette.html">Serieroulette</a>
+        <a class="nav-link active" href="filmfinner.html">Filmfinner</a>
       </nav>
 
       <nav class="nav-mobile nav-masthead-mobile">
@@ -674,14 +674,14 @@
           <a class="nav-link" href="prosjekter.html">Prosjekter</a>
           <a class="nav-link" href="blogg.html">Blogg</a>
           <a class="nav-link" href="musikk.html">Musikk</a>
-          <a class="nav-link active" href="serieroulette.html">Serieroulette</a>
+          <a class="nav-link active" href="filmfinner.html">Filmfinner</a>
         </div>
       </nav>
     </header>
 
     <main role="main" class="roulette-container">
       <div class="roulette-intro">
-        <h1>Serieroulette</h1>
+        <h1>Filmfinner</h1>
         <p>Slutt å scrolle. Velg land, strømmetjeneste og humør &ndash; så trekker rouletten en tilfeldig film eller serie for deg.</p>
       </div>
 
@@ -890,7 +890,7 @@
 
       const PROXY = 'tmdb-proxy.php';
       const IMG = 'https://image.tmdb.org/t/p/';
-      const STORAGE_KEY = 'serieroulette.filters';
+      const STORAGE_KEY = 'filmfinner.filters';
       const REEL_ITEM_HEIGHT = 106;
       const REEL_LENGTH = 26;
 
@@ -1811,7 +1811,7 @@
             refreshSteps();
           })
           .catch((error) => {
-            showError(error.message + ' serieroulette trenger en TMDB-nøkkel i tmdb-config.php på serveren.');
+            showError(error.message + ' filmfinner trenger en TMDB-nøkkel i tmdb-config.php på serveren.');
           });
       }
 
