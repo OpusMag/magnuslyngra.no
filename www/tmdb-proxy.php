@@ -1,6 +1,6 @@
 <?php
 /**
- * TMDB proxy for Serieroulette.
+ * TMDB proxy for serieroulette.
  * Keeps the API key server side and exposes only the handful of
  * read-only lookups the roulette page needs.
  *
@@ -226,7 +226,7 @@ function httpGetJson(string $url, array $headers = [], bool $soft = false) {
         curl_close($ch);
 
         if ($body === false) {
-            error_log('[Serieroulette] cURL feilet: ' . $error);
+            error_log('[serieroulette] cURL feilet: ' . $error);
             if ($soft) {
                 return null;
             }
@@ -266,7 +266,7 @@ function httpGetJson(string $url, array $headers = [], bool $soft = false) {
 
     if ($status >= 400) {
         $detail = $decoded['status_message'] ?? 'ukjent feil';
-        error_log('[Serieroulette] HTTP ' . $status . ': ' . $detail);
+        error_log('[serieroulette] HTTP ' . $status . ': ' . $detail);
         if ($soft) {
             return null;
         }
