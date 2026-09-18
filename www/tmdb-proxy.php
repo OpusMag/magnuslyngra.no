@@ -509,6 +509,116 @@ function actionGenres(): void {
     ok(['genres' => $genres]);
 }
 
+/** Provider ids a title streams on (subscription only) in one country. */
+function titleFlatrateProviders(string $type, int $id, string $region): array {
+    $data = tmdbGet('/' . $type . '/' . $id . '/watch/providers', [], CACHE_TTL_META);
+    $ids = [];
+    foreach ($data['results'][$region]['flatrate'] ?? [] as $provider) {
+        $ids[] = (int) $provider['provider_id'];
+    }
+    return $ids;
+}
+
+/**
+ * Title search, shaped like actionDiscover so the page can treat it as just
+ * another pool. /search takes no provider, genre or score filters, so the
+ * cheap ones are applied to the search payload (which carries genre_ids,
+ * vote_average and original_language) and only the survivors cost a
+ * per-title provider lookup.
+ */
+function actionSearch(): void {
+    $type = paramType();
+    $region = paramRegion();
+    $providers = array_filter(array_map('intval', explode('|', paramIdList('providers', '|'))));
+    $genres = array_filter(array_map('intval', explode(',', paramIdList('genres', ','))));
+    $scoreMin = paramScore('score_min', 0.0);
+    $scoreMax = paramScore('score_max', 10.0);
+    if ($scoreMin > $scoreMax) {
+        [$scoreMin, $scoreMax] = [$scoreMax, $scoreMin];
+    }
+    $originalLanguage = strtolower(trim($_GET['original_language'] ?? ''));
+    if (!preg_match('/^[a-z]{2}$/', $originalLanguage)) {
+        $originalLanguage = '';
+    }
+
+    $query = trim($_GET['query'] ?? '');
+    if (function_exists('mb_strlen') ? mb_strlen($query) < 2 : strlen($query) < 2) {
+        fail(400, 'Søket må være på minst to tegn');
+    }
+    if (strlen($query) > 120) {
+        $query = substr($query, 0, 120);
+    }
+
+    // Two pages of hits is plenty to spin among, and bounds the lookups below.
+    $candidates = [];
+    for ($page = 1; $page <= 2; $page++) {
+        $data = tmdbGet('/search/' . $type, [
+            'query' => $query,
+            'language' => DEFAULT_LANGUAGE,
+            'include_adult' => 'false',
+            'page' => $page,
+        ]);
+        foreach ($data['results'] ?? [] as $item) {
+            $candidates[] = $item;
+        }
+        if ($page >= (int) ($data['total_pages'] ?? 1)) {
+            break;
+        }
+    }
+
+    $items = [];
+    $lookups = 0;
+    foreach ($candidates as $item) {
+        $score = (float) ($item['vote_average'] ?? 0);
+        if ($score < $scoreMin || $score > $scoreMax) {
+            continue;
+        }
+        if ($originalLanguage !== '' && ($item['original_language'] ?? '') !== $originalLanguage) {
+            continue;
+        }
+        // TMDB's with_genres uses AND for a comma list, so match that here.
+        if ($genres) {
+            $itemGenres = array_map('intval', $item['genre_ids'] ?? []);
+            if (array_diff($genres, $itemGenres)) {
+                continue;
+            }
+        }
+        if ($providers) {
+            if ($lookups >= 40) {
+                break;
+            }
+            $lookups++;
+            if (!array_intersect($providers, titleFlatrateProviders($type, (int) $item['id'], $region))) {
+                continue;
+            }
+        }
+
+        $date = $type === 'movie'
+            ? ($item['release_date'] ?? '')
+            : ($item['first_air_date'] ?? '');
+        $items[] = [
+            'id' => $item['id'],
+            'type' => $type,
+            'title' => $type === 'movie'
+                ? ($item['title'] ?? $item['original_title'] ?? '')
+                : ($item['name'] ?? $item['original_name'] ?? ''),
+            'year' => $date !== '' ? substr($date, 0, 4) : '',
+            'poster' => $item['poster_path'] ?? null,
+            'backdrop' => $item['backdrop_path'] ?? null,
+            'score' => round($score, 1),
+            'votes' => (int) ($item['vote_count'] ?? 0),
+            'overview' => trim($item['overview'] ?? ''),
+        ];
+    }
+
+    ok([
+        'page' => 1,
+        'total_pages' => 1,
+        'total_results' => count($items),
+        'results' => $items,
+    ]);
+}
+
 function actionLanguages(): void {
     $data = tmdbGet('/configuration/languages', [], CACHE_TTL_META);
 
@@ -739,6 +849,9 @@ switch ($_GET['action'] ?? '') {
         break;
     case 'discover':
         actionDiscover();
+        break;
+    case 'search':
+        actionSearch();
         break;
     case 'detail':
         actionDetail();

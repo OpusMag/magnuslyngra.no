@@ -760,6 +760,19 @@
         </div>
       </section>
 
+      <!-- 7: søk -->
+      <section class="step is-locked" id="step-search">
+        <div class="step-header">
+          <span class="step-number">7</span>
+          <h2 class="step-title">Søk etter en tittel</h2>
+          <span class="step-hint">Valgfritt – la stå tomt for hele utvalget</span>
+        </div>
+        <label class="sr-only" for="searchInput">Søk etter film eller serie</label>
+        <input type="search" class="roulette-select" id="searchInput"
+               placeholder="F.eks. «Harry Potter» eller «Star Wars»"
+               autocomplete="off" maxlength="120">
+      </section>
+
       <div class="spin-panel">
         <p class="pool-count" id="poolCount"></p>
         <button class="spin-button" id="spinButton" type="button" disabled>Spinn</button>
@@ -870,6 +883,7 @@
         type: '',
         genres: [],
         language: '',
+        search: '',
         scoreMin: 6,
         scoreMax: 10,
         pool: null,          // { total, pages } for the current filter set
@@ -891,6 +905,7 @@
         typeGrid: document.getElementById('typeGrid'),
         genreGrid: document.getElementById('genreGrid'),
         languageSelect: document.getElementById('languageSelect'),
+        searchInput: document.getElementById('searchInput'),
         scoreMin: document.getElementById('scoreMin'),
         scoreMax: document.getElementById('scoreMax'),
         scoreMinOut: document.getElementById('scoreMinOut'),
@@ -910,6 +925,7 @@
           type: document.getElementById('step-type'),
           genre: document.getElementById('step-genre'),
           language: document.getElementById('step-language'),
+          search: document.getElementById('step-search'),
           score: document.getElementById('step-score'),
           country: document.getElementById('step-country')
         }
@@ -1025,6 +1041,7 @@
         setStepState(el.steps.genre, hasType, state.genres.length > 0);
         setStepState(el.steps.language, hasType, !!state.language);
         setStepState(el.steps.score, hasType, hasType);
+        setStepState(el.steps.search, hasType, !!state.search);
 
         const emptyPool = state.pool !== null && state.pool.total === 0;
         const ready = hasCountry && hasProviders && hasType;
@@ -1199,9 +1216,11 @@
 
       /* -------------------------------------------------------- pool size */
 
-      function discoverParams(page) {
-        return {
-          action: 'discover',
+      // One pool, two sources: /discover normally, /search when a title is
+      // typed, since TMDB's search takes none of the other filters.
+      function poolParams(page) {
+        const params = {
+          action: state.search ? 'search' : 'discover',
           type: state.type,
           region: state.country,
           providers: state.providers.join('|'),
@@ -1211,6 +1230,10 @@
           score_max: state.scoreMax,
           page: page || 1
         };
+        if (state.search) {
+          params.query = state.search;
+        }
+        return params;
       }
 
       function invalidatePool() {
@@ -1246,7 +1269,7 @@
         }
 
         el.poolCount.textContent = 'Teller opp puljen …';
-        api(discoverParams(1))
+        api(poolParams(1))
           .then((data) => {
             state.pool = { total: data.total_results, pages: data.total_pages };
             clearError();
@@ -1366,7 +1389,7 @@
         el.browseMore.textContent = 'Henter …';
 
         const next = state.browse.page + 1;
-        return api(discoverParams(next))
+        return api(poolParams(next))
           .then((data) => {
             // Opening the list before the pool counter has come back would
             // otherwise leave the heading claiming "av 0".
@@ -1417,7 +1440,7 @@
       function fetchRandomPage() {
         const ensurePool = state.pool
           ? Promise.resolve(state.pool)
-          : api(discoverParams(1)).then((data) => {
+          : api(poolParams(1)).then((data) => {
               state.pool = { total: data.total_results, pages: data.total_pages };
               return state.pool;
             });
@@ -1427,12 +1450,12 @@
             throw new Error('Ingen titler passer filtrene dine. Prøv en bredere sjanger eller lavere score.');
           }
           const page = 1 + randomInt(pool.pages);
-          return api(discoverParams(page)).then((data) => {
+          return api(poolParams(page)).then((data) => {
             if (data.results.length) {
               return data.results;
             }
             // Rare: a page at the tail of the result set came back empty.
-            return api(discoverParams(1)).then((first) => first.results);
+            return api(poolParams(1)).then((first) => first.results);
           });
         });
       }
@@ -1678,6 +1701,23 @@
         refreshSteps();
         updatePoolCount();
       });
+
+      const applySearch = debounce(function () {
+        // Under two characters TMDB rejects the query, so treat it as no
+        // search at all rather than surfacing an error mid-typing.
+        const value = el.searchInput.value.trim();
+        const next = value.length >= 2 ? value : '';
+        if (next === state.search) {
+          return;
+        }
+        state.search = next;
+        invalidatePool();
+        refreshSteps();
+        updatePoolCount();
+      }, 450);
+
+      el.searchInput.addEventListener('input', applySearch);
+      el.searchInput.addEventListener('search', applySearch);
 
       el.scoreMin.addEventListener('input', () => syncScores('min'));
       el.scoreMax.addEventListener('input', () => syncScores('max'));
