@@ -48,6 +48,65 @@ const ALLOWED_TYPES = ['movie', 'tv'];
  * "name": null for every nb/no variant - so the labels are supplied here and
  * the English name is used for anything TMDB adds later.
  */
+/**
+ * Shown without expanding the provider list, in this order. TMDB's own
+ * display_priority buries several of these (HBO Max sits at 41 in Norway),
+ * so the order is pinned here instead. Providers missing from the chosen
+ * country simply drop out.
+ */
+const PINNED_PROVIDER_IDS = [
+    8,     // Netflix
+    1899,  // HBO Max
+    350,   // Apple TV
+    337,   // Disney Plus
+    76,    // Viaplay
+    119,   // Amazon Prime Video (9 is the same service in some regions)
+    9,     // Amazon Prime Video
+    1773,  // SkyShowtime
+    442,   // NRK TV
+    431,   // TV 2 Play
+];
+
+/** Offered at the top of the language picker, in this order. */
+const COMMON_LANGUAGES = ['no', 'en', 'sv', 'da', 'fi', 'is', 'de', 'fr', 'es', 'it', 'ja', 'ko'];
+
+/** TMDB only supplies English and native language names, so label them here. */
+const LANGUAGE_LABELS_NB = [
+    'ar' => 'Arabisk',
+    'cs' => 'Tsjekkisk',
+    'da' => 'Dansk',
+    'de' => 'Tysk',
+    'el' => 'Gresk',
+    'en' => 'Engelsk',
+    'es' => 'Spansk',
+    'et' => 'Estisk',
+    'fa' => 'Persisk',
+    'fi' => 'Finsk',
+    'fr' => 'Fransk',
+    'he' => 'Hebraisk',
+    'hi' => 'Hindi',
+    'hu' => 'Ungarsk',
+    'is' => 'Islandsk',
+    'it' => 'Italiensk',
+    'ja' => 'Japansk',
+    'ko' => 'Koreansk',
+    'lt' => 'Litauisk',
+    'lv' => 'Latvisk',
+    'nb' => 'Norsk (bokmål)',
+    'nl' => 'Nederlandsk',
+    'nn' => 'Norsk (nynorsk)',
+    'no' => 'Norsk',
+    'pl' => 'Polsk',
+    'pt' => 'Portugisisk',
+    'ro' => 'Rumensk',
+    'ru' => 'Russisk',
+    'sv' => 'Svensk',
+    'th' => 'Thai',
+    'tr' => 'Tyrkisk',
+    'uk' => 'Ukrainsk',
+    'zh' => 'Kinesisk',
+];
+
 const GENRE_LABELS_NB = [
     12 => 'Eventyr',
     14 => 'Fantasy',
@@ -396,11 +455,36 @@ function actionProviders(): void {
             'priority' => $priority,
         ];
     }
-    usort($providers, function ($a, $b) {
+    // Pinned services first, in PINNED_PROVIDER_IDS order, then the rest by
+    // TMDB's own priority.
+    $pinnedRank = array_flip(PINNED_PROVIDER_IDS);
+    usort($providers, function ($a, $b) use ($pinnedRank) {
+        $rankA = $pinnedRank[$a['id']] ?? PHP_INT_MAX;
+        $rankB = $pinnedRank[$b['id']] ?? PHP_INT_MAX;
+        if ($rankA !== $rankB) {
+            return $rankA <=> $rankB;
+        }
         return $a['priority'] === $b['priority']
             ? strcasecmp($a['name'], $b['name'])
             : $a['priority'] <=> $b['priority'];
     });
+
+    // Countries carrying only a couple of the pinned services would leave a
+    // near-empty list, so top up with TMDB's own highest-priority ones. A
+    // country with enough pinned services (Norway has all nine) tops up with
+    // nothing.
+    $minVisible = 8;
+    $visible = 0;
+    foreach ($providers as $provider) {
+        if (isset($pinnedRank[$provider['id']])) {
+            $visible++;
+        }
+    }
+    $visible = max($visible, min($minVisible, count($providers)));
+
+    foreach ($providers as $index => $provider) {
+        $providers[$index]['pinned'] = $index < $visible;
+    }
 
     ok(['providers' => $providers]);
 }
@@ -423,6 +507,46 @@ function actionGenres(): void {
     });
 
     ok(['genres' => $genres]);
+}
+
+function actionLanguages(): void {
+    $data = tmdbGet('/configuration/languages', [], CACHE_TTL_META);
+
+    $common = array_flip(COMMON_LANGUAGES);
+    $languages = [];
+    foreach ($data as $language) {
+        $code = $language['iso_639_1'] ?? '';
+        if (!preg_match('/^[a-z]{2}$/', $code)) {
+            continue;
+        }
+        $name = LANGUAGE_LABELS_NB[$code]
+            ?? trim($language['english_name'] ?? '')
+            ?: trim($language['name'] ?? '');
+        if ($name === '') {
+            continue;
+        }
+        $languages[] = [
+            'code' => $code,
+            'name' => $name,
+            'common' => isset($common[$code]),
+        ];
+    }
+
+    usort($languages, function ($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
+
+    // Preserve the curated order for the shortlist at the top of the picker.
+    $order = array_flip(COMMON_LANGUAGES);
+    $shortlist = [];
+    foreach ($languages as $language) {
+        if ($language['common']) {
+            $shortlist[$order[$language['code']]] = $language;
+        }
+    }
+    ksort($shortlist);
+
+    ok(['common' => array_values($shortlist), 'languages' => $languages]);
 }
 
 function actionDiscover(): void {
@@ -457,6 +581,11 @@ function actionDiscover(): void {
     }
     if ($genres !== '') {
         $params['with_genres'] = $genres;
+    }
+
+    $originalLanguage = strtolower(trim($_GET['original_language'] ?? ''));
+    if (preg_match('/^[a-z]{2}$/', $originalLanguage)) {
+        $params['with_original_language'] = $originalLanguage;
     }
 
     $data = tmdbGet('/discover/' . $type, $params);
@@ -604,6 +733,9 @@ switch ($_GET['action'] ?? '') {
         break;
     case 'genres':
         actionGenres();
+        break;
+    case 'languages':
+        actionLanguages();
         break;
     case 'discover':
         actionDiscover();

@@ -508,7 +508,7 @@
         <a class="nav-link" href="prosjekter.html">Prosjekter</a>
         <a class="nav-link" href="blogg.html">Blogg</a>
         <a class="nav-link" href="musikk.html">Musikk</a>
-        <a class="nav-link active" href="serieroulette.html">serieroulette</a>
+        <a class="nav-link active" href="serieroulette.html">Serieroulette</a>
       </nav>
 
       <nav class="nav-mobile nav-masthead-mobile">
@@ -522,7 +522,7 @@
           <a class="nav-link" href="prosjekter.html">Prosjekter</a>
           <a class="nav-link" href="blogg.html">Blogg</a>
           <a class="nav-link" href="musikk.html">Musikk</a>
-          <a class="nav-link active" href="serieroulette.html">serieroulette</a>
+          <a class="nav-link active" href="serieroulette.html">Serieroulette</a>
         </div>
       </nav>
     </header>
@@ -589,10 +589,23 @@
         </div>
       </section>
 
-      <!-- 5: score -->
-      <section class="step is-locked" id="step-score">
+      <!-- 5: språk -->
+      <section class="step is-locked" id="step-language">
         <div class="step-header">
           <span class="step-number">5</span>
+          <h2 class="step-title">Språk</h2>
+          <span class="step-hint">Originalspråket til filmen eller serien</span>
+        </div>
+        <label class="sr-only" for="languageSelect">Språk</label>
+        <select class="roulette-select" id="languageSelect">
+          <option value="">Alle språk</option>
+        </select>
+      </section>
+
+      <!-- 6: score -->
+      <section class="step is-locked" id="step-score">
+        <div class="step-header">
+          <span class="step-number">6</span>
           <h2 class="step-title">Terningkast</h2>
           <span class="step-hint">Publikumsscore fra TMDB, 0&ndash;10</span>
         </div>
@@ -697,7 +710,6 @@
       const PROXY = 'tmdb-proxy.php';
       const IMG = 'https://image.tmdb.org/t/p/';
       const STORAGE_KEY = 'serieroulette.filters';
-      const VISIBLE_PROVIDERS = 12;
       const REEL_ITEM_HEIGHT = 106;
       const REEL_LENGTH = 26;
 
@@ -706,6 +718,7 @@
         providers: [],
         type: '',
         genres: [],
+        language: '',
         scoreMin: 6,
         scoreMax: 10,
         pool: null,          // { total, pages } for the current filter set
@@ -719,6 +732,7 @@
         providerToggle: document.getElementById('providerToggle'),
         typeGrid: document.getElementById('typeGrid'),
         genreGrid: document.getElementById('genreGrid'),
+        languageSelect: document.getElementById('languageSelect'),
         scoreMin: document.getElementById('scoreMin'),
         scoreMax: document.getElementById('scoreMax'),
         scoreMinOut: document.getElementById('scoreMinOut'),
@@ -732,6 +746,7 @@
           providers: document.getElementById('step-providers'),
           type: document.getElementById('step-type'),
           genre: document.getElementById('step-genre'),
+          language: document.getElementById('step-language'),
           score: document.getElementById('step-score'),
           country: document.getElementById('step-country')
         }
@@ -812,6 +827,7 @@
             providers: state.providers,
             type: state.type,
             genres: state.genres,
+            language: state.language,
             scoreMin: state.scoreMin,
             scoreMax: state.scoreMax
           }));
@@ -844,6 +860,7 @@
         setStepState(el.steps.providers, hasCountry, hasProviders);
         setStepState(el.steps.type, hasProviders, hasType);
         setStepState(el.steps.genre, hasType, state.genres.length > 0);
+        setStepState(el.steps.language, hasType, !!state.language);
         setStepState(el.steps.score, hasType, hasType);
 
         const emptyPool = state.pool !== null && state.pool.total === 0;
@@ -895,10 +912,11 @@
               return;
             }
 
-            data.providers.forEach((provider, index) => {
+            // The proxy decides which services show without expanding.
+            data.providers.forEach((provider) => {
               const chip = document.createElement('button');
               chip.type = 'button';
-              chip.className = 'chip' + (index >= VISIBLE_PROVIDERS ? ' is-extra' : '');
+              chip.className = 'chip' + (provider.pinned ? '' : ' is-extra');
               chip.dataset.providerId = provider.id;
               chip.setAttribute('aria-pressed', 'false');
               chip.innerHTML = (provider.logo
@@ -909,7 +927,8 @@
             });
 
             el.providerGrid.classList.add('is-collapsed');
-            el.providerToggle.hidden = data.providers.length <= VISIBLE_PROVIDERS;
+            const hiddenCount = data.providers.filter((p) => !p.pinned).length;
+            el.providerToggle.hidden = hiddenCount === 0;
             el.providerToggle.textContent = 'Vis alle ' + data.providers.length + ' tjenester';
 
             (preselect || []).forEach((id) => {
@@ -994,6 +1013,27 @@
         updatePoolCount();
       }
 
+      function loadLanguages(preselect) {
+        return api({ action: 'languages' }).then((data) => {
+          const build = (list) => list.map((language) =>
+            '<option value="' + language.code + '">' + escapeHtml(language.name) + '</option>'
+          ).join('');
+
+          el.languageSelect.innerHTML =
+            '<option value="">Alle språk</option>'
+            + '<optgroup label="Vanlige">' + build(data.common) + '</optgroup>'
+            + '<optgroup label="Alle språk">' + build(data.languages) + '</optgroup>';
+
+          if (preselect) {
+            el.languageSelect.value = preselect;
+            // An unknown code leaves the select blank rather than silently
+            // filtering on nothing.
+            state.language = el.languageSelect.value;
+          }
+          refreshSteps();
+        });
+      }
+
       /* -------------------------------------------------------- pool size */
 
       function discoverParams(page) {
@@ -1003,6 +1043,7 @@
           region: state.country,
           providers: state.providers.join('|'),
           genres: state.genres.join(','),
+          original_language: state.language,
           score_min: state.scoreMin,
           score_max: state.scoreMax,
           page: page || 1
@@ -1301,6 +1342,14 @@
         updatePoolCount();
       }
 
+      el.languageSelect.addEventListener('change', () => {
+        state.language = el.languageSelect.value;
+        invalidatePool();
+        saveFilters();
+        refreshSteps();
+        updatePoolCount();
+      });
+
       el.scoreMin.addEventListener('input', () => syncScores('min'));
       el.scoreMax.addEventListener('input', () => syncScores('max'));
       el.spinButton.addEventListener('click', spin);
@@ -1319,6 +1368,10 @@
         state.scoreMax = parseFloat(el.scoreMax.value);
         el.scoreMinOut.textContent = state.scoreMin.toFixed(1);
         el.scoreMaxOut.textContent = state.scoreMax.toFixed(1);
+
+        loadLanguages(saved.language).catch(() => {
+          /* the picker just stays on "Alle språk" */
+        });
 
         loadRegions()
           .then(() => {
