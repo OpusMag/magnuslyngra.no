@@ -31,7 +31,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') !== 'GET') {
 }
 
 const TMDB_BASE = 'https://api.themoviedb.org/3';
-const CACHE_DIR = __DIR__ . '/tmdb-cache';
+// Kept outside the web root: the host serves this directory with nginx, which
+// ignores .htaccess, so anything cached next to the script would be public.
+define('CACHE_DIR', sys_get_temp_dir() . '/serieroulette-cache');
 const CACHE_TTL_META = 86400;   // regions/providers/genres change rarely
 const CACHE_TTL_LIST = 3600;    // discover/detail
 const RATE_LIMIT_REQUESTS = 120;
@@ -120,7 +122,9 @@ function checkRateLimit(): void {
         return isset($entry['first']) && ($now - $entry['first']) < RATE_LIMIT_WINDOW;
     });
 
-    $ip = clientIP();
+    // Hashed, never stored raw: the counter works the same and a leaked cache
+    // file reveals no visitor addresses.
+    $ip = substr(hash('sha256', clientIP() . '|serieroulette'), 0, 32);
     if (isset($limits[$ip])) {
         if ($limits[$ip]['count'] >= RATE_LIMIT_REQUESTS) {
             fail(429, 'For mange forespørsler, vent et øyeblikk');
