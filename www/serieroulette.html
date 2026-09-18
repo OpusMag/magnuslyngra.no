@@ -59,6 +59,19 @@
         border-color: rgba(128, 181, 238, 0.45);
       }
 
+      /* A search overrides the filters below it, so they are visibly out of
+         play rather than silently ignored. */
+      .step.is-suspended {
+        opacity: 0.35;
+        pointer-events: none;
+      }
+
+      .search-note {
+        margin: 0.7rem 0 0;
+        color: var(--primary-color, #80b5ee);
+        font-size: 0.88rem;
+      }
+
       .step-header {
         display: flex;
         align-items: baseline;
@@ -700,10 +713,26 @@
         <button class="toggle-more" id="providerToggle" type="button" hidden>Vis alle tjenester</button>
       </section>
 
-      <!-- 3: film eller serie -->
-      <section class="step is-locked" id="step-type">
+      <!-- 3: søk -->
+      <section class="step is-locked" id="step-search">
         <div class="step-header">
           <span class="step-number">3</span>
+          <h2 class="step-title">Søk etter en tittel</h2>
+          <span class="step-hint">Valgfritt – søker i alt du kan strømme</span>
+        </div>
+        <label class="sr-only" for="searchInput">Søk etter film eller serie</label>
+        <input type="search" class="roulette-select" id="searchInput"
+               placeholder="F.eks. «Harry Potter» eller «Star Wars»"
+               autocomplete="off" maxlength="120">
+        <p class="search-note" id="searchNote" hidden>
+          Søket overstyrer valgene under. Tøm søkefeltet for å bruke dem igjen.
+        </p>
+      </section>
+
+      <!-- 4: film eller serie -->
+      <section class="step is-locked" id="step-type">
+        <div class="step-header">
+          <span class="step-number">4</span>
           <h2 class="step-title">Film eller serie?</h2>
         </div>
         <div class="chip-grid" id="typeGrid" role="group" aria-label="Film eller serie">
@@ -716,10 +745,10 @@
         </div>
       </section>
 
-      <!-- 4: sjanger -->
+      <!-- 5: sjanger -->
       <section class="step is-locked" id="step-genre">
         <div class="step-header">
-          <span class="step-number">4</span>
+          <span class="step-number">5</span>
           <h2 class="step-title">Sjanger</h2>
           <span class="step-hint">Ingen valgt = alle sjangre</span>
         </div>
@@ -728,10 +757,10 @@
         </div>
       </section>
 
-      <!-- 5: språk -->
+      <!-- 6: språk -->
       <section class="step is-locked" id="step-language">
         <div class="step-header">
-          <span class="step-number">5</span>
+          <span class="step-number">6</span>
           <h2 class="step-title">Språk</h2>
           <span class="step-hint">Originalspråket til filmen eller serien</span>
         </div>
@@ -741,10 +770,10 @@
         </select>
       </section>
 
-      <!-- 6: score -->
+      <!-- 7: score -->
       <section class="step is-locked" id="step-score">
         <div class="step-header">
-          <span class="step-number">6</span>
+          <span class="step-number">7</span>
           <h2 class="step-title">Terningkast</h2>
           <span class="step-hint">Publikumsscore fra TMDB, 0&ndash;10</span>
         </div>
@@ -760,18 +789,6 @@
         </div>
       </section>
 
-      <!-- 7: søk -->
-      <section class="step is-locked" id="step-search">
-        <div class="step-header">
-          <span class="step-number">7</span>
-          <h2 class="step-title">Søk etter en tittel</h2>
-          <span class="step-hint">Valgfritt – la stå tomt for hele utvalget</span>
-        </div>
-        <label class="sr-only" for="searchInput">Søk etter film eller serie</label>
-        <input type="search" class="roulette-select" id="searchInput"
-               placeholder="F.eks. «Harry Potter» eller «Star Wars»"
-               autocomplete="off" maxlength="120">
-      </section>
 
       <div class="spin-panel">
         <p class="pool-count" id="poolCount"></p>
@@ -906,6 +923,7 @@
         genreGrid: document.getElementById('genreGrid'),
         languageSelect: document.getElementById('languageSelect'),
         searchInput: document.getElementById('searchInput'),
+        searchNote: document.getElementById('searchNote'),
         scoreMin: document.getElementById('scoreMin'),
         scoreMax: document.getElementById('scoreMax'),
         scoreMinOut: document.getElementById('scoreMinOut'),
@@ -1025,9 +1043,10 @@
 
       /* ------------------------------------------------------------ steps */
 
-      function setStepState(step, unlocked, done) {
+      function setStepState(step, unlocked, done, suspended) {
         step.classList.toggle('is-locked', !unlocked);
-        step.classList.toggle('is-done', !!done);
+        step.classList.toggle('is-done', !!done && !suspended);
+        step.classList.toggle('is-suspended', !!suspended);
       }
 
       function refreshSteps() {
@@ -1035,16 +1054,22 @@
         const hasProviders = state.providers.length > 0;
         const hasType = !!state.type;
 
+        // Searching is its own mode: it needs a country and a service, and
+        // overrides everything below it.
+        const searching = !!state.search;
+
         setStepState(el.steps.country, true, hasCountry);
         setStepState(el.steps.providers, hasCountry, hasProviders);
-        setStepState(el.steps.type, hasProviders, hasType);
-        setStepState(el.steps.genre, hasType, state.genres.length > 0);
-        setStepState(el.steps.language, hasType, !!state.language);
-        setStepState(el.steps.score, hasType, hasType);
-        setStepState(el.steps.search, hasType, !!state.search);
+        setStepState(el.steps.search, hasProviders, searching);
+        setStepState(el.steps.type, hasProviders, hasType, searching);
+        setStepState(el.steps.genre, hasType, state.genres.length > 0, searching);
+        setStepState(el.steps.language, hasType, !!state.language, searching);
+        setStepState(el.steps.score, hasType, hasType, searching);
+        el.searchNote.hidden = !searching;
 
         const emptyPool = state.pool !== null && state.pool.total === 0;
-        const ready = hasCountry && hasProviders && hasType;
+        // A search does not need a type chosen; it covers films and series.
+        const ready = hasCountry && hasProviders && (searching || hasType);
         el.spinButton.disabled = !ready || state.spinning || emptyPool;
         el.browseButton.disabled = !ready || emptyPool;
         setBrowseLabel();
@@ -1219,8 +1244,18 @@
       // One pool, two sources: /discover normally, /search when a title is
       // typed, since TMDB's search takes none of the other filters.
       function poolParams(page) {
-        const params = {
-          action: state.search ? 'search' : 'discover',
+        if (state.search) {
+          // Only what decides whether you can watch it at all.
+          return {
+            action: 'search',
+            region: state.country,
+            providers: state.providers.join('|'),
+            query: state.search,
+            page: page || 1
+          };
+        }
+        return {
+          action: 'discover',
           type: state.type,
           region: state.country,
           providers: state.providers.join('|'),
@@ -1230,10 +1265,14 @@
           score_max: state.scoreMax,
           page: page || 1
         };
+      }
+
+      // A search spans both kinds, so it cannot be called films or series.
+      function poolNoun() {
         if (state.search) {
-          params.query = state.search;
+          return 'titler';
         }
-        return params;
+        return state.type === 'movie' ? 'filmer' : 'serier';
       }
 
       function invalidatePool() {
@@ -1259,7 +1298,7 @@
       }
 
       function filtersReady() {
-        return !!(state.country && state.providers.length && state.type);
+        return !!(state.country && state.providers.length && (state.search || state.type));
       }
 
       const updatePoolCount = debounce(function () {
@@ -1276,7 +1315,7 @@
             if (!data.total_results) {
               el.poolCount.innerHTML = '<strong>Ingen treff</strong> &ndash; prøv å løsne på filtrene.';
             } else {
-              const noun = state.type === 'movie' ? 'filmer' : 'serier';
+              const noun = poolNoun();
               el.poolCount.innerHTML = '<strong>' + data.total_results + '</strong> ' + noun + ' i puljen';
             }
             refreshSteps();
@@ -1298,7 +1337,8 @@
       }
 
       function browseItemMarkup(item) {
-        return '<div class="browse-item" data-id="' + item.id + '">'
+        return '<div class="browse-item" data-id="' + item.id
+          + '" data-type="' + escapeHtml(item.type) + '">'
           + '<button class="browse-row" type="button" aria-expanded="false">'
           + posterMarkup(item.poster, 'w92', '')
           + '<span class="browse-text">'
@@ -1362,7 +1402,12 @@
           return;
         }
 
-        api({ action: 'detail', type: state.type, id: id, region: state.country })
+        api({
+          action: 'detail',
+          type: item.dataset.type || state.type,
+          id: id,
+          region: state.country
+        })
           .then((payload) => {
             state.browse.details[id] = payload;
             renderBrowseDetail(detail, payload);
@@ -1375,7 +1420,7 @@
 
       function updateBrowseHeading() {
         const total = state.pool ? state.pool.total : 0;
-        const noun = state.type === 'movie' ? 'filmer' : 'serier';
+        const noun = poolNoun();
         el.browseHeading.textContent = 'Viser ' + state.browse.items.length
           + ' av ' + total + ' ' + noun + ' – trykk på en tittel for beskrivelsen';
       }

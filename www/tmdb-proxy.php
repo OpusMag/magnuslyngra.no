@@ -521,25 +521,15 @@ function titleFlatrateProviders(string $type, int $id, string $region): array {
 
 /**
  * Title search, shaped like actionDiscover so the page can treat it as just
- * another pool. /search takes no provider, genre or score filters, so the
- * cheap ones are applied to the search payload (which carries genre_ids,
- * vote_average and original_language) and only the survivors cost a
- * per-title provider lookup.
+ * another pool. Searching is a different intent from browsing by taste, so it
+ * deliberately honours only country and streaming service - the filters that
+ * decide what can actually be watched. Genre, language, score and even
+ * movie-vs-series are left to the caller to suspend, because a filter set
+ * three steps earlier silently returning zero hits is worse than useless.
  */
 function actionSearch(): void {
-    $type = paramType();
     $region = paramRegion();
     $providers = array_filter(array_map('intval', explode('|', paramIdList('providers', '|'))));
-    $genres = array_filter(array_map('intval', explode(',', paramIdList('genres', ','))));
-    $scoreMin = paramScore('score_min', 0.0);
-    $scoreMax = paramScore('score_max', 10.0);
-    if ($scoreMin > $scoreMax) {
-        [$scoreMin, $scoreMax] = [$scoreMax, $scoreMin];
-    }
-    $originalLanguage = strtolower(trim($_GET['original_language'] ?? ''));
-    if (!preg_match('/^[a-z]{2}$/', $originalLanguage)) {
-        $originalLanguage = '';
-    }
 
     $query = trim($_GET['query'] ?? '');
     if (function_exists('mb_strlen') ? mb_strlen($query) < 2 : strlen($query) < 2) {
@@ -552,7 +542,7 @@ function actionSearch(): void {
     // Two pages of hits is plenty to spin among, and bounds the lookups below.
     $candidates = [];
     for ($page = 1; $page <= 2; $page++) {
-        $data = tmdbGet('/search/' . $type, [
+        $data = tmdbGet('/search/multi', [
             'query' => $query,
             'language' => DEFAULT_LANGUAGE,
             'include_adult' => 'false',
@@ -569,20 +559,12 @@ function actionSearch(): void {
     $items = [];
     $lookups = 0;
     foreach ($candidates as $item) {
-        $score = (float) ($item['vote_average'] ?? 0);
-        if ($score < $scoreMin || $score > $scoreMax) {
+        // /search/multi also returns people; only things you can watch qualify.
+        $type = $item['media_type'] ?? '';
+        if (!in_array($type, ALLOWED_TYPES, true)) {
             continue;
         }
-        if ($originalLanguage !== '' && ($item['original_language'] ?? '') !== $originalLanguage) {
-            continue;
-        }
-        // TMDB's with_genres uses AND for a comma list, so match that here.
-        if ($genres) {
-            $itemGenres = array_map('intval', $item['genre_ids'] ?? []);
-            if (array_diff($genres, $itemGenres)) {
-                continue;
-            }
-        }
+
         if ($providers) {
             if ($lookups >= 40) {
                 break;
@@ -605,7 +587,7 @@ function actionSearch(): void {
             'year' => $date !== '' ? substr($date, 0, 4) : '',
             'poster' => $item['poster_path'] ?? null,
             'backdrop' => $item['backdrop_path'] ?? null,
-            'score' => round($score, 1),
+            'score' => round((float) ($item['vote_average'] ?? 0), 1),
             'votes' => (int) ($item['vote_count'] ?? 0),
             'overview' => trim($item['overview'] ?? ''),
         ];
